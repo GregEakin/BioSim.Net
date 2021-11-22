@@ -39,7 +39,7 @@ public class Gene
         }
     }
 
-    public Sensor SourceNeuron
+    public Sensor SourceSensor
     {
         get => (Sensor)(_source & 0x7F);
         set => _source = (byte)((_source & 0x80) | ((byte)value & 0x7F));
@@ -109,7 +109,7 @@ public class Gene
         var builder = new StringBuilder();
 
         if (SourceType == Gene.GeneType.Sensor)
-            builder.Append(SourceNeuron);
+            builder.Append(SourceSensor);
         else
             builder.Append($"N{SourceNum}");
 

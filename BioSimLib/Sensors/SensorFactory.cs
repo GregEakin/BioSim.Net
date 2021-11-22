@@ -4,7 +4,7 @@ public class SensorFactory
 {
     private readonly ISensor[] _sensors = // new ISensor[Enum.GetNames<Sensor>().Length];
     {
-        null,                   // LOC_X, // I distance from left edge
+        new LocationX(),        // LOC_X, // I distance from left edge
         null,                   // LOC_Y, // I distance from bottom
         null,                   // BOUNDARY_DIST_X, // I X distance to nearest edge of world
         new BoundaryDist(),     // BOUNDARY_DIST, // I distance to nearest edge of world
@@ -21,7 +21,7 @@ public class SensorFactory
         new Age(),              // AGE, // I
         null,                   // BARRIER_FWD, // W neighborhood barrier distance forward-reverse axis
         null,                   // BARRIER_LR, // W neighborhood barrier distance left-right axis
-        null,                   // RANDOM, //   random sensor value, uniform distribution
+        new Random(),           // RANDOM, //   random sensor value, uniform distribution
         null,                   // SIGNAL0, // W strength of signal0 in neighborhood
         null,                   // SIGNAL0_FWD, // W strength of signal0 in the forward-reverse axis
         null,                   // SIGNAL0_LR, // W strength of signal0 in the left-right axis

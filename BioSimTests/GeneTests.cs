@@ -20,7 +20,7 @@ public class GeneTests
         var gene = new Gene
         {
             SourceType = Gene.GeneType.Sensor,
-            SourceNeuron = (Sensor)127,
+            SourceSensor = (Sensor)127,
             SinkType = Gene.GeneType.Action,
             SinkNeuron = 0,
             WeightAsShort = 0x7FFF
@@ -38,7 +38,7 @@ public class GeneTests
         };
 
         Assert.Equal(Gene.GeneType.Sensor, gene.SourceType);
-        Assert.Equal(127, (byte)gene.SourceNeuron);
+        Assert.Equal(127, (byte)gene.SourceSensor);
         Assert.Equal(Gene.GeneType.Neuron, gene.SinkType);
         Assert.Equal(127, gene.SinkNum);
         Assert.Equal(-1, gene.WeightAsShort);
@@ -53,7 +53,7 @@ public class GeneTests
         };
 
         Assert.Equal(Gene.GeneType.Sensor, gene.SourceType);
-        Assert.Equal(127, (byte)gene.SourceNeuron);
+        Assert.Equal(127, (byte)gene.SourceSensor);
         Assert.Equal(Gene.GeneType.Action, gene.SinkType);
         Assert.Equal(0, gene.SinkNum);
         Assert.Equal(-1, gene.WeightAsShort);

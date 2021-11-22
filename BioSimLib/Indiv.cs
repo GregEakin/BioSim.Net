@@ -32,7 +32,7 @@ public class Indiv
     {
         this.p = p;
         this.genome = genome;
-        nnet = new NeuralNet(genome);
+        nnet = new NeuralNet(p, this, genome);
 
         this.index = index;
         this.loc = loc;
@@ -51,35 +51,7 @@ public class Indiv
 
     public float[] FeedForward(uint simStep)
     {
-        var factory = new SensorFactory();
-
-        var actionLevels = new float[Enum.GetNames<Action>().Length];
-        var neuronAccumulators = new float[nnet.Length];
-        var neuronOutputsComputed = false;
-        foreach (var conn in genome)
-        {
-            if (conn.SinkType == Gene.GeneType.Action && !neuronOutputsComputed)
-            {
-                for (var neuronIndex = 0; neuronIndex < nnet.Length; ++neuronIndex)
-                {
-                    if (nnet[neuronIndex].Driven)
-                        nnet[neuronIndex].Output = (float)Math.Tanh(neuronAccumulators[neuronIndex]);
-                }
-
-                neuronOutputsComputed = true;
-            }
-
-            var inputVal = conn.SourceType == Gene.GeneType.Sensor
-                ? factory[conn.SourceNeuron].Calc(p, this, simStep)
-                : nnet[conn.SourceNum].Output;
-
-            if (conn.SinkType == Gene.GeneType.Action)
-                actionLevels[conn.SinkNum] += inputVal * conn.WeightAsFloat;
-            else
-                neuronAccumulators[conn.SinkNum] += inputVal * conn.WeightAsFloat;
-        }
-
-        return actionLevels;
+        return nnet.FeedForward(simStep);
     }
 
     public string PrintGraphInfo()

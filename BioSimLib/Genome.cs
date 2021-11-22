@@ -5,6 +5,7 @@ namespace BioSimLib;
 
 public class Genome : IEnumerable<Gene>
 {
+    private readonly Params _p;
     private readonly Gene[] _genome;
 
     public int NeuronsNeeded
@@ -21,15 +22,16 @@ public class Genome : IEnumerable<Gene>
                     neurons.Add(gene.SinkNum);
             }
 
-            return neurons.Count;
+            return Math.Min(neurons.Count, _p.maxNumberNeurons);
         }
     }
 
     public int Length => _genome.Length;
 
-    public Genome(Params p)
+    public Genome(Params p, uint[] dna)
     {
-        _genome = new Gene[] { new() { ToUint = 0x840B7FFFu } };
+        _p = p;
+        _genome = dna.Select(code => new Gene { ToUint = code }).ToArray();
     }
 
     public Gene this[int index] => _genome[index];
@@ -44,7 +46,7 @@ public class Genome : IEnumerable<Gene>
         return _genome.GetEnumerator();
     }
 
-    public override string ToString()
+    public string ToDna()
     {
         var builder = new StringBuilder();
         const int genesPerLine = 8;
@@ -66,13 +68,13 @@ public class Genome : IEnumerable<Gene>
         return builder.ToString();
     }
 
-    public string ToText()
+    public override string ToString()
     {
         var builder = new StringBuilder();
         foreach (var gene in _genome)
         {
             if (gene.SourceType == Gene.GeneType.Sensor)
-                builder.Append(gene.SourceNeuron);
+                builder.Append(gene.SourceSensor);
             else
                 builder.Append($"N{gene.SourceNum}");
 
@@ -87,5 +89,11 @@ public class Genome : IEnumerable<Gene>
         }
 
         return builder.ToString();
+    }
+
+    public void Optimize()
+    {
+        // This prunes unused neurons
+        //
     }
 }

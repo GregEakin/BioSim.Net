@@ -10,7 +10,18 @@ Console.WriteLine("Parameters {0}", p);
 
 var grid = new Grid(p);
 
-var genome = new Genome(p);
+var dna = new[]
+{
+    0x010A7FF0u,
+    0x01817FF1u,
+    0x01047FF2u,
+    0x01807FF3u,
+    0x00817FF4u,
+    0x80807FF5u,
+    0x91047FF6u,
+};
+
+var genome = new Genome(p, dna);
 Console.WriteLine("Genome {0}", genome);
 
 var loc = new Coord { X = 4, Y = 4 };

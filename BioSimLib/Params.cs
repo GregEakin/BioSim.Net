@@ -8,7 +8,7 @@ public class Params
     public uint numThreads; // > 0
     public uint signalLayers; // >= 0
     public uint genomeMaxLength; // > 0
-    public uint maxNumberNeurons; // > 0
+    public int maxNumberNeurons; // > 0
     public double pointMutationRate; // 0.0..1.0
     public double geneInsertionDeletionRate; // 0.0..1.0
     public double deletionRatio; // 0.0..1.0
@@ -55,6 +55,9 @@ public class Params
         logDir = "";
         imageDir = "";
         graphLogUpdateCommand = "";
+
+        maxNumberNeurons = 5;
+        stepsPerGeneration = 1;
     }
 
     public override string ToString()
