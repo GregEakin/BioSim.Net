@@ -6,7 +6,7 @@ public class Age : ISensor
     public override string ToString() => "age";
     public string ShortName => "Age";
 
-    public float Calc(Params p, Indiv indiv, uint simStep)
+    public float Output(Params p, Indiv indiv, uint simStep)
     {
         return indiv._age / p.stepsPerGeneration;
     }

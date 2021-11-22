@@ -36,8 +36,8 @@ public class NeuralNet : IEnumerable<Neuron>
     {
         var sb = new StringBuilder();
         sb.Append(_connections.ToDna());
-        foreach (var neuron in _neurons)
-            sb.Append(neuron);
+        // foreach (var neuron in _neurons)
+        //     sb.Append(neuron);
         return sb.ToString();
     }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Specialized;
-using System.Numerics;
 using System.Text;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
@@ -46,13 +45,11 @@ public class Indiv
         _longProbeDist = p.longProbeDistance;
         _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
 
-        CreateWiringFromGenome(p);
+        CreateWiringFromGenome();
     }
 
-    public float[] FeedForward(uint simStep)
+    public float[] FeedForward(SensorFactory sensors, uint simStep)
     {
-        var sensors = new SensorFactory();
-
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         var neuronAccumulators = new float[_nnet.Length];
         var neuronOutputsComputed = false;
@@ -70,7 +67,7 @@ public class Indiv
             }
 
             var inputVal = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor].Calc(_p, this, simStep)
+                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
                 : _nnet[conn.SourceNum].Output;
 
             if (conn.SinkType == Gene.GeneType.Action)
@@ -82,106 +79,43 @@ public class Indiv
         return actionLevels;
     }
 
-    public string PrintGraphInfo()
+    public float[] FeedForward2(SensorFactory sensors, uint simStep)
     {
-        var builder = new StringBuilder();
-        foreach (var conn in _genome)
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        var neuronCollectors = new float[_genome.Length];
+        for (var i = 0; i < _genome.Length; i++)
         {
-            builder.AppendLine(conn.ToEdge());
+            var conn = _genome[i];
+            neuronCollectors[i] = conn.SourceType == Gene.GeneType.Sensor
+                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                : _nnet[conn.SourceNum].Output;
         }
 
-        return builder.ToString();
-    }
-
-    public static ConnectionList MakeRenumberedConnectionList(Params p, Genome genome)
-    {
-        var connectionList = new ConnectionList();
-        foreach (var gene in genome)
+        var sum = 0.0f;
+        var last = 0x100;
+        for (var i = 0; i < _genome.Length; i++)
         {
-            connectionList.Add(gene);
-
-            if (gene.SourceType == Gene.GeneType.Neuron)
-                gene.SourceNum %= (byte)p.maxNumberNeurons;
+            var conn = _genome[i];
+            if (last != conn.SinkNum)
+                sum = neuronCollectors[i];
             else
-                gene.SourceNum %= (byte)Enum.GetNames<Sensor>().Length;
+                sum += neuronCollectors[i];
 
-            if (gene.SinkType == Gene.GeneType.Neuron)
-                gene.SinkNum %= (byte)p.maxNumberNeurons;
+            last = conn.SinkNum;
+            if (conn.SinkType == Gene.GeneType.Action)
+                actionLevels[conn.SinkNum] = conn.WeightAsFloat * (float)Math.Tanh(sum);
             else
-                gene.SinkNum %= (byte)Enum.GetNames<Action>().Length;
+                _nnet[conn.SinkNum].Output = conn.WeightAsFloat * (float)Math.Tanh(sum);
         }
 
-        return connectionList;
+        return actionLevels;
     }
 
-    public static NodeMap MakeNodeList(ConnectionList connectionList)
+    public void CreateWiringFromGenome()
     {
-        var nodeMap = new NodeMap();
-        foreach (var conn in connectionList)
-        {
-            if (conn.SinkType == Gene.GeneType.Neuron)
-            {
-                var found = nodeMap.TryGetValue(conn.SinkNum, out var it);
-                if (!found || it == null)
-                {
-                    it = new Node();
-                    nodeMap.Add(conn.SinkNum, it);
-                }
-
-                if (conn.SourceType == Gene.GeneType.Neuron && conn.SourceNum == conn.SinkNum)
-                    ++it.numSelfInputs;
-                else
-                    ++it.numInputsFromSensorsOrOtherNeurons;
-            }
-
-            if (conn.SourceType == Gene.GeneType.Neuron)
-            {
-                var found = nodeMap.TryGetValue(conn.SourceNum, out var it);
-                if (!found || it == null)
-                {
-                    it = new Node();
-                    nodeMap.Add(conn.SourceNum, it);
-                }
-
-                ++it.numOutputs;
-            }
-        }
-
-        return nodeMap;
-    }
-
-    public void CullUselessNeurons(ConnectionList connections, NodeMap nodeMap)
-    {
-        var allDone = false;
-        while (!allDone)
-        {
-            allDone = true;
-            foreach (var (key, value) in nodeMap)
-            {
-                if (value.numOutputs != value.numSelfInputs) continue;
-                allDone = false;
-                RemoveConnectionsToNeuron(connections, nodeMap, key);
-                nodeMap.Remove(key);
-            }
-        }
-    }
-
-    public void RemoveConnectionsToNeuron(ConnectionList connections, NodeMap nodeMap, int neuronNumber)
-    {
-        foreach (var itConn in connections)
-        {
-            if (itConn.SinkType != Gene.GeneType.Neuron || itConn.SinkNum != neuronNumber) continue;
-            if (itConn.SourceType == Gene.GeneType.Neuron)
-                --nodeMap[itConn.SourceNum].numOutputs;
-            connections.Remove(itConn);
-        }
-    }
-
-    public void CreateWiringFromGenome(Params p)
-    {
-        var connectionList = MakeRenumberedConnectionList(p, _genome);
-        var nodeMap = MakeNodeList(connectionList);
-        CullUselessNeurons(connectionList, nodeMap);
+        var connectionList = _genome.MakeRenumberedConnectionList();
+        var nodeMap = _genome.MakeNodeList();
+        //@@ CullUselessNeurons(connectionList, nodeMap);
 
         byte newNumber = 0;
         foreach (var node in nodeMap)

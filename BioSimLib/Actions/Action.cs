@@ -18,5 +18,6 @@ public enum Action : byte
     MOVE_LEFT, // W
     MOVE_RIGHT, // W
     MOVE_REVERSE, // W
+    // NUM_ACTIONS,       // <<----------------- END OF ACTIVE ACTIONS MARKER
     KILL_FORWARD, // W
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Text;
+using BioSimLib.Sensors;
+using Action = BioSimLib.Actions.Action;
 
 namespace BioSimLib;
 
@@ -7,6 +9,7 @@ public class Genome : IEnumerable<Gene>
 {
     private readonly Params _p;
     private readonly Gene[] _genome;
+    private readonly ConnectionList _connectionList;
 
     public int NeuronsNeeded
     {
@@ -32,18 +35,85 @@ public class Genome : IEnumerable<Gene>
     {
         _p = p;
         _genome = dna.Select(code => new Gene { ToUint = code }).ToArray();
+        _connectionList = MakeRenumberedConnectionList();
     }
 
     public Gene this[int index] => _genome[index];
 
     public IEnumerator<Gene> GetEnumerator()
     {
-        return _genome.Cast<Gene>().GetEnumerator();
+        return _connectionList.Cast<Gene>().GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _genome.GetEnumerator();
+        return _connectionList.GetEnumerator();
+    }
+
+    public ConnectionList MakeRenumberedConnectionList()
+    {
+        var connectionList = new ConnectionList();
+        foreach (var gene in _genome)
+        {
+            connectionList.Add(gene);
+
+            if (gene.SourceType == Gene.GeneType.Sensor)
+                gene.SourceNum %= (byte)Enum.GetNames<Sensor>().Length;
+            else
+                gene.SourceNum %= (byte)_p.maxNumberNeurons;
+
+            if (gene.SinkType == Gene.GeneType.Action)
+                gene.SinkNum %= (byte)Enum.GetNames<Action>().Length;
+            else
+                gene.SinkNum %= (byte)_p.maxNumberNeurons;
+        }
+
+        return connectionList;
+    }
+
+    public NodeMap MakeNodeList()
+    {
+        var nodeMap = new NodeMap();
+        foreach (var conn in _connectionList)
+        {
+            if (conn.SinkType == Gene.GeneType.Neuron)
+            {
+                var found = nodeMap.TryGetValue(conn.SinkNum, out var it);
+                if (!found || it == null)
+                {
+                    it = new Node();
+                    nodeMap.Add(conn.SinkNum, it);
+                }
+
+                if (conn.SourceType == Gene.GeneType.Neuron && conn.SourceNum == conn.SinkNum)
+                    ++it.numSelfInputs;
+                else
+                    ++it.numInputsFromSensorsOrOtherNeurons;
+            }
+
+            if (conn.SourceType == Gene.GeneType.Neuron)
+            {
+                var found = nodeMap.TryGetValue(conn.SourceNum, out var it);
+                if (!found || it == null)
+                {
+                    it = new Node();
+                    nodeMap.Add(conn.SourceNum, it);
+                }
+
+                ++it.numOutputs;
+            }
+        }
+
+        return nodeMap;
+    }
+
+    public string PrintGraphInfo()
+    {
+        var builder = new StringBuilder();
+        foreach (var conn in _genome) 
+            builder.AppendLine(conn.ToEdge());
+
+        return builder.ToString();
     }
 
     public string ToDna()
@@ -91,7 +161,19 @@ public class Genome : IEnumerable<Gene>
         return builder.ToString();
     }
 
-    public void Optimize()
+    // uint8_t makeGeneticColor(const Genome &genome)
+    // {
+    //     return ((genome.size() & 1u)
+    //             | ((genome.front().sourceType)     << 1)
+    //             | ((genome.back().sourceType)      << 2)
+    //             | ((genome.front().sinkType)       << 3)
+    //             | ((genome.back().sinkType)        << 4)
+    //             | ((genome.front().sourceNum & 1u) << 5)
+    //             | ((genome.front().sinkNum & 1u)   << 6)
+    //             | ((genome.back().sourceNum & 1u)  << 7));
+    // }
+
+public void Optimize()
     {
         // This prunes unused neurons
         //

@@ -21,7 +21,7 @@ public class GeneTests
         {
             SourceType = Gene.GeneType.Sensor,
             SourceSensor = (Sensor)127,
-            SinkType = Gene.GeneType.Action,
+            SinkType = Gene.GeneType.Neuron,
             SinkNeuron = 0,
             WeightAsShort = 0x7FFF
         };
@@ -39,7 +39,7 @@ public class GeneTests
 
         Assert.Equal(Gene.GeneType.Sensor, gene.SourceType);
         Assert.Equal(127, (byte)gene.SourceSensor);
-        Assert.Equal(Gene.GeneType.Neuron, gene.SinkType);
+        Assert.Equal(Gene.GeneType.Action, gene.SinkType);
         Assert.Equal(127, gene.SinkNum);
         Assert.Equal(-1, gene.WeightAsShort);
     }
@@ -54,7 +54,7 @@ public class GeneTests
 
         Assert.Equal(Gene.GeneType.Sensor, gene.SourceType);
         Assert.Equal(127, (byte)gene.SourceSensor);
-        Assert.Equal(Gene.GeneType.Action, gene.SinkType);
+        Assert.Equal(Gene.GeneType.Neuron, gene.SinkType);
         Assert.Equal(0, gene.SinkNum);
         Assert.Equal(-1, gene.WeightAsShort);
     }
@@ -117,6 +117,18 @@ public class GeneTests
 
         Assert.Equal(0x0000FFFFu, gene.ToUint);
         Assert.Equal(-0.00012207031f, gene.WeightAsFloat);
+    }
+
+    [Fact]
+    public void FloatTest()
+    {
+        var gene = new Gene
+        {
+            WeightAsFloat = 1.0f
+        };
+
+        Assert.Equal(0x00002000u, gene.ToUint);
+        Assert.Equal(1.0f, gene.WeightAsFloat);
     }
 
 }

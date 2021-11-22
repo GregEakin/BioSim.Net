@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Numerics;
 using BioSimLib;
+using BioSimLib.Sensors;
 
 Console.WriteLine("Hello, World!");
 
@@ -10,15 +10,27 @@ Console.WriteLine("Parameters {0}", p);
 
 var grid = new Grid(p);
 
+//var sensorFactory = new SensorFactory();
+var sensorsFactory = new SensorFactory(
+    new ISensor[]
+    {
+        new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
+        null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
+        new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
+        null, null, null,
+    }
+);
+
 var dna = new[]
 {
-    0x010A7FF0u,
-    0x01817FF1u,
-    0x01047FF2u,
-    0x01807FF3u,
-    0x00817FF4u,
-    0x80807FF5u,
-    0x91047FF6u,
+    0x01042000u,
+    0x91042000u,
+    0x010A2000u,
+    0x01802000u,
+    0x80802000u,
+    0x00812000u,
+    0x01812000u,
 };
 
 var genome = new Genome(p, dna);
@@ -39,8 +51,8 @@ Console.WriteLine();
 
 Console.WriteLine();
 Console.WriteLine("Step 1");
-var actionLevels = individual.FeedForward(0);
-foreach (var level in actionLevels) Console.Write("  {0}", level);
+var actionLevels = individual.FeedForward2(sensorsFactory, 0);
+foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 
 individual.ExecuteActions(actionLevels);

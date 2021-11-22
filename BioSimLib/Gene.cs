@@ -53,15 +53,15 @@ public class Gene
 
     public GeneType SinkType
     {
-        get => (_sink & 0x80) == 0x80 ? GeneType.Neuron : GeneType.Action;
+        get => (_sink & 0x80) == 0x80 ? GeneType.Action : GeneType.Neuron;
         set
         {
             switch (value)
             {
-                case GeneType.Neuron:
+                case GeneType.Action:
                     _sink |= 0x80;
                     break;
-                case GeneType.Action:
+                case GeneType.Neuron:
                     _sink &= 0x7F;
                     break;
                 case GeneType.Sensor:
