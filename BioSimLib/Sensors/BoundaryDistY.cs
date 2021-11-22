@@ -8,7 +8,7 @@ public class BoundaryDistY : ISensor
 
     public float Calc(Params p, Indiv indiv, uint simStep)
     {
-        var minDistY = Math.Min(indiv.loc.Y, (p.sizeY - indiv.loc.Y) - 1);
+        var minDistY = Math.Min(indiv._loc.Y, (p.sizeY - indiv._loc.Y) - 1);
         var sensorVal = minDistY / (p.sizeY / 2.0f);
         return sensorVal;
     }

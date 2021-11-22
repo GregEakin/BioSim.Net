@@ -41,7 +41,7 @@ public class Grid
         if (!IsEmptyAt(newLoc))
             return false;
 
-        _grid[indiv.loc.X, indiv.loc.Y] = null;
+        _grid[indiv._loc.X, indiv._loc.Y] = null;
         _grid[newLoc.X, newLoc.Y] = indiv;
         return true;
     }
@@ -58,7 +58,7 @@ public class Grid
             for (int y = 0; y < _grid.GetLength(1); y += 1)
             {
                 var indiv = _grid[x, y];
-                Console.Write(" {0}", indiv != null ? indiv.index : ".");
+                Console.Write(" {0}", indiv != null ? indiv._index : ".");
             }
 
             Console.WriteLine();

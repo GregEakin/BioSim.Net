@@ -8,56 +8,84 @@ namespace BioSimLib;
 
 public class Indiv
 {
-    public readonly Params p;
-    public readonly Genome genome;
-    public readonly NeuralNet nnet; // derived from .genome
-    public readonly short index; // index into peeps[] container
-    public readonly Coord birthLoc;
-    public readonly BitVector32 challengeBits; // modified when the indiv accomplishes some task
+    public readonly Params _p;
+    public readonly Genome _genome;
+    public readonly NeuralNet _nnet; 
+    public readonly short _index; 
+    public readonly Coord _birthLoc;
+    public readonly BitVector32 _challengeBits; 
 
-    public bool alive;
-    public Coord loc; // refers to a location in grid[][]
-    public uint age;
-    public float responsiveness; // 0.0..1.0 (0 is like asleep)
-    public uint oscPeriod; // 2..4*p.stepsPerGeneration (TBD, see executeActions())
-    public uint longProbeDist; // distance for long forward probe for obstructions
-    public Dir lastMoveDir; // direction of last movement
+    public bool _alive;
+    public Coord _loc; 
+    public uint _age;
+    public float _responsiveness; 
+    public uint _oscPeriod; 
+    public uint _longProbeDist; 
+    public Dir _lastMoveDir; 
 
     public override string ToString()
     {
-        return $"Neural Net {nnet}";
+        return $"Neural Net {_nnet}";
     }
 
     public Indiv(Params p, Grid grid, short index, Coord loc, Genome genome)
     {
-        this.p = p;
-        this.genome = genome;
-        nnet = new NeuralNet(p, this, genome);
+        _p = p;
+        _genome = genome;
+        _nnet = new NeuralNet(genome);
 
-        this.index = index;
-        this.loc = loc;
-        birthLoc = loc;
+        _index = index;
+        _loc = loc;
+        _birthLoc = loc;
         grid.Set(loc, index);
-        age = 0u;
-        oscPeriod = 34u; // ToDo !!! define a constant
-        alive = true;
-        lastMoveDir = Dir.Random8();
-        responsiveness = 0.5f; // range 0.0..1.0
-        longProbeDist = p.longProbeDistance;
-        challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
+        _age = 0u;
+        _oscPeriod = 34u; // ToDo !!! define a constant
+        _alive = true;
+        _lastMoveDir = Dir.Random8();
+        _responsiveness = 0.5f; // range 0.0..1.0
+        _longProbeDist = p.longProbeDistance;
+        _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
 
         CreateWiringFromGenome(p);
     }
 
     public float[] FeedForward(uint simStep)
     {
-        return nnet.FeedForward(simStep);
+        var sensors = new SensorFactory();
+
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        var neuronAccumulators = new float[_nnet.Length];
+        var neuronOutputsComputed = false;
+        foreach (var conn in _genome)
+        {
+            if (conn.SinkType == Gene.GeneType.Action && !neuronOutputsComputed)
+            {
+                for (var neuronIndex = 0; neuronIndex < _nnet.Length; ++neuronIndex)
+                {
+                    if (_nnet[neuronIndex].Driven)
+                        _nnet[neuronIndex].Output = (float)Math.Tanh(neuronAccumulators[neuronIndex]);
+                }
+
+                neuronOutputsComputed = true;
+            }
+
+            var inputVal = conn.SourceType == Gene.GeneType.Sensor
+                ? sensors[conn.SourceSensor].Calc(_p, this, simStep)
+                : _nnet[conn.SourceNum].Output;
+
+            if (conn.SinkType == Gene.GeneType.Action)
+                actionLevels[conn.SinkNum] += inputVal * conn.WeightAsFloat;
+            else
+                neuronAccumulators[conn.SinkNum] += inputVal * conn.WeightAsFloat;
+        }
+
+        return actionLevels;
     }
 
     public string PrintGraphInfo()
     {
         var builder = new StringBuilder();
-        foreach (var conn in genome)
+        foreach (var conn in _genome)
         {
             builder.AppendLine(conn.ToEdge());
         }
@@ -151,7 +179,7 @@ public class Indiv
 
     public void CreateWiringFromGenome(Params p)
     {
-        var connectionList = MakeRenumberedConnectionList(p, genome);
+        var connectionList = MakeRenumberedConnectionList(p, _genome);
         var nodeMap = MakeNodeList(connectionList);
         CullUselessNeurons(connectionList, nodeMap);
 
@@ -159,13 +187,13 @@ public class Indiv
         foreach (var node in nodeMap)
             node.Value.remappedNumber = newNumber++;
 
-        // nnet._connections.Clear();
+        // _nnet._connections.Clear();
 
         foreach (var conn in connectionList)
         {
             if (conn.SinkType != Gene.GeneType.Neuron) continue;
-            // nnet._connections.Add(conn);
-            var newConn = conn; // nnet._connections.Last();
+            // _nnet._connections.Add(conn);
+            var newConn = conn; // _nnet._connections.Last();
             newConn.SinkNum = nodeMap[newConn.SinkNum].remappedNumber;
             if (newConn.SourceType == Gene.GeneType.Neuron)
                 newConn.SourceNum = nodeMap[newConn.SourceNum].remappedNumber;
@@ -174,13 +202,13 @@ public class Indiv
         foreach (var conn in connectionList)
         {
             if (conn.SinkType != Gene.GeneType.Action) continue;
-            // nnet._connections.Add(conn);
-            var newConn = conn; // nnet._connections.Last();
+            // _nnet._connections.Add(conn);
+            var newConn = conn; // _nnet._connections.Last();
             if (newConn.SourceType == Gene.GeneType.Neuron)
                 newConn.SourceNum = nodeMap[newConn.SourceNum].remappedNumber;
         }
 
-        // nnet._neurons.Clear();
+        // _nnet._neurons.Clear();
         // for (var neuronNum = 0; neuronNum < nodeMap.Length; neuronNum++)
         // {
         //     var neuron = new NeuralNet.Neuron
@@ -189,13 +217,13 @@ public class Indiv
         //         Driven = nodeMap[neuronNum].numInputsFromSensorsOrOtherNeurons != 0u
         //     };
         //
-        //     nnet._neurons.Add(neuron);
+        //     _nnet._neurons.Add(neuron);
         // }
     }
 
     public float ResponseCurve(float r)
     {
-        var k = p.responsivenessCurveKFactor;
+        var k = _p.responsivenessCurveKFactor;
         var value = Math.Pow((r - 2.0f), -2.0f * k) - Math.Pow(2.0f, -2.0f * k) * (1.0f - r);
         return (float)value;
     }
@@ -207,14 +235,14 @@ public class Indiv
         if (IsEnabled(Action.SET_RESPONSIVENESS))
         {
             var value = actionLevels[(int)Action.SET_RESPONSIVENESS];
-            responsiveness = (float)(Math.Tanh(value) + 1.0 / 2.0);
+            _responsiveness = (float)(Math.Tanh(value) + 1.0 / 2.0);
         }
 
-        var responsivenessAdjusted = ResponseCurve(responsiveness);
+        var responsivenessAdjusted = ResponseCurve(_responsiveness);
 
         // var level = 0.0f;
         var offset = new Coord();
-        var lastMoveOffset = lastMoveDir.AsNormalizedCoord();
+        var lastMoveOffset = _lastMoveDir.AsNormalizedCoord();
 
         var moveX = IsEnabled(Action.MOVE_X) ? actionLevels[(int)Action.MOVE_X] : 0.0f;
         var moveY = IsEnabled(Action.MOVE_Y) ? actionLevels[(int)Action.MOVE_Y] : 0.0f;
@@ -240,7 +268,7 @@ public class Indiv
         var movementOffset = new Coord { X = (short)(probX * signumX), Y = (short)(probY * signumY) };
 
         // Move there if it's a valid location
-        var newLoc = new Coord { X = (short)(loc.X + movementOffset.X), Y = (short)(loc.Y + movementOffset.Y) };
+        var newLoc = new Coord { X = (short)(_loc.X + movementOffset.X), Y = (short)(_loc.Y + movementOffset.Y) };
         // if (_grid.IsInBounds(newLoc)) 
         //      peeps.QueueForMove(this, newLoc);
 

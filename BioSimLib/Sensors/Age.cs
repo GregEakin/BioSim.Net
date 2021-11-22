@@ -8,6 +8,6 @@ public class Age : ISensor
 
     public float Calc(Params p, Indiv indiv, uint simStep)
     {
-        return indiv.age / p.stepsPerGeneration;
+        return indiv._age / p.stepsPerGeneration;
     }
 }

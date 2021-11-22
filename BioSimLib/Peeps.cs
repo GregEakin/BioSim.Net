@@ -22,9 +22,9 @@ public class Peeps
         foreach (var (indiv, newLoc) in _moveQueue)
         {
             if (!_grid.Move(indiv, newLoc)) continue;
-            indiv.loc = newLoc;
-            var moveDir = new Coord { X = (short)(newLoc.X - indiv.loc.X), Y = (short)(newLoc.Y - indiv.loc.Y) }.AsDir();
-            indiv.lastMoveDir = moveDir;
+            indiv._loc = newLoc;
+            var moveDir = new Coord { X = (short)(newLoc.X - indiv._loc.X), Y = (short)(newLoc.Y - indiv._loc.Y) }.AsDir();
+            indiv._lastMoveDir = moveDir;
         }
 
         _moveQueue.Clear();

@@ -9,6 +9,6 @@ public class MoveNorth : IAction
     public bool IsEnabled() => true;
     public float Calc(Params p, Grid grid, Indiv indiv, uint simStep)
     {
-        return indiv.age / p.stepsPerGeneration;
+        return indiv._age / p.stepsPerGeneration;
     }
 }

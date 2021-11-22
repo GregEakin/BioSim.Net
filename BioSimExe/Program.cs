@@ -30,7 +30,7 @@ grid.Move(individual, loc);
 
 Console.WriteLine("Individual {0}", individual);
 
-var (sensors, actions) = individual.nnet.ActionReferenceCounts();
+var (sensors, actions) = individual._nnet.ActionReferenceCounts();
 foreach (var sensor in sensors) Console.Write("  {0}", sensor);
 Console.WriteLine();
 foreach (var action in actions) Console.Write("  {0}", action);
