@@ -9,8 +9,8 @@ public class AnalysisTests
     public void Test1()
     {
         var p = new Params();
-        var genom = new Genome(p);
-        var net = new NeuralNet(genom);
-        Assert.Equal("", net.ToString());
+        var genome = new Genome(p);
+        var net = new NeuralNet(genome);
+        Assert.Equal("840B7FFF", net.ToString());
     }
 }

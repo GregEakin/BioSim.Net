@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Biosim4", "src\Biosim4.vcxproj", "{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BioSimTests", "BioSimTests\BioSimTests.csproj", "{7D38207B-4E25-48D0-B367-7B0DBE3CE81D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BioSimLib", "BioSimLib\BioSimLib.csproj", "{0E510889-8FE4-4BBE-8B8B-4C1275029E7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioSimExe", "BioSimExe\BioSimExe.csproj", "{ED288D8C-E4C0-4799-946E-59493C711327}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BioSimExe", "BioSimExe\BioSimExe.csproj", "{ED288D8C-E4C0-4799-946E-59493C711327}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +19,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Debug|Any CPU.Build.0 = Debug|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Debug|x64.ActiveCfg = Debug|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Debug|x64.Build.0 = Debug|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Debug|x86.ActiveCfg = Debug|Win32
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Debug|x86.Build.0 = Debug|Win32
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Release|Any CPU.ActiveCfg = Release|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Release|Any CPU.Build.0 = Release|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Release|x64.ActiveCfg = Release|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Release|x64.Build.0 = Release|x64
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Release|x86.ActiveCfg = Release|Win32
-		{A8A6DFEA-B344-44A8-BB1B-7E92D14BE01D}.Release|x86.Build.0 = Release|Win32
 		{7D38207B-4E25-48D0-B367-7B0DBE3CE81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7D38207B-4E25-48D0-B367-7B0DBE3CE81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D38207B-4E25-48D0-B367-7B0DBE3CE81D}.Debug|x64.ActiveCfg = Debug|Any CPU
