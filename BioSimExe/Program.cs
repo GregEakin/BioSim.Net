@@ -51,7 +51,7 @@ Console.WriteLine();
 
 Console.WriteLine();
 Console.WriteLine("Step 1");
-var actionLevels = individual.FeedForward3(sensorsFactory, 0);
+var actionLevels = individual.FeedForward4(sensorsFactory, 0);
 foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 

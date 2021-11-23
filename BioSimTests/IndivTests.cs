@@ -157,7 +157,7 @@ public class IndivTests
         individual._nnet[1].Driven = true;
         individual._nnet[1].Output = 0.4f;
 
-        var actionLevels = individual.FeedForward3(sensors, 0);
+        var actionLevels = individual.FeedForward4(sensors, 0);
         Assert.Equal(0.5773243f, individual._nnet[0].Output);
         Assert.Equal(0.916998565f, individual._nnet[1].Output);
 

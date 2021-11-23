@@ -20,4 +20,7 @@ public enum Action : byte
     MOVE_REVERSE, // W
     // NUM_ACTIONS,       // <<----------------- END OF ACTIVE ACTIONS MARKER
     KILL_FORWARD, // W
+
+    // NONE
+    // SUICIDE
 }

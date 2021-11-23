@@ -149,32 +149,22 @@ public class Indiv
         var neuronAccumulators = new float[_nnet.Length];
         foreach (var conn in _genome)
         {
-            var source = conn.SourceType == Gene.GeneType.Sensor
+            var value = conn.SourceType == Gene.GeneType.Sensor
                 ? sensors[conn.SourceSensor].Output(_p, this, simStep)
                 : _nnet[conn.SourceNum].Output;
 
-            var key = new Tuple<Gene.GeneType, byte>(conn.SinkType, conn.SinkNum);
-            var found = neuronAccumulators.TryGetValue(key, out var sum);
-            if (!found)
-            {
-                neuronAccumulators.Add(key, conn.WeightAsFloat * (float)Math.Tanh(source));
-                continue;
-            }
-
-            neuronAccumulators[key] = sum + conn.WeightAsFloat * (float)Math.Tanh(source);
-        }
-
-        var actionLevels = new float[Enum.GetNames<Action>().Length];
-        foreach (var ((sinkType, sinkNum), value) in neuronAccumulators)
-        {
-            if (sinkType == Gene.GeneType.Action)
-                actionLevels[sinkNum] = value;
+            if (conn.SinkType == Gene.GeneType.Action)
+                actionLevels[conn.SinkNum] += conn.WeightAsFloat * (float)Math.Tanh(value);
             else
-                _nnet[sinkNum].Output = value;
+                neuronAccumulators[conn.SinkNum] += conn.WeightAsFloat * (float)Math.Tanh(value);
         }
+
+        for (var i = 0; i < _nnet.Length; i++)
+            _nnet[i].Output = neuronAccumulators[i];
 
         return actionLevels;
     }
+
 
     public void CreateWiringFromGenome()
     {
