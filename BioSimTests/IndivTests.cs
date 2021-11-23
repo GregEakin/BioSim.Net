@@ -42,7 +42,7 @@ public class IndivTests
             }
         );
 
-        var p = new Params();
+        var p = new Params() { maxNumberNeurons = 2 };
         var grid = new Grid(p);
         var dna = new[]
         {
@@ -89,7 +89,7 @@ public class IndivTests
             }
         );
 
-        var p = new Params();
+        var p = new Params() { maxNumberNeurons = 2 };
         var grid = new Grid(p);
         var dna = new[]
         {
@@ -117,6 +117,53 @@ public class IndivTests
         Assert.Equal(new[]
         {
             0.0f, 0.0f, 0.0f, 0.0f, 0.462117165f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.379948974f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+        }, actionLevels);
+    }
+
+    [Fact]
+    public void Test3()
+    {
+        var sensors = new SensorFactory(
+            new ISensor[]
+            {
+                new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
+                null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null,
+                new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
+                null, null, null,
+            }
+        );
+
+        var p = new Params() { maxNumberNeurons = 2 };
+        var grid = new Grid(p);
+        var dna = new[]
+        {
+            0x00012000u,
+            0x01002000u,
+            0x018A2000u,
+            0x01842000u,
+            0x01012000u,
+            0x80002000u,
+            0x91842000u,
+        };
+
+        var genome = new Genome(p, dna);
+        var loc = new Coord { X = 4, Y = 4 };
+        var individual = new Indiv(p, grid, 0, loc, genome);
+        individual._nnet[0].Driven = true;
+        individual._nnet[0].Output = 0.6f;
+        individual._nnet[1].Driven = true;
+        individual._nnet[1].Output = 0.4f;
+
+        var actionLevels = individual.FeedForward3(sensors, 0);
+        Assert.Equal(0.5773243f, individual._nnet[0].Output);
+        Assert.Equal(0.916998565f, individual._nnet[1].Output);
+
+        Assert.Equal(new[]
+        {
+            0.0f, 0.0f, 0.0f, 0.0f, 0.47961697f,
             0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.379948974f,
             0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
         }, actionLevels);

@@ -111,6 +111,71 @@ public class Indiv
         return actionLevels;
     }
 
+    public float[] FeedForward3(SensorFactory sensors, uint simStep)
+    {
+        var neuronAccumulators = new Dictionary<Tuple<Gene.GeneType, byte>, float>();
+        foreach (var conn in _genome)
+        {
+            var source = conn.SourceType == Gene.GeneType.Sensor
+                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                : _nnet[conn.SourceNum].Output;
+
+            var key = new Tuple<Gene.GeneType, byte>(conn.SinkType, conn.SinkNum);
+            var found = neuronAccumulators.TryGetValue(key, out var sum);
+            if (!found)
+            {
+                neuronAccumulators.Add(key, conn.WeightAsFloat * (float)Math.Tanh(source));
+                continue;
+            }
+
+            neuronAccumulators[key] = sum + conn.WeightAsFloat * (float)Math.Tanh(source);
+        }
+
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        foreach (var ((sinkType, sinkNum), value) in neuronAccumulators)
+        {
+            if (sinkType == Gene.GeneType.Action)
+                actionLevels[sinkNum] = value;
+            else
+                _nnet[sinkNum].Output = value;
+        }
+
+        return actionLevels;
+    }
+
+    public float[] FeedForward4(SensorFactory sensors, uint simStep)
+    {
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        var neuronAccumulators = new float[_nnet.Length];
+        foreach (var conn in _genome)
+        {
+            var source = conn.SourceType == Gene.GeneType.Sensor
+                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                : _nnet[conn.SourceNum].Output;
+
+            var key = new Tuple<Gene.GeneType, byte>(conn.SinkType, conn.SinkNum);
+            var found = neuronAccumulators.TryGetValue(key, out var sum);
+            if (!found)
+            {
+                neuronAccumulators.Add(key, conn.WeightAsFloat * (float)Math.Tanh(source));
+                continue;
+            }
+
+            neuronAccumulators[key] = sum + conn.WeightAsFloat * (float)Math.Tanh(source);
+        }
+
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        foreach (var ((sinkType, sinkNum), value) in neuronAccumulators)
+        {
+            if (sinkType == Gene.GeneType.Action)
+                actionLevels[sinkNum] = value;
+            else
+                _nnet[sinkNum].Output = value;
+        }
+
+        return actionLevels;
+    }
+
     public void CreateWiringFromGenome()
     {
         var connectionList = _genome.MakeRenumberedConnectionList();

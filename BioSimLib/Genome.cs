@@ -71,11 +71,50 @@ public class Genome : IEnumerable<Gene>
         return connectionList;
     }
 
+    public void RemoveConnectionsToNeuron(ConnectionList connections, NodeMap nodeMap, int neuronNumber)
+    {
+        foreach (var itConn in connections)
+        {
+            if (itConn.SinkType != Gene.GeneType.Neuron || itConn.SinkNum != neuronNumber) continue;
+            if (itConn.SourceType == Gene.GeneType.Neuron)
+                --nodeMap[itConn.SourceNum].numOutputs;
+            connections.Remove(itConn);
+        }
+    }
+
+    public void CullUselessNeurons(ConnectionList connections, NodeMap nodeMap)
+    {
+        var allDone = false;
+        while (!allDone)
+        {
+            allDone = true;
+            foreach (var (key, value) in nodeMap)
+            {
+                if (value.numOutputs != value.numSelfInputs) continue;
+                allDone = false;
+                RemoveConnectionsToNeuron(connections, nodeMap, key);
+                nodeMap.Remove(key);
+            }
+        }
+    }
+
     public NodeMap MakeNodeList()
     {
         var nodeMap = new NodeMap();
         foreach (var conn in _connectionList)
         {
+            if (conn.SourceType == Gene.GeneType.Neuron)
+            {
+                var found = nodeMap.TryGetValue(conn.SourceNum, out var it);
+                if (!found || it == null)
+                {
+                    it = new Node();
+                    nodeMap.Add(conn.SourceNum, it);
+                }
+
+                ++it.numOutputs;
+            }
+
             if (conn.SinkType == Gene.GeneType.Neuron)
             {
                 var found = nodeMap.TryGetValue(conn.SinkNum, out var it);
@@ -89,18 +128,6 @@ public class Genome : IEnumerable<Gene>
                     ++it.numSelfInputs;
                 else
                     ++it.numInputsFromSensorsOrOtherNeurons;
-            }
-
-            if (conn.SourceType == Gene.GeneType.Neuron)
-            {
-                var found = nodeMap.TryGetValue(conn.SourceNum, out var it);
-                if (!found || it == null)
-                {
-                    it = new Node();
-                    nodeMap.Add(conn.SourceNum, it);
-                }
-
-                ++it.numOutputs;
             }
         }
 
@@ -155,8 +182,11 @@ public class Genome : IEnumerable<Gene>
             else
                 builder.Append($"N{gene.SinkNum}");
 
-            builder.Append($" {gene.WeightAsShort}");
+            builder.Append($" {gene.WeightAsFloat}, ");
         }
+
+        if (builder.Length > 2)
+            builder.Remove(builder.Length - 2, 2);
 
         return builder.ToString();
     }

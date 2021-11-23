@@ -5,7 +5,7 @@ using BioSimLib.Sensors;
 
 Console.WriteLine("Hello, World!");
 
-var p = new Params();
+var p = new Params() { maxNumberNeurons = 2 };
 Console.WriteLine("Parameters {0}", p);
 
 var grid = new Grid(p);
@@ -24,23 +24,23 @@ var sensorsFactory = new SensorFactory(
 
 var dna = new[]
 {
-    0x01042000u,
-    0x91042000u,
-    0x010A2000u,
-    0x01802000u,
-    0x80802000u,
-    0x00812000u,
-    0x01812000u,
+    0x018A2000u,
+    0x91842000u,
+    0x01842000u,
+    0x01012000u,
+    0x00012000u,
+    0x80002000u,
+    0x01002000u,
 };
 
 var genome = new Genome(p, dna);
-Console.WriteLine("Genome {0}", genome);
+Console.WriteLine("Genome: {0}", genome);
 
 var loc = new Coord { X = 4, Y = 4 };
 var individual = new Indiv(p, grid, 0, loc, genome);
 grid.Move(individual, loc);
 
-Console.WriteLine("Individual {0}", individual);
+Console.WriteLine("Individual: {0}", individual);
 
 var (sensors, actions) = individual._nnet.ActionReferenceCounts();
 foreach (var sensor in sensors) Console.Write("  {0}", sensor);
@@ -51,7 +51,7 @@ Console.WriteLine();
 
 Console.WriteLine();
 Console.WriteLine("Step 1");
-var actionLevels = individual.FeedForward2(sensorsFactory, 0);
+var actionLevels = individual.FeedForward3(sensorsFactory, 0);
 foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 
