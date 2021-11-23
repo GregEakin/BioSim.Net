@@ -7,7 +7,7 @@ using BioSimLib.Sensors;
 Console.WriteLine("Hello, World!");
 
 var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-Console.WriteLine("Parameters {0}", p);
+Console.WriteLine("Config: {0}", p);
 
 var grid = new Grid(p);
 
@@ -41,7 +41,7 @@ var loc = new Coord { X = 4, Y = 4 };
 var player = grid.NewPlayer(genome, loc);
 grid.Move(player, loc);
 
-Console.WriteLine("Individual: {0}", player);
+Console.WriteLine("Player: {0}", player);
 
 var (sensors, actions) = player._nnet.ActionReferenceCounts();
 foreach (var sensor in sensors) Console.Write("  {0}", sensor);

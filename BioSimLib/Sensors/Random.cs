@@ -2,12 +2,15 @@
 
 public class Random : ISensor
 {
+    private readonly System.Random _random = new();
+
     public Sensor Type => Sensor.RANDOM;
     public override string ToString() => "random";
     public string ShortName => "Rnd";
 
-    public float Output(Config p, Player player, uint simStep)
+    public float Output(Player player, uint simStep)
     {
-        return player._age / p.stepsPerGeneration;
+        var sensorVal = _random.NextSingle();
+        return sensorVal;
     }
 }

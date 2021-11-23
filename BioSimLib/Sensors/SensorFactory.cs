@@ -6,16 +6,16 @@ public class SensorFactory
 
     public ISensor this[Sensor sensor] => _sensors[(int)sensor];
 
-    public SensorFactory()
+    public SensorFactory(Config p, Grid grid)
     {
     _sensors = new ISensor[]
         {
-            new LocationX(),        // LOC_X, // I distance from left edge
-            null,                   // LOC_Y, // I distance from bottom
-            null,                   // BOUNDARY_DIST_X, // I X distance to nearest edge of world
-            new BoundaryDist(),     // BOUNDARY_DIST, // I distance to nearest edge of world
-            new BoundaryDistY(),    // BOUNDARY_DIST_Y, // I Y distance to nearest edge of world
-            null,                   // GENETIC_SIM_FWD, // I genetic similarity forward
+            new LocationX(p),       
+            new LocationX(p),       
+            new BoundaryDistY(p),   
+            new BoundaryDist(p),    
+            new BoundaryDistY(p),   
+            new GeneticSimilarityForward(grid),
             null,                   // LAST_MOVE_DIR_X, // I +- amount of X movement in last movement
             null,                   // LAST_MOVE_DIR_Y, // I +- amount of Y movement in last movement
             null,                   // LONGPROBE_POP_FWD, // W long look for population forward
@@ -24,7 +24,7 @@ public class SensorFactory
             null,                   // POPULATION_FWD, // W population density in the forward-reverse axis
             null,                   // POPULATION_LR, // W population density in the left-right axis
             null,                   // OSC1, // I oscillator +-value
-            new Age(),              // AGE, // I
+            new Age(p),             // AGE, // I
             null,                   // BARRIER_FWD, // W neighborhood barrier distance forward-reverse axis
             null,                   // BARRIER_LR, // W neighborhood barrier distance left-right axis
             new Random(),           // RANDOM, //   random sensor value, uniform distribution

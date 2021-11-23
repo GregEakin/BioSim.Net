@@ -49,6 +49,15 @@ public class Grid
         }
     }
 
+    public Player? this[Coord loc]
+    {
+        get
+        {
+            var index = _board[loc.X, loc.Y];
+            return index != 0u ? _players[index - 1u] : null;
+        }
+    }
+
     private void CreateBarrier(BarrierType barrierType)
     {
 

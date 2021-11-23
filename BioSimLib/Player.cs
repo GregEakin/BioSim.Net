@@ -13,14 +13,16 @@ public class Player
     public readonly ushort _index;
     public readonly Coord _birthLoc;
     public readonly BitVector32 _challengeBits;
+    public readonly uint _birth;
 
     public Coord _loc;
     public bool _alive;
-    public uint _age;
     public float _responsiveness; 
     public uint _oscPeriod; 
     public uint _longProbeDist; 
-    public Dir _lastMoveDir; 
+    public Dir _lastMoveDir;
+    
+    public bool Alive => true;
 
     public override string ToString()
     {
@@ -37,7 +39,7 @@ public class Player
         _genome = genome;
         _nnet = new NeuralNet(genome);
 
-        _age = 0u;
+        _birth = 0u;
         _oscPeriod = 34u; // ToDo !!! define a constant
         _alive = true;
         _lastMoveDir = Dir.Random8();
@@ -67,7 +69,7 @@ public class Player
             }
 
             var inputVal = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                ? sensors[conn.SourceSensor].Output(this, simStep)
                 : _nnet[conn.SourceNum].Output;
 
             if (conn.SinkType == Gene.GeneType.Action)
@@ -87,7 +89,7 @@ public class Player
         {
             var conn = _genome[i];
             neuronCollectors[i] = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                ? sensors[conn.SourceSensor].Output(this, simStep)
                 : _nnet[conn.SourceNum].Output;
         }
 
@@ -117,7 +119,7 @@ public class Player
         foreach (var conn in _genome)
         {
             var source = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                ? sensors[conn.SourceSensor].Output(this, simStep)
                 : _nnet[conn.SourceNum].Output;
 
             var key = new Tuple<Gene.GeneType, byte>(conn.SinkType, conn.SinkNum);
@@ -150,7 +152,7 @@ public class Player
         foreach (var conn in _genome)
         {
             var value = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor].Output(_p, this, simStep)
+                ? sensors[conn.SourceSensor].Output(this, simStep)
                 : _nnet[conn.SourceNum].Output;
 
             if (conn.SinkType == Gene.GeneType.Action)

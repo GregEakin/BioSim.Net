@@ -53,4 +53,19 @@ public class GeneBank
 
         return count.ToString();
     }
+
+    public static float GenomeSimilarity(Genome g1, Genome g2)
+    {
+        // switch (p.genomeComparisonMethod) {
+        //     case 0:
+        //         return jaro_winkler_distance(g1, g2);
+        //     case 1:
+        //         return hammingDistanceBits(g1, g2);
+        //     case 2:
+        //         return hammingDistanceBytes(g1, g2);
+        //     default:
+        //         assert(false);
+        // }
+        return 0.0f;
+    }
 }

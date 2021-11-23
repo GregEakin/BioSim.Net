@@ -23,4 +23,5 @@ public enum Action : byte
 
     // NONE
     // SUICIDE
+    // PROCREATE
 }

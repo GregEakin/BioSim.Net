@@ -2,12 +2,20 @@
 
 public class Age : ISensor
 {
+    private readonly Config _p;
+
+    public Age(Config p)
+    {
+        _p = p;
+    }
+
     public Sensor Type => Sensor.AGE;
     public override string ToString() => "age";
     public string ShortName => "Age";
 
-    public float Output(Config p, Player player, uint simStep)
+    public float Output(Player player, uint simStep)
     {
-        return player._age / p.stepsPerGeneration;
+        var sensorVal= (float)(simStep - player._birth) / _p.stepsPerGeneration;
+        return sensorVal;
     }
 }
