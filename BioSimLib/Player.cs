@@ -1,21 +1,21 @@
 ﻿using System.Collections.Specialized;
-using System.Text;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 
 namespace BioSimLib;
 
-public class Indiv
+public class Player
 {
     public readonly Params _p;
+    public readonly Grid _grid;
     public readonly Genome _genome;
-    public readonly NeuralNet _nnet; 
-    public readonly short _index; 
+    public readonly NeuralNet _nnet;
+    public readonly ushort _index;
     public readonly Coord _birthLoc;
-    public readonly BitVector32 _challengeBits; 
+    public readonly BitVector32 _challengeBits;
 
+    public Coord _loc;
     public bool _alive;
-    public Coord _loc; 
     public uint _age;
     public float _responsiveness; 
     public uint _oscPeriod; 
@@ -27,16 +27,16 @@ public class Indiv
         return $"Neural Net {_nnet}";
     }
 
-    public Indiv(Params p, Grid grid, short index, Coord loc, Genome genome)
+    public Player(Params p, Grid grid, Genome genome, Coord loc, ushort index)
     {
         _p = p;
+        _grid = grid;
+        _loc = loc;
+        _birthLoc = loc;
+        _index = index;
         _genome = genome;
         _nnet = new NeuralNet(genome);
 
-        _index = index;
-        _loc = loc;
-        _birthLoc = loc;
-        grid.Set(loc, index);
         _age = 0u;
         _oscPeriod = 34u; // ToDo !!! define a constant
         _alive = true;

@@ -7,8 +7,8 @@ public class MoveRandom : IAction
     public string ShortName => "Mrn";
 
     public bool IsEnabled() => true;
-    public float Calc(Params p, Grid grid, Indiv indiv, uint simStep)
+    public float Calc(Params p, Grid grid, Player player, uint simStep)
     {
-        return indiv._age / p.stepsPerGeneration;
+        return player._age / p.stepsPerGeneration;
     }
 }

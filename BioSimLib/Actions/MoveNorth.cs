@@ -7,8 +7,8 @@ public class MoveNorth : IAction
     public string ShortName => "MvN";
 
     public bool IsEnabled() => true;
-    public float Calc(Params p, Grid grid, Indiv indiv, uint simStep)
+    public float Calc(Params p, Grid grid, Player player, uint simStep)
     {
-        return indiv._age / p.stepsPerGeneration;
+        return player._age / p.stepsPerGeneration;
     }
 }

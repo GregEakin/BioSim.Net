@@ -9,7 +9,7 @@ public class Genome : IEnumerable<Gene>
 {
     private readonly Params _p;
     private readonly Gene[] _genome;
-    private readonly ConnectionList _connectionList;
+    private readonly Gene[] _connectionList;
 
     public int NeuronsNeeded
     {
@@ -50,9 +50,9 @@ public class Genome : IEnumerable<Gene>
         return _connectionList.GetEnumerator();
     }
 
-    public ConnectionList MakeRenumberedConnectionList()
+    public Gene[] MakeRenumberedConnectionList()
     {
-        var connectionList = new ConnectionList();
+        var connectionList = new List<Gene>();
         foreach (var gene in _genome)
         {
             connectionList.Add(gene);
@@ -68,21 +68,21 @@ public class Genome : IEnumerable<Gene>
                 gene.SinkNum %= (byte)_p.maxNumberNeurons;
         }
 
-        return connectionList;
+        return connectionList.ToArray();
     }
 
-    public void RemoveConnectionsToNeuron(ConnectionList connections, NodeMap nodeMap, int neuronNumber)
+    public void RemoveConnectionsToNeuron(Gene[] connections, NodeMap nodeMap, int neuronNumber)
     {
         foreach (var itConn in connections)
         {
             if (itConn.SinkType != Gene.GeneType.Neuron || itConn.SinkNum != neuronNumber) continue;
             if (itConn.SourceType == Gene.GeneType.Neuron)
                 --nodeMap[itConn.SourceNum].numOutputs;
-            connections.Remove(itConn);
+            // connections.Remove(itConn);
         }
     }
 
-    public void CullUselessNeurons(ConnectionList connections, NodeMap nodeMap)
+    public void CullUselessNeurons(Gene[] connections, NodeMap nodeMap)
     {
         var allDone = false;
         while (!allDone)

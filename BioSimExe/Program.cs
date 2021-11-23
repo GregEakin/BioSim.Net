@@ -5,7 +5,7 @@ using BioSimLib.Sensors;
 
 Console.WriteLine("Hello, World!");
 
-var p = new Params() { maxNumberNeurons = 2 };
+var p = new Params() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
 Console.WriteLine("Parameters {0}", p);
 
 var grid = new Grid(p);
@@ -37,12 +37,12 @@ var genome = new Genome(p, dna);
 Console.WriteLine("Genome: {0}", genome);
 
 var loc = new Coord { X = 4, Y = 4 };
-var individual = new Indiv(p, grid, 0, loc, genome);
-grid.Move(individual, loc);
+var player = grid.NewPlayer(genome, loc);
+grid.Move(player, loc);
 
-Console.WriteLine("Individual: {0}", individual);
+Console.WriteLine("Individual: {0}", player);
 
-var (sensors, actions) = individual._nnet.ActionReferenceCounts();
+var (sensors, actions) = player._nnet.ActionReferenceCounts();
 foreach (var sensor in sensors) Console.Write("  {0}", sensor);
 Console.WriteLine();
 foreach (var action in actions) Console.Write("  {0}", action);
@@ -51,15 +51,15 @@ Console.WriteLine();
 
 Console.WriteLine();
 Console.WriteLine("Step 1");
-var actionLevels = individual.FeedForward4(sensorsFactory, 0);
+var actionLevels = player.FeedForward4(sensorsFactory, 0);
 foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 
-individual.ExecuteActions(actionLevels);
+player.ExecuteActions(actionLevels);
 
 var peeps = new Peeps(p, grid);
 var newLoc = new Coord { X = 5, Y = 5 };
-peeps.QueueForMove(individual, newLoc);
+peeps.QueueForMove(player, newLoc);
 
 Console.WriteLine(grid);
 peeps.DrainMoveQueue();

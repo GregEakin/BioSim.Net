@@ -6,8 +6,8 @@ public class Random : ISensor
     public override string ToString() => "random";
     public string ShortName => "Rnd";
 
-    public float Output(Params p, Indiv indiv, uint simStep)
+    public float Output(Params p, Player player, uint simStep)
     {
-        return indiv._age / p.stepsPerGeneration;
+        return player._age / p.stepsPerGeneration;
     }
 }

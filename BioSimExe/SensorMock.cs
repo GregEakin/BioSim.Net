@@ -6,7 +6,7 @@ public class SensorMock : ISensor
     public Sensor Type => _type;
     public string ShortName => "Mock";
 
-    public float Output(Params p, Indiv indiv, uint simStep)
+    public float Output(Params p, Player player, uint simStep)
     {
         return _output;
     }

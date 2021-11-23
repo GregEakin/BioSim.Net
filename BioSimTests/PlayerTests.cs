@@ -4,14 +4,14 @@ using Xunit;
 
 namespace BioSimTests;
 
-public class IndivTests
+public class PlayerTests
 {
     public class SensorMock : ISensor
     {
         public Sensor Type => _type;
         public string ShortName => "Mock";
 
-        public float Output(Params p, Indiv indiv, uint simStep)
+        public float Output(Params p, Player player, uint simStep)
         {
             return _output;
         }
@@ -57,15 +57,15 @@ public class IndivTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 4, Y = 4 };
-        var individual = new Indiv(p, grid, 0, loc, genome);
-        individual._nnet[0].Driven = true;
-        individual._nnet[0].Output = 0.6f;
-        individual._nnet[1].Driven = true;
-        individual._nnet[1].Output = 0.4f;
+        var player = grid.NewPlayer(genome, loc);
+        player._nnet[0].Driven = true;
+        player._nnet[0].Output = 0.6f;
+        player._nnet[1].Driven = true;
+        player._nnet[1].Output = 0.4f;
 
-        var actionLevels = individual.FeedForward(sensors, 0);
-        Assert.Equal(0.7615942f, individual._nnet[0].Output);
-        Assert.Equal(0.88535166f, individual._nnet[1].Output);
+        var actionLevels = player.FeedForward(sensors, 0);
+        Assert.Equal(0.7615942f, player._nnet[0].Output);
+        Assert.Equal(0.88535166f, player._nnet[1].Output);
 
         Assert.Equal(new[]
         {
@@ -104,15 +104,15 @@ public class IndivTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 4, Y = 4 };
-        var individual = new Indiv(p, grid, 0, loc, genome);
-        individual._nnet[0].Driven = true;
-        individual._nnet[0].Output = 0.4f;
-        individual._nnet[1].Driven = true;
-        individual._nnet[1].Output = 0.6f;
+        var player = grid.NewPlayer(genome, loc);
+        player._nnet[0].Driven = true;
+        player._nnet[0].Output = 0.4f;
+        player._nnet[1].Driven = true;
+        player._nnet[1].Output = 0.6f;
 
-        var actionLevels = individual.FeedForward2(sensors, 0);
-        Assert.Equal(0.7615942f, individual._nnet[0].Output);
-        Assert.Equal(0.5370496f, individual._nnet[1].Output);
+        var actionLevels = player.FeedForward2(sensors, 0);
+        Assert.Equal(0.7615942f, player._nnet[0].Output);
+        Assert.Equal(0.5370496f, player._nnet[1].Output);
 
         Assert.Equal(new[]
         {
@@ -151,15 +151,15 @@ public class IndivTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 4, Y = 4 };
-        var individual = new Indiv(p, grid, 0, loc, genome);
-        individual._nnet[0].Driven = true;
-        individual._nnet[0].Output = 0.6f;
-        individual._nnet[1].Driven = true;
-        individual._nnet[1].Output = 0.4f;
+        var player = grid.NewPlayer(genome, loc);
+        player._nnet[0].Driven = true;
+        player._nnet[0].Output = 0.6f;
+        player._nnet[1].Driven = true;
+        player._nnet[1].Output = 0.4f;
 
-        var actionLevels = individual.FeedForward4(sensors, 0);
-        Assert.Equal(0.5773243f, individual._nnet[0].Output);
-        Assert.Equal(0.916998565f, individual._nnet[1].Output);
+        var actionLevels = player.FeedForward4(sensors, 0);
+        Assert.Equal(0.5773243f, player._nnet[0].Output);
+        Assert.Equal(0.916998565f, player._nnet[1].Output);
 
         Assert.Equal(new[]
         {

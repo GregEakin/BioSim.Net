@@ -1,8 +1,8 @@
 ﻿namespace BioSimLib;
 
-public class Coord
+public struct Coord
 {
-    public Dir AsDir()
+    public Dir Heading()
     {
         return new Dir(Dir.Compass.CENTER);
     }

@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Text;
 
 namespace BioSimLib;
 
@@ -16,12 +14,40 @@ public class Grid
         F,   // Spots, specified number, radius, locations
     }
 
+    private readonly Params _p;
+    private readonly Player?[] _players;
+    private readonly ushort[,] _board;
+    private ushort _count = 0;
+
     public Grid(Params p)
     {
-
+        _p = p;
+        _players = new Player?[p.population];
+        _board = new ushort[p.sizeX, p.sizeY];
     }
 
-    public void Set(Coord loc, short index) { }
+    public Player NewPlayer(Genome genome, Coord loc)
+    {
+        var player = new Player(_p, this, genome, loc, ++_count);
+        _players[player._index - 1u] = player;
+        _board[loc.X, loc.Y] = player._index;
+        return player;
+    }
+
+    public void Set(Coord loc, Player player)
+    {
+        _board[loc.X, loc.Y] = player._index;
+        player._loc = loc;
+    }
+
+    public Player? this[int x, int y]
+    {
+        get
+        {
+            var index = _board[x, y];
+            return index != 0u ? _players[index - 1u] : null;
+        }
+    }
 
     public void CreateBarrier(BarrierType barrierType)
     {
@@ -33,32 +59,36 @@ public class Grid
 
     public bool IsEmptyAt(Coord newLoc)
     {
-        return true;
+        return _board[newLoc.X, newLoc.Y] == 0;
     }
 
-    public bool Move(Indiv indiv, Coord newLoc)
+    public bool Move(Player player, Coord newLoc)
     {
         if (!IsEmptyAt(newLoc))
             return false;
 
-        _grid[indiv._loc.X, indiv._loc.Y] = null;
-        _grid[newLoc.X, newLoc.Y] = indiv;
+        _board[player._loc.X, player._loc.Y] = 0;
+        _board[newLoc.X, newLoc.Y] = player._index;
+        player._loc = newLoc;
         return true;
     }
-
-    public Indiv? this[int x, int y] => _grid[x, y];
-
-    private readonly Indiv?[,] _grid = new Indiv[8, 8];
 
     public override string ToString()
     {
         var builder = new StringBuilder();
-        for (int x = 0; x < _grid.GetLength(0); x += 1)
+        for (var x = 0; x < _board.GetLength(0); x++)
         {
-            for (int y = 0; y < _grid.GetLength(1); y += 1)
+            for (var y = 0; y < _board.GetLength(1); y++)
             {
-                var indiv = _grid[x, y];
-                Console.Write(" {0}", indiv != null ? indiv._index : ".");
+                var index = _board[x, y];
+                if (index == 0)
+                {
+                    Console.Write(" .");
+                    continue;
+                }
+
+                var player = _players[index - 1u];
+                Console.Write(" {0}", player != null ? player._index : ".");
             }
 
             Console.WriteLine();
