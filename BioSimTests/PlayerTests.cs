@@ -6,28 +6,6 @@ namespace BioSimTests;
 
 public class PlayerTests
 {
-    public class SensorMock : ISensor
-    {
-        public Sensor Type => _type;
-        public string ShortName => "Mock";
-
-        public float Output(Params p, Player player, uint simStep)
-        {
-            return _output;
-        }
-
-        private readonly Sensor _type;
-        private readonly string _name;
-        private readonly float _output;
-
-        public SensorMock(Sensor sensor, string name, float output)
-        {
-            _type = sensor;
-            _name = name;
-            _output = output;
-        }
-    }
-
     [Fact]
     public void Test1()
     {
@@ -42,7 +20,7 @@ public class PlayerTests
             }
         );
 
-        var p = new Params() { maxNumberNeurons = 2 };
+        var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var grid = new Grid(p);
         var dna = new[]
         {
@@ -89,7 +67,7 @@ public class PlayerTests
             }
         );
 
-        var p = new Params() { maxNumberNeurons = 2 };
+        var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var grid = new Grid(p);
         var dna = new[]
         {
@@ -136,7 +114,7 @@ public class PlayerTests
             }
         );
 
-        var p = new Params() { maxNumberNeurons = 2 };
+        var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var grid = new Grid(p);
         var dna = new[]
         {

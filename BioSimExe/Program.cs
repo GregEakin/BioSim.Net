@@ -1,11 +1,12 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using BioSimExe;
 using BioSimLib;
 using BioSimLib.Sensors;
 
 Console.WriteLine("Hello, World!");
 
-var p = new Params() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
 Console.WriteLine("Parameters {0}", p);
 
 var grid = new Grid(p);

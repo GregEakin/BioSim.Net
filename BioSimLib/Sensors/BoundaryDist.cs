@@ -6,7 +6,7 @@ public class BoundaryDist : ISensor
     public override string ToString() => "boundary dist";
     public string ShortName => "ED";
 
-    public float Output(Params p, Player player, uint simStep)
+    public float Output(Config p, Player player, uint simStep)
     {
         var distX = Math.Min(player._loc.X, (p.sizeX - player._loc.X) - 1);
         var distY = Math.Min(player._loc.Y, (p.sizeY - player._loc.Y) - 1);

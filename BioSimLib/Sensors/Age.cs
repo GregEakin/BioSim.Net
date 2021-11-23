@@ -6,7 +6,7 @@ public class Age : ISensor
     public override string ToString() => "age";
     public string ShortName => "Age";
 
-    public float Output(Params p, Player player, uint simStep)
+    public float Output(Config p, Player player, uint simStep)
     {
         return player._age / p.stepsPerGeneration;
     }

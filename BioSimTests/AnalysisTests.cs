@@ -8,7 +8,7 @@ public class AnalysisTests
     [Fact]
     public void Test1()
     {
-        var p = new Params
+        var p = new Config
         {
             maxNumberNeurons = 5
         };

@@ -4,5 +4,5 @@ public interface ISensor
 {
     public Sensor Type { get; }
     public string ShortName { get; }
-    public float Output(Params p, Player player, uint simStep);
+    public float Output(Config p, Player player, uint simStep);
 }

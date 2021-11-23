@@ -2,10 +2,10 @@
 
 public class GeneBank
 {
-    private readonly Params _p;
+    private readonly Config _p;
     private readonly Dictionary<uint[], WeakReference<Genome>> _bank = new();
 
-    public GeneBank(Params p)
+    public GeneBank(Config p)
     {
         _p = p;
     }

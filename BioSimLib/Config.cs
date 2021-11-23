@@ -1,6 +1,6 @@
 ﻿namespace BioSimLib;
 
-public class Params
+public class Config
 {
     public uint population; // >= 0
     public uint stepsPerGeneration; // > 0
@@ -46,7 +46,7 @@ public class Params
     public string imageDir;
     public string graphLogUpdateCommand;
 
-    public Params()
+    public Config()
     {
         population = 1;
         sizeX = 16;

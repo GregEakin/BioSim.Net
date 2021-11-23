@@ -21,7 +21,7 @@ public struct Dir
         dir9 = dir;
     }
 
-    private Compass dir9;
+    private readonly Compass dir9;
 
     public byte AsInt() => (byte) dir9;
 

@@ -1,15 +1,15 @@
-﻿using BioSimLib;
+using BioSimLib;
 using BioSimLib.Sensors;
 
-namespace BioSimExe;
+namespace BioSimTests;
 
 public class SensorMock : ISensor
 {
-    private readonly float _output;
-
     public Sensor Type { get; }
 
     public string ShortName { get; }
+
+    private readonly float _output;
 
     public SensorMock(Sensor sensor, string name, float output)
     {

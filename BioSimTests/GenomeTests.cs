@@ -8,7 +8,7 @@ public class GenomeTests
     [Fact]
     public void Test1()
     {
-        var p = new Params
+        var p = new Config
         {
             maxNumberNeurons = 1
         };
@@ -27,7 +27,7 @@ public class GenomeTests
     [Fact]
     public void Test2()
     {
-        var p = new Params
+        var p = new Config
         {
             maxNumberNeurons = 1
         };
@@ -46,7 +46,7 @@ public class GenomeTests
     [Fact]
     public void Test3()
     {
-        var p = new Params
+        var p = new Config
         {
             maxNumberNeurons = 1
         };

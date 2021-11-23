@@ -2,11 +2,11 @@
 
 public class Peeps
 {
-    private readonly Params _p;
+    private readonly Config _p;
     private readonly Grid _grid;
     private readonly List<Tuple<Player, Coord>> _moveQueue = new();
 
-    public Peeps(Params p, Grid grid)
+    public Peeps(Config p, Grid grid)
     {
         _p = p;
         _grid = grid;

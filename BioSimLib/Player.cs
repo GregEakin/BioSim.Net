@@ -6,7 +6,7 @@ namespace BioSimLib;
 
 public class Player
 {
-    public readonly Params _p;
+    public readonly Config _p;
     public readonly Grid _grid;
     public readonly Genome _genome;
     public readonly NeuralNet _nnet;
@@ -27,7 +27,7 @@ public class Player
         return $"Neural Net {_nnet}";
     }
 
-    public Player(Params p, Grid grid, Genome genome, Coord loc, ushort index)
+    public Player(Config p, Grid grid, Genome genome, Coord loc, ushort index)
     {
         _p = p;
         _grid = grid;

@@ -6,7 +6,7 @@ public class LocationX : ISensor
     public override string ToString() => "location x";
     public string ShortName => "Lx";
 
-    public float Output(Params p, Player player, uint simStep)
+    public float Output(Config p, Player player, uint simStep)
     {
         return player._age / p.stepsPerGeneration;
     }

@@ -14,12 +14,12 @@ public class Grid
         F,   // Spots, specified number, radius, locations
     }
 
-    private readonly Params _p;
+    private readonly Config _p;
     private readonly Player?[] _players;
     private readonly ushort[,] _board;
     private ushort _count = 0;
 
-    public Grid(Params p)
+    public Grid(Config p)
     {
         _p = p;
         _players = new Player?[p.population];
@@ -49,7 +49,7 @@ public class Grid
         }
     }
 
-    public void CreateBarrier(BarrierType barrierType)
+    private void CreateBarrier(BarrierType barrierType)
     {
 
     }

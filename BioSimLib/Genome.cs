@@ -7,7 +7,7 @@ namespace BioSimLib;
 
 public class Genome : IEnumerable<Gene>
 {
-    private readonly Params _p;
+    private readonly Config _p;
     private readonly Gene[] _genome;
     private readonly Gene[] _connectionList;
 
@@ -31,7 +31,7 @@ public class Genome : IEnumerable<Gene>
 
     public int Length => _genome.Length;
 
-    public Genome(Params p, uint[] dna)
+    public Genome(Config p, uint[] dna)
     {
         _p = p;
         _genome = dna.Select(code => new Gene { ToUint = code }).ToArray();
