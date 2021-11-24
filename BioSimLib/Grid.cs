@@ -101,7 +101,6 @@ public class Grid
         }
     }
 
-
     public void VisitNeighborhood(Coord loc, float radius, Action<Coord> f)
     {
         for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, _p.sizeX - loc.X - 1); ++dx)
@@ -116,7 +115,34 @@ public class Grid
         }
     }
 
-    public float LongProbePopulationFwd(Coord playerLoc, Dir playerLastMoveDir, uint playerLongProbeDist)
+    public float LongProbePopulationFwd(Coord loc, Dir dir, uint longProbeDist)
+    {
+        var count = 0u;
+        loc = loc + dir;
+        var numLocsToTest = longProbeDist;
+        while (numLocsToTest > 0u && IsInBounds(loc) && IsEmptyAt(loc))
+        {
+            ++count;
+            loc = loc + dir;
+            --numLocsToTest;
+        }
+
+        if (numLocsToTest > 0u && (!IsInBounds(loc) || IsBarrierAt(loc)))
+        {
+            return longProbeDist;
+        }
+        else
+        {
+            return count;
+        }
+    }
+
+    private bool IsInBounds(Coord loc)
+    {
+        throw new NotImplementedException();
+    }
+
+    private bool IsBarrierAt(Coord loc)
     {
         throw new NotImplementedException();
     }

@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Numerics;
-
-namespace BioSimLib;
+﻿namespace BioSimLib;
 
 public struct Dir
 {
@@ -10,29 +7,46 @@ public struct Dir
         SW, S, SE, W, CENTER, E, NW, N, NE
     }
 
+    private static readonly Random Random = new();
     public static Dir Random8()
     {
-        var dir = new Dir(Compass.SW);
-        return dir;
+        return new Dir(Compass.N).Rotate(Random.Next(0, 7));
     }
 
-    public Dir(Compass dir)
+    public Dir(Compass dir = Compass.CENTER)
     {
-        dir9 = dir;
+        _dir9 = dir;
     }
 
-    private readonly Compass dir9;
+    // public static implicit operator Dir(Compass d) => new Dir(d);
 
-    public byte AsInt() => (byte) dir9;
+    private readonly Compass _dir9;
 
-    public Point AsNormalizedCoord()
+    public byte AsInt() => (byte)_dir9;
+
+    public Coord AsNormalizedCoord()
     {
         var d = AsInt();
-        return new Point(){ X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1)};
+        return new Coord { X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1) };
     }
 
-    public Dir Rotate90DegCw()
+    public Coord AsNormalizedPolar()
+    {
+        var d = AsInt();
+        return new Coord { X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1) };
+    }
+
+    public Dir Rotate(int n = 0)
     {
         throw new NotImplementedException();
     }
+
+    public Dir Rotate90DegCw() => Rotate(2);
+    public Dir Rotate90DegCcw() => Rotate(-2);
+    public Dir Rotate180Deg() => Rotate(4);
+
+    public static bool operator ==(Dir dir, Compass compass) => dir.AsInt() == (byte)compass;
+    public static bool operator !=(Dir dir, Compass compass) => dir.AsInt() != (byte)compass;
+    public static bool operator ==(Dir dir1, Dir dir2) => dir1.AsInt() == dir2.AsInt();
+    public static bool operator !=(Dir dir1, Dir dir2) => dir1.AsInt() != dir2.AsInt();
 }
