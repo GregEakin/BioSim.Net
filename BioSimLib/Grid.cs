@@ -26,12 +26,23 @@ public class Grid
         _board = new ushort[p.sizeX, p.sizeY];
     }
 
-    public Player NewPlayer(Genome genome, Coord loc)
+    public void ZeroFill()
     {
-        var player = _peeps.NewPlayer(this, genome, loc);
-        _board[loc.X, loc.Y] = player._index;
-        return player;
+        for (var x = 0; x < _board.GetLength(0); x++)
+            for (var y = 0; y < _board.GetLength(1); y++)
+                _board[x, y] = 0;
     }
+
+    public short SizeX() => (short)_board.GetLength(0);
+    public short SizeY() => (short)_board.GetLength(1);
+
+    public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX() && loc.Y >= 0 && loc.Y < SizeY();
+    public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
+    private bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
+    public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
+    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX() - 1 && loc.Y == 0 && loc.Y == SizeY() - 1;
+    public ushort At(Coord loc) => _board[loc.X, loc.Y];
+    public ushort At(int x, int y) => _board[x, y];
 
     public void Set(Coord loc, Player player)
     {
@@ -39,20 +50,39 @@ public class Grid
         player._loc = loc;
     }
 
-    public Player? this[int x, int y] => _peeps[_board[x, y]];
+    public void Set(short x, short y, Player player)
+    {
+        _board[x, y] = player._index;
+        player._loc = new Coord(x, y);
+    }
 
-    public Player? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
+    Coord FindEmptyLocation()
+    {
+        while (true)
+        {
+            var x = _random.Next(0, _p.sizeX - 1);
+            var y = _random.Next(0, _p.sizeY - 1);
+            if (_board[x, y] == 0)
+                return new Coord { X = (short)x, Y = (short)y };
+        }
+    }
 
     private void CreateBarrier(BarrierType barrierType)
     {
+        throw new NotImplementedException();
     }
 
-    // private List<Coord> barrierLocations;
-    // private List<Coord> barrierCenters;
+    public Coord[] BarrierLocations { get; set; }
+    public Coord[] BarrierCenters { get; set; }
 
-    public bool IsEmptyAt(Coord loc)
+    public Player? this[int x, int y] => _peeps[_board[x, y]];
+    public Player? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
+    
+    public Player NewPlayer(Genome genome, Coord loc)
     {
-        return _board[loc.X, loc.Y] == 0;
+        var player = _peeps.NewPlayer(this, genome, loc);
+        _board[loc.X, loc.Y] = player._index;
+        return player;
     }
 
     public bool Move(Player player, Coord newLoc)
@@ -90,24 +120,13 @@ public class Grid
         return builder.ToString();
     }
 
-    Coord FindEmptyLocation()
+    public static void VisitNeighborhood(Config p, Coord loc, float radius, Action<Coord> f)
     {
-        while (true)
-        {
-            var x = _random.Next(0, _p.sizeX - 1);
-            var y = _random.Next(0, _p.sizeY - 1);
-            if (_board[x, y] == 0)
-                return new Coord { X = (short)x, Y = (short)y };
-        }
-    }
-
-    public void VisitNeighborhood(Coord loc, float radius, Action<Coord> f)
-    {
-        for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, _p.sizeX - loc.X - 1); ++dx)
+        for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, p.sizeX - loc.X - 1); ++dx)
         {
             var x = loc.X + dx;
             var extentY = (int)Math.Sqrt(radius * radius - dx * dx);
-            for (int dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _p.sizeY - loc.Y - 1); ++dy)
+            for (int dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, p.sizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
                 f(new Coord { X = (short)x, Y = (short)y });
@@ -118,47 +137,86 @@ public class Grid
     public float LongProbePopulationFwd(Coord loc, Dir dir, uint longProbeDist)
     {
         var count = 0u;
-        loc = loc + dir;
+        loc += dir;
         var numLocsToTest = longProbeDist;
         while (numLocsToTest > 0u && IsInBounds(loc) && IsEmptyAt(loc))
         {
             ++count;
-            loc = loc + dir;
+            loc += dir;
             --numLocsToTest;
         }
 
-        if (numLocsToTest > 0u && (!IsInBounds(loc) || IsBarrierAt(loc)))
+        return numLocsToTest > 0u && (!IsInBounds(loc) || IsBarrierAt(loc)) ? longProbeDist : count;
+    }
+
+    public float LongProbeBarrierFwd(Coord loc, Dir dir, uint longProbeDist)
+    {
+        var count = 0u;
+        loc += dir;
+        var numLocsToTest = longProbeDist;
+        while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
         {
-            return longProbeDist;
+            ++count;
+            loc += dir;
+            --numLocsToTest;
         }
-        else
+
+        return numLocsToTest > 0u && !IsInBounds(loc) ? longProbeDist : count;
+    }
+
+    public float GetPopulationDensityAlongAxis(Coord loc, Dir dir)
+    {
+        var sum = 0.0;
+        var f = (Coord tloc) =>
         {
-            return count;
+            if (tloc == loc || !IsOccupiedAt(tloc)) return;
+            var offset = tloc - loc;
+            var anglePosCos = offset.RaySameness(dir);
+            var dist = Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
+            var contrib = 1.0 / dist * anglePosCos;
+            sum += contrib;
+        };
+
+        VisitNeighborhood(_p, loc, _p.populationSensorRadius, f);
+        var maxSumMag = 6.0 * _p.populationSensorRadius;
+
+        var sensorVal = (sum / maxSumMag + 1.0) / 2.0; 
+        return (float)sensorVal;
+    }
+
+    public float GetShortProbeBarrierDistance(Coord loc0, Dir dir, uint probeDistance)
+    {
+        var countFwd = 0u;
+        var countRev = 0u;
+        var loc = loc0 + dir;
+        var numLocsToTest = probeDistance;
+        // Scan positive direction
+        while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
+        {
+            ++countFwd;
+            loc += dir;
+            --numLocsToTest;
         }
-    }
+        if (numLocsToTest > 0u && !IsInBounds(loc))
+        {
+            countFwd = probeDistance;
+        }
+        // Scan negative direction
+        numLocsToTest = probeDistance;
+        loc = loc0 - dir;
+        while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
+        {
+            ++countRev;
+            loc = loc - dir;
+            --numLocsToTest;
+        }
+        if (numLocsToTest > 0u && !IsInBounds(loc))
+        {
+            countRev = probeDistance;
+        }
 
-    private bool IsInBounds(Coord loc)
-    {
-        throw new NotImplementedException();
-    }
-
-    private bool IsBarrierAt(Coord loc)
-    {
-        throw new NotImplementedException();
-    }
-
-    public float LongProbeBarrierFwd(Coord playerLoc, Dir playerLastMoveDir, uint playerLongProbeDist)
-    {
-        throw new NotImplementedException();
-    }
-
-    public float GetPopulationDensityAlongAxis(Coord playerLoc, Dir playerLastMoveDir)
-    {
-        throw new NotImplementedException();
-    }
-
-    public float GetShortProbeBarrierDistance(Coord playerLoc, Dir playerLastMoveDir, uint pShortProbeBarrierDistance)
-    {
-        throw new NotImplementedException();
+        float sensorVal = ((countFwd - countRev) + probeDistance); // convert to 0..2*probeDistance
+        sensorVal = (sensorVal / 2.0f) / probeDistance; // convert to 0.0..1.0
+        return sensorVal;
     }
 }

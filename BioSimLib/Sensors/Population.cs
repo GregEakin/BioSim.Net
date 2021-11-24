@@ -26,7 +26,7 @@ public class Population : ISensor
                 ++occupied;
         };
 
-        _grid.VisitNeighborhood(player._loc, _p.populationSensorRadius, f);
+        Grid.VisitNeighborhood(_p, player._loc, _p.populationSensorRadius, f);
         var sensorVal = (float)occupied / count;
         return sensorVal;
     }

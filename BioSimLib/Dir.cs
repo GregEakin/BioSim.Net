@@ -8,15 +8,9 @@ public struct Dir
     }
 
     private static readonly Random Random = new();
-    public static Dir Random8()
-    {
-        return new Dir(Compass.N).Rotate(Random.Next(0, 7));
-    }
+    public static Dir Random8() => new Dir(Compass.N).Rotate(Random.Next(0, 7));
 
-    public Dir(Compass dir = Compass.CENTER)
-    {
-        _dir9 = dir;
-    }
+    public Dir(Compass dir = Compass.CENTER) => _dir9 = dir;
 
     // public static implicit operator Dir(Compass d) => new Dir(d);
 
@@ -38,7 +32,32 @@ public struct Dir
 
     public Dir Rotate(int n = 0)
     {
-        throw new NotImplementedException();
+        var rotateRight = new byte[] { 3, 0, 1, 6, 4, 2, 7, 8, 5 };
+        var rotateLeft = new byte[] { 1, 2, 5, 0, 4, 8, 3, 6, 7 };
+        var n9 = AsInt();
+        switch (n)
+        {
+            case < 0:
+            {
+                while (n++ < 0)
+                {
+                    n9 = rotateLeft[n9];
+                }
+
+                break;
+            }
+            case > 0:
+            {
+                while (n-- > 0)
+                {
+                    n9 = rotateRight[n9];
+                }
+
+                break;
+            }
+        }
+
+        return new Dir((Compass)n9);
     }
 
     public Dir Rotate90DegCw() => Rotate(2);

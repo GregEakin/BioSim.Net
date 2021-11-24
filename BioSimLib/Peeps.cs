@@ -4,7 +4,7 @@ public class Peeps
 {
     private readonly Config _p;
     private readonly Player?[] _players;
-    private ushort _count;
+    private ushort _count = 1;
 
     private readonly List<Tuple<Player, Coord>> _moveQueue = new();
 
@@ -17,7 +17,7 @@ public class Peeps
     public Player NewPlayer(Grid grid, Genome genome, Coord loc)
     {
         var player = new Player(_p, grid, genome, loc, ++_count);
-        _players[player._index - 1u] = player;
+        _players[player._index - 2u] = player;
         return player;
     }
 
@@ -28,7 +28,7 @@ public class Peeps
             if (index <= 0 || index > _count)
                 return null;
 
-            var player = _players[index - 1u];
+            var player = _players[index - 2u];
             return player;
         }
     }
@@ -44,7 +44,7 @@ public class Peeps
         {
             if (!grid.Move(player, newLoc)) continue;
             player._loc = newLoc;
-            var moveDir = new Coord { X = (short)(newLoc.X - player._loc.X), Y = (short)(newLoc.Y - player._loc.Y) }.Heading();
+            var moveDir = (newLoc - player._loc).AsDir();
             player._lastMoveDir = moveDir;
         }
 
