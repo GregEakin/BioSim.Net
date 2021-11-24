@@ -18,15 +18,9 @@ public class NeuralNet : IEnumerable<Neuron>
             _neurons[i] = new Neuron();
     }
 
-    public IEnumerator<Neuron> GetEnumerator()
-    {
-        return _neurons.Cast<Neuron>().GetEnumerator();
-    }
+    public IEnumerator<Neuron> GetEnumerator() => _neurons.Cast<Neuron>().GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return _neurons.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => _neurons.GetEnumerator();
 
     public int Length => _neurons.Length;
 
@@ -41,7 +35,7 @@ public class NeuralNet : IEnumerable<Neuron>
         return sb.ToString();
     }
 
-    public (int[] sensors, int[] actions) ActionReferenceCounts()
+    public (IEnumerable<int> sensors, IEnumerable<int> actions) ActionReferenceCounts()
     {
         var sensors = new int[Enum.GetNames<Sensor>().Length];
         var actions = new int[Enum.GetNames<Action>().Length];

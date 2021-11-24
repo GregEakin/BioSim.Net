@@ -7,6 +7,14 @@ namespace BioSimLib;
 
 public class Genome : IEnumerable<Gene>
 {
+    public class Node
+    {
+        public byte RemappedNumber { get; set; }
+        public int NumOutputs { get; set; }
+        public int NumSelfInputs { get; set; }
+        public int NumInputsFromSensorsOrOtherNeurons { get; set; }
+    }
+
     private readonly Config _p;
     private readonly Gene[] _genome;
     private readonly Gene[] _connectionList;
@@ -31,11 +39,11 @@ public class Genome : IEnumerable<Gene>
 
     public int Length => _genome.Length;
 
-    public Genome(Config p, uint[] dna)
+    public Genome(Config p, IEnumerable<uint> dna)
     {
         _p = p;
-        _genome = dna.Select(code => new Gene { ToUint = code }).ToArray();
-        _connectionList = MakeRenumberedConnectionList();
+        _genome = dna.Select(code => new Gene(code)).ToArray();
+        _connectionList = MakeRenumberedConnectionList().ToArray();
     }
 
     public Gene this[int index] => _genome[index];
@@ -50,39 +58,43 @@ public class Genome : IEnumerable<Gene>
         return _connectionList.GetEnumerator();
     }
 
-    public Gene[] MakeRenumberedConnectionList()
+    public IEnumerable<Gene> MakeRenumberedConnectionList()
     {
         var connectionList = new List<Gene>();
         foreach (var gene in _genome)
         {
-            connectionList.Add(gene);
+            var builder = new GeneBuilder();
+            builder.SourceType = gene.SourceType;
+            builder.SourceNum = gene.SourceType == Gene.GeneType.Sensor
+                ? gene.SourceNum % Enum.GetNames<Sensor>().Length
+                : gene.SourceNum % _p.maxNumberNeurons;
 
-            if (gene.SourceType == Gene.GeneType.Sensor)
-                gene.SourceNum %= (byte)Enum.GetNames<Sensor>().Length;
-            else
-                gene.SourceNum %= (byte)_p.maxNumberNeurons;
+            builder.SinkType = gene.SinkType;
+            builder.SinkNum = gene.SinkType == Gene.GeneType.Action
+                ? gene.SinkNum % Enum.GetNames<Action>().Length
+                : gene.SinkNum % _p.maxNumberNeurons;
 
-            if (gene.SinkType == Gene.GeneType.Action)
-                gene.SinkNum %= (byte)Enum.GetNames<Action>().Length;
-            else
-                gene.SinkNum %= (byte)_p.maxNumberNeurons;
+            builder.Weight = gene.WeightAsShort;
+            var newGene = new Gene(builder);
+            connectionList.Add(newGene);
         }
 
-        return connectionList.ToArray();
+        return connectionList;
     }
 
-    public void RemoveConnectionsToNeuron(Gene[] connections, NodeMap nodeMap, int neuronNumber)
+    public void RemoveConnectionsToNeuron(IEnumerable<Gene> connections, Dictionary<int, Node> nodeMap, int neuronNumber)
     {
         foreach (var itConn in connections)
         {
             if (itConn.SinkType != Gene.GeneType.Neuron || itConn.SinkNum != neuronNumber) continue;
             if (itConn.SourceType == Gene.GeneType.Neuron)
-                --nodeMap[itConn.SourceNum].numOutputs;
+                --nodeMap[itConn.SourceNum].NumOutputs;
+
             // connections.Remove(itConn);
         }
     }
 
-    public void CullUselessNeurons(Gene[] connections, NodeMap nodeMap)
+    public void CullUselessNeurons(IEnumerable<Gene> connections, Dictionary<int, Node> nodeMap)
     {
         var allDone = false;
         while (!allDone)
@@ -90,7 +102,7 @@ public class Genome : IEnumerable<Gene>
             allDone = true;
             foreach (var (key, value) in nodeMap)
             {
-                if (value.numOutputs != value.numSelfInputs) continue;
+                if (value.NumOutputs != value.NumSelfInputs) continue;
                 allDone = false;
                 RemoveConnectionsToNeuron(connections, nodeMap, key);
                 nodeMap.Remove(key);
@@ -98,36 +110,36 @@ public class Genome : IEnumerable<Gene>
         }
     }
 
-    public NodeMap MakeNodeList()
+    public Dictionary<int, Node> MakeNodeList()
     {
-        var nodeMap = new NodeMap();
+        var nodeMap = new Dictionary<int, Node>();
         foreach (var conn in _connectionList)
         {
             if (conn.SourceType == Gene.GeneType.Neuron)
             {
                 var found = nodeMap.TryGetValue(conn.SourceNum, out var it);
-                if (!found || it == null)
+                if (!found)
                 {
                     it = new Node();
                     nodeMap.Add(conn.SourceNum, it);
                 }
 
-                ++it.numOutputs;
+                ++it.NumOutputs;
             }
 
             if (conn.SinkType == Gene.GeneType.Neuron)
             {
                 var found = nodeMap.TryGetValue(conn.SinkNum, out var it);
-                if (!found || it == null)
+                if (!found)
                 {
                     it = new Node();
                     nodeMap.Add(conn.SinkNum, it);
                 }
 
                 if (conn.SourceType == Gene.GeneType.Neuron && conn.SourceNum == conn.SinkNum)
-                    ++it.numSelfInputs;
+                    ++it.NumSelfInputs;
                 else
-                    ++it.numInputsFromSensorsOrOtherNeurons;
+                    ++it.NumInputsFromSensorsOrOtherNeurons;
             }
         }
 
@@ -137,7 +149,7 @@ public class Genome : IEnumerable<Gene>
     public string PrintGraphInfo()
     {
         var builder = new StringBuilder();
-        foreach (var conn in _genome) 
+        foreach (var conn in _genome)
             builder.AppendLine(conn.ToEdge());
 
         return builder.ToString();
@@ -175,14 +187,14 @@ public class Genome : IEnumerable<Gene>
             else
                 builder.Append($"N{gene.SourceNum}");
 
-            builder.Append(' ');
+            builder.Append($" * {gene.WeightAsFloat} => ");
 
             if (gene.SinkType == Gene.GeneType.Action)
                 builder.Append(gene.SinkNeuron);
             else
                 builder.Append($"N{gene.SinkNum}");
 
-            builder.Append($" {gene.WeightAsFloat}, ");
+            builder.Append(", ");
         }
 
         if (builder.Length > 2)
@@ -191,19 +203,22 @@ public class Genome : IEnumerable<Gene>
         return builder.ToString();
     }
 
-    // uint8_t makeGeneticColor(const Genome &genome)
-    // {
-    //     return ((genome.size() & 1u)
-    //             | ((genome.front().sourceType)     << 1)
-    //             | ((genome.back().sourceType)      << 2)
-    //             | ((genome.front().sinkType)       << 3)
-    //             | ((genome.back().sinkType)        << 4)
-    //             | ((genome.front().sourceNum & 1u) << 5)
-    //             | ((genome.front().sinkNum & 1u)   << 6)
-    //             | ((genome.back().sourceNum & 1u)  << 7));
-    // }
+    public byte MakeGeneticColor()
+    {
+        var front = _genome.First();
+        var back = _genome.Last();
+        var color = (_genome.Length & 1)
+                    | ((front.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 1)
+                    | ((back.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 2)
+                    | ((front.SinkType == Gene.GeneType.Action ? 1 : 0) << 3)
+                    | ((back.SinkType == Gene.GeneType.Action ? 1 : 0) << 4)
+                    | ((front.SourceNum & 1) << 5)
+                    | ((front.SinkNum & 1) << 6)
+                    | ((back.SourceNum & 1) << 7);
+        return (byte)color;
+    }
 
-public void Optimize()
+    public void Optimize()
     {
         // This prunes unused neurons
         //

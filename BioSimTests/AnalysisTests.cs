@@ -14,6 +14,6 @@ public class AnalysisTests
         };
         var genome = new Genome(p, new []{ 0x840B7FFFu });
         var net = new NeuralNet(genome);
-        Assert.Equal("84017FFF", net.ToString());
+        Assert.Equal("840B7FFF", net.ToString());
     }
 }

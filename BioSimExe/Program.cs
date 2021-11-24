@@ -11,6 +11,9 @@ Console.WriteLine("Config: {0}", p);
 
 var peeps = new Peeps(p);
 var grid = new Grid(p, peeps);
+var signals = new Signals(p);
+
+var generations = 0;
 
 //var sensorFactory = new SensorFactory();
 var sensorsFactory = new SensorFactory(
@@ -50,11 +53,11 @@ Console.WriteLine();
 
 Console.WriteLine();
 Console.WriteLine("Step 1");
-var actionLevels = player.FeedForward4(sensorsFactory, 0);
+var actionLevels = player.FeedForward(sensorsFactory, 0);
 foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 
-player.ExecuteActions(actionLevels);
+player.ExecuteActions(grid, signals, actionLevels, 1u);
 
 var newLoc = new Coord { X = 5, Y = 5 };
 peeps.QueueForMove(player, newLoc);

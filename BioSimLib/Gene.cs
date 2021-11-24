@@ -8,8 +8,34 @@ namespace BioSimLib;
 // Represents a half-precision floating point number. 
 // https://gist.github.com/vermorel/1d5c0212752b3e611faf84771ad4ff0d
 
+public class GeneBuilder
+{
+    public Gene.GeneType SourceType { get; set; } = Gene.GeneType.Neuron;
+    public int SourceNum { get; set; }
+    public Gene.GeneType SinkType { get; set; } = Gene.GeneType.Neuron;
+    public int SinkNum { get; set; }
+    public short Weight { get; set; }
+
+    public float WeightAsFloat
+    {
+        get => Weight / 8192.0f;
+        set => Weight = (short)(value * 8192.0f);
+    }
+
+    public GeneBuilder() {}
+
+    public GeneBuilder(Gene gene)
+    {
+        SourceType = gene.SourceType;
+        SourceNum = gene.SourceNum;
+        SinkType = gene.SinkType;
+        SinkNum = gene.SinkNum;
+        Weight = gene.WeightAsShort;
+    }
+}
+
 [StructLayout(LayoutKind.Explicit, Size = 4)]
-public class Gene
+public readonly struct Gene
 {
     public enum GeneType
     {
@@ -18,92 +44,41 @@ public class Gene
         Action
     }
 
-    [FieldOffset(0)] private byte _source;
-    [FieldOffset(1)] private byte _sink;
-    [field: FieldOffset(2)] public short WeightAsShort { get; set; }
+    [FieldOffset(0)] private readonly byte _source;
+    [FieldOffset(1)] private readonly byte _sink;
+    [field: FieldOffset(2)] public short WeightAsShort { get; }
 
-    public GeneType SourceType
+    public Gene(uint value)
     {
-        get => (_source & 0x80) == 0x80 ? GeneType.Sensor : GeneType.Neuron;
-        set
-        {
-            switch (value)
-            {
-                case GeneType.Sensor:
-                    _source |= 0x80;
-                    break;
-                case GeneType.Neuron:
-                    _source &= 0x7F;
-                    break;
-                case GeneType.Action:
-                default:
-                    throw new ArgumentException("Can't have Action gene type for a source.");
-            }
-        }
+        _source = (byte)(value >> 24);
+        _sink = (byte)((value >> 16) & 0xFF);
+        WeightAsShort = (short)(value & 0xFFFF);
     }
 
-    public Sensor SourceSensor
+    public Gene(GeneBuilder builder)
     {
-        get => (Sensor)(_source & 0x7F);
-        set => _source = (byte)((_source & 0x80) | ((byte)value & 0x7F));
+        _source = (byte)((builder.SourceType == GeneType.Sensor ? 0x80 : 0x00) | (builder.SourceNum & 0x7F));
+        _sink = (byte)((builder.SinkType == GeneType.Action ? 0x80 : 0x00) | (builder.SinkNum & 0x7F));
+        WeightAsShort = builder.Weight;
     }
 
-    public byte SourceNum
-    {
-        get => (byte)(_source & 0x7F);
-        set => _source = (byte)((_source & 0x80) | (value & 0x7F));
-    }
+    public GeneType SourceType => (_source & 0x80) == 0x80 ? GeneType.Sensor : GeneType.Neuron;
 
-    public GeneType SinkType
-    {
-        get => (_sink & 0x80) == 0x80 ? GeneType.Action : GeneType.Neuron;
-        set
-        {
-            switch (value)
-            {
-                case GeneType.Action:
-                    _sink |= 0x80;
-                    break;
-                case GeneType.Neuron:
-                    _sink &= 0x7F;
-                    break;
-                case GeneType.Sensor:
-                default:
-                    throw new ArgumentException("Can't have Sensor gene type for a sink.");
-            }
-        }
-    }
+    public Sensor SourceSensor => (Sensor)(_source & 0x7F);
 
-    public Action SinkNeuron
-    {
-        get => (Action)(_sink & 0x7F);
-        set => _sink = (byte)((_sink & 0x80) | ((byte)value & 0x7F));
-    }
+    public byte SourceNum => (byte)(_source & 0x7F);
 
-    public byte SinkNum
-    {
-        get => (byte)(_sink & 0x7F);
-        set => _sink = (byte)((_sink & 0x80) | (value & 0x7F));
-    }
+    public GeneType SinkType => (_sink & 0x80) == 0x80 ? GeneType.Action : GeneType.Neuron;
 
-    public float WeightAsFloat
-    {
-        get => WeightAsShort / 8192.0f;
-        set => WeightAsShort = (short)(value * 8192.0f);
-    }
+    public Action SinkNeuron => (Action)(_sink & 0x7F);
+
+    public byte SinkNum => (byte)(_sink & 0x7F);
+
+    public float WeightAsFloat => WeightAsShort / 8192.0f;
 
     // public short RandomWeight() { return randomUint(0u, 0xefffu) - 0x8000u; }
 
-    public uint ToUint
-    {
-        get => ((uint)_source << 24) | ((uint)_sink << 16) | (ushort)WeightAsShort;
-        set
-        {
-            _source = (byte)(value >> 24);
-            _sink = (byte)((value >> 16) & 0xFF);
-            WeightAsShort = (short)(value & 0xFFFF);
-        }
-    }
+    public uint ToUint => ((uint)_source << 24) | ((uint)_sink << 16) | (ushort)WeightAsShort;
 
     public override string ToString() => ToUint.ToString("X8");
 
@@ -111,14 +86,14 @@ public class Gene
     {
         var builder = new StringBuilder();
 
-        if (SourceType == Gene.GeneType.Sensor)
+        if (SourceType == GeneType.Sensor)
             builder.Append(SourceSensor);
         else
             builder.Append($"N{SourceNum}");
 
         builder.Append(' ');
 
-        if (SinkType == Gene.GeneType.Action)
+        if (SinkType == GeneType.Action)
             builder.Append(SinkNeuron);
         else
             builder.Append($"N{SinkNum}");

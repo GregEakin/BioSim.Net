@@ -6,9 +6,8 @@ public class MoveWest : IAction
     public override string ToString() => "move west";
     public string ShortName => "MvW";
 
-    public bool IsEnabled() => true;
-    public float Calc(Config p, Grid grid, Player player, uint simStep)
+    public bool Enabled => true;
+    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
     {
-        return 0.0f;
     }
 }

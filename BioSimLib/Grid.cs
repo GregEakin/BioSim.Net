@@ -80,7 +80,7 @@ public class Grid
     
     public Player NewPlayer(Genome genome, Coord loc)
     {
-        var player = _peeps.NewPlayer(this, genome, loc);
+        var player = _peeps.NewPlayer(genome, loc);
         _board[loc.X, loc.Y] = player._index;
         return player;
     }
@@ -190,6 +190,7 @@ public class Grid
         var countRev = 0u;
         var loc = loc0 + dir;
         var numLocsToTest = probeDistance;
+
         // Scan positive direction
         while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
         {
@@ -201,13 +202,14 @@ public class Grid
         {
             countFwd = probeDistance;
         }
+        
         // Scan negative direction
         numLocsToTest = probeDistance;
         loc = loc0 - dir;
         while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
         {
             ++countRev;
-            loc = loc - dir;
+            loc -= dir;
             --numLocsToTest;
         }
         if (numLocsToTest > 0u && !IsInBounds(loc))
@@ -215,8 +217,8 @@ public class Grid
             countRev = probeDistance;
         }
 
-        float sensorVal = ((countFwd - countRev) + probeDistance); // convert to 0..2*probeDistance
-        sensorVal = (sensorVal / 2.0f) / probeDistance; // convert to 0.0..1.0
+        float sensorVal = countFwd - countRev + probeDistance; 
+        sensorVal = sensorVal / 2.0f / probeDistance; 
         return sensorVal;
     }
 }

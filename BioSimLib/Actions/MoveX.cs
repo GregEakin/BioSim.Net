@@ -1,10 +1,10 @@
 ﻿namespace BioSimLib.Actions;
 
-public class MoveRandom : IAction
+public class MoveX : IAction
 {
-    public Action Type => Action.MOVE_RANDOM;
-    public override string ToString() => "move random";
-    public string ShortName => "Mrn";
+    public Action Type => Action.MOVE_X;
+    public override string ToString() => "move X";
+    public string ShortName => "MvX";
 
     public bool Enabled => true;
     public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)

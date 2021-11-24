@@ -66,4 +66,9 @@ public class Signals
 
         return (float)sensorVal;
     }
+
+    public void Increment(int i, Coord loc)
+    {
+        throw new NotImplementedException();
+    }
 }
