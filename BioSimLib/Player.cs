@@ -23,6 +23,7 @@ public class Player
     public Dir _lastMoveDir;
     
     public bool Alive => true;
+    public Coord LastMoveDir { get; set; }
 
     public override string ToString()
     {

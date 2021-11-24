@@ -5,6 +5,9 @@ using Action = BioSimLib.Actions.Action;
 
 namespace BioSimLib;
 
+// Represents a half-precision floating point number. 
+// https://gist.github.com/vermorel/1d5c0212752b3e611faf84771ad4ff0d
+
 [StructLayout(LayoutKind.Explicit, Size = 4)]
 public class Gene
 {

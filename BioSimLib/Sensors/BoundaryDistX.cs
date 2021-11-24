@@ -9,7 +9,7 @@ public class BoundaryDistX : ISensor
         _p = p;
     }
 
-    public Sensor Type => Sensor.BOUNDARY_DIST_Y;
+    public Sensor Type => Sensor.BOUNDARY_DIST_X;
     public override string ToString() => "boundary dist X";
     public string ShortName => "EDx";
 

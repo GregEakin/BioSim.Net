@@ -30,4 +30,9 @@ public struct Dir
         var d = AsInt();
         return new Point(){ X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1)};
     }
+
+    public Dir Rotate90DegCw()
+    {
+        throw new NotImplementedException();
+    }
 }

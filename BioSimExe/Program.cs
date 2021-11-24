@@ -9,17 +9,15 @@ Console.WriteLine("Hello, World!");
 var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
 Console.WriteLine("Config: {0}", p);
 
-var grid = new Grid(p);
+var peeps = new Peeps(p);
+var grid = new Grid(p, peeps);
 
 //var sensorFactory = new SensorFactory();
 var sensorsFactory = new SensorFactory(
     new ISensor[]
     {
         new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
-        null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
         new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
-        null, null, null,
     }
 );
 
@@ -58,11 +56,10 @@ Console.WriteLine();
 
 player.ExecuteActions(actionLevels);
 
-var peeps = new Peeps(p, grid);
 var newLoc = new Coord { X = 5, Y = 5 };
 peeps.QueueForMove(player, newLoc);
 
 Console.WriteLine(grid);
-peeps.DrainMoveQueue();
+peeps.DrainMoveQueue(grid);
 Console.WriteLine();
 Console.WriteLine(grid);

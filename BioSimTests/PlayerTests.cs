@@ -13,15 +13,13 @@ public class PlayerTests
             new ISensor[]
             {
                 new SensorMock(Sensor.LOC_X, "Lx", 0.8f),
-                null, null, null, null, null, null, null, null, 
-                null, null, null, null, null, null, null, null,
                 new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
-                null, null, null,
             }
         );
 
         var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var grid = new Grid(p);
+        var peeps = new Peeps(p);
+        var grid = new Grid(p, peeps);
         var dna = new[]
         {
             0x01012000u,
@@ -60,15 +58,13 @@ public class PlayerTests
             new ISensor[]
             {
                 new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
-                null, null, null, null, null, null, null, null, 
-                null, null, null, null, null, null, null, null,
                 new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
-                null, null, null,
             }
         );
 
         var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var grid = new Grid(p);
+        var peeps = new Peeps(p);
+        var grid = new Grid(p, peeps);
         var dna = new[]
         {
             0x018A2000u,
@@ -107,15 +103,13 @@ public class PlayerTests
             new ISensor[]
             {
                 new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
-                null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null,
                 new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
-                null, null, null,
             }
         );
 
         var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var grid = new Grid(p);
+        var peeps = new Peeps(p);
+        var grid = new Grid(p, peeps);
         var dna = new[]
         {
             0x00012000u,
