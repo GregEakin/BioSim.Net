@@ -12,8 +12,8 @@ namespace BioSimTests.Actions;
 //     public string ShortName { get; }
 //     public bool Enabled { get; }
 //
-//     public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels) =>
-//         _action(p, grid, signals, player, simStep, actionLevels);
+//     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels) =>
+//         _action(p, board, player, simStep, actionLevels);
 //
 //  
 //     public ActionMock(Action type, string shortName, bool enabled,
@@ -32,9 +32,8 @@ public class EmitSignalTests
     public void MovementTest()
     {
         var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var peeps = new Peeps(p);
-        var grid = new Grid(p, peeps);
-        var signals = new Signals(p);
+        var board = new Board(p);
+
         var dna = new[]
         {
             0x95882000u,  // TRUE * 1  => EMIT_SIGNAL0
@@ -42,7 +41,7 @@ public class EmitSignalTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 3, Y = 4 };
-        var player = grid.NewPlayer(genome, loc);
+        var player = board.Grid.NewPlayer(genome, loc);
         player.ResponsivenessAdjusted = 1.0f;
 
         var actionLevels = new[]
@@ -55,6 +54,6 @@ public class EmitSignalTests
         actionLevels[(int)Action.EMIT_SIGNAL0] = 0.6f;
 
         var action = new EmitSignal();
-        action.Execute(p, grid, signals, player, 0, actionLevels);
+        action.Execute(p, board, player, 0, actionLevels);
     }
 }

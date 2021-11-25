@@ -57,10 +57,9 @@ public class PlayerTests
     [Fact]
     public void MovementTest()
     {
-        var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var peeps = new Peeps(p);
-        var grid = new Grid(p, peeps);
-        var signals = new Signals(p);
+        var p = new Config { maxNumberNeurons = 2, sizeX = 5, sizeY = 5 };
+        var board = new Board(p);
+
         var dna = new[]
         {
             0x00012000u,
@@ -73,8 +72,8 @@ public class PlayerTests
         };
 
         var genome = new Genome(p, dna);
-        var loc = new Coord { X = 3, Y = 4 };
-        var player = grid.NewPlayer(genome, loc);
+        var loc = new Coord { X = 1, Y = 2 };
+        var player = board.Grid.NewPlayer(genome, loc);
         player._nnet[0].Driven = true;
         player._nnet[0].Output = 0.6f;
         player._nnet[1].Driven = true;
@@ -90,9 +89,9 @@ public class PlayerTests
 
         var factory = new ActionFactory();
         bool IsEnabled(IAction? action) => true;
-        player.ExecuteActions(factory, grid, signals, IsEnabled, actionLevels, 0);
+        player.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);
         var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
 
-        Assert.Equal(new Coord(4, 5), newLoc);
+        Assert.Equal(new Coord(2, 3), newLoc);
     }
 }

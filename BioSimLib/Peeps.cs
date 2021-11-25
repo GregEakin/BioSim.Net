@@ -26,7 +26,7 @@ public class Peeps
     {
         get
         {
-            if (index <= 0 || index > _count)
+            if (index <= 1 || index > _count)
                 return null;
 
             var player = _players[index - 2u];

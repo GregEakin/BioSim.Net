@@ -16,6 +16,7 @@ public class Grid
 
     private readonly Config _p;
     private readonly Peeps _peeps;
+    private readonly Barriers _barriers;
     private readonly ushort[,] _board;
     private readonly Random _random = new();
 
@@ -23,6 +24,7 @@ public class Grid
     {
         _p = p;
         _peeps = peeps;
+        _barriers = new Barriers();
         _board = new ushort[p.sizeX, p.sizeY];
     }
 
@@ -67,14 +69,6 @@ public class Grid
         }
     }
 
-    private void CreateBarrier(BarrierType barrierType)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Coord[] BarrierLocations { get; set; }
-    public Coord[] BarrierCenters { get; set; }
-
     public Player? this[int x, int y] => _peeps[_board[x, y]];
     public Player? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
     
@@ -83,6 +77,13 @@ public class Grid
         var player = _peeps.NewPlayer(genome, loc);
         _board[loc.X, loc.Y] = player._index;
         return player;
+    }
+
+    public Barrier NewBarrier(BarrierType type, Coord loc)
+    {
+        var barrier = _barriers.NewBarrier(type, loc);
+        _board[loc.X, loc.Y] = 1;
+        return barrier;
     }
 
     public bool Move(Player player, Coord newLoc)

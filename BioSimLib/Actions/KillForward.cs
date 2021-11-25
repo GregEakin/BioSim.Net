@@ -7,7 +7,7 @@ public class KillForward : IAction
     public string ShortName => "KlF";
 
     public bool Enabled => false;
-    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
         var level = actionLevels[(int)Action.KILL_FORWARD];
@@ -17,10 +17,10 @@ public class KillForward : IAction
             return;
 
         var otherLoc = player._loc + player.LastMoveDir;
-        if (!grid.IsInBounds(otherLoc) || !grid.IsOccupiedAt(otherLoc))
+        if (!board.Grid.IsInBounds(otherLoc) || !board.Grid.IsOccupiedAt(otherLoc))
             return;
 
-        var player2 = grid[otherLoc];
+        var player2 = board.Grid[otherLoc];
 
         if (!(player2?.Alive ?? false))
             return;

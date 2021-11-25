@@ -7,7 +7,7 @@ public class MoveReverse : IAction
     public string ShortName => "Mrv";
 
     public bool Enabled => true;
-    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }
 

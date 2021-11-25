@@ -125,7 +125,7 @@ public class Player
         return (float)value;
     }
 
-    public void ExecuteActions(ActionFactory factory, Grid grid, Signals signals, Func<IAction,bool> isEnabled, float[] actionLevels, uint simStep)
+    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction,bool> isEnabled, float[] actionLevels, uint simStep)
     {
         var actionEnums = new[]
         {
@@ -141,7 +141,7 @@ public class Player
             if (action == null || !isEnabled(action) || !action.Enabled)
                 continue;
 
-            action.Execute(_p, grid, signals, this, simStep, actionLevels);
+            action.Execute(_p, board, this, simStep, actionLevels);
         }
     }
     public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)

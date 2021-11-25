@@ -7,7 +7,7 @@ public class SetLongProbeDist : IAction
     public string ShortName => "LPD";
 
     public bool Enabled => true;
-    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var maxLongProbeDistance = 32u;
         var level = actionLevels[(int)Action.SET_LONGPROBE_DIST];

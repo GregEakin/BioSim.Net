@@ -19,14 +19,14 @@ public class Population : ISensor
     {
         var count = 0u;
         var occupied = 0u;
-        var f = (Coord loc) =>
+        void F(Coord loc)
         {
             ++count;
             if (!_grid.IsEmptyAt(loc))
                 ++occupied;
-        };
+        }
 
-        Grid.VisitNeighborhood(_p, player._loc, _p.populationSensorRadius, f);
+        Grid.VisitNeighborhood(_p, player._loc, _p.populationSensorRadius, F);
         var sensorVal = (float)occupied / count;
         return sensorVal;
     }

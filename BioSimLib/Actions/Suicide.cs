@@ -7,9 +7,9 @@ public class Suicide : IAction
     public string ShortName => "Die";
 
     public bool Enabled => false;
-    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
-        // player->Kill()
+        board.Peeps.QueueForDeath(player);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

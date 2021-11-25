@@ -7,7 +7,7 @@ public class SetOscillatorPeriod : IAction
     public string ShortName => "Osc";
 
     public bool Enabled => true;
-    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var period = actionLevels[(int)Action.SET_OSCILLATOR_PERIOD];
         var newPeriodF01 = (float)((Math.Tanh(period) + 1.0f) / 2.0f); 

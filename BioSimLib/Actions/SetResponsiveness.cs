@@ -7,7 +7,7 @@ public class SetResponsiveness : IAction
     public string ShortName => "Res";
 
     public bool Enabled => true;
-    public void Execute(Config p, Grid grid, Signals signals, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var level = actionLevels[(int)Action.SET_RESPONSIVENESS];
         level = (float)((Math.Tanh(level) + 1.0) / 2.0); // convert to 0.0..1.0

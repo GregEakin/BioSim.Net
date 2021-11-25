@@ -6,7 +6,7 @@ public class SensorFactory
 
     public ISensor? this[Sensor sensor] => _sensors[(int)sensor];
 
-    public SensorFactory(Config p, Grid grid, Signals signals)
+    public SensorFactory(Config p, Board board)
     {
         var sensors = new ISensor[]
         {
@@ -15,22 +15,22 @@ public class SensorFactory
             new BoundaryDistX(p),
             new BoundaryDist(p),
             new BoundaryDistY(p),
-            new GeneticSimilarityForward(grid),
+            new GeneticSimilarityForward(board.Grid),
             new LastMoveDirX(p),
             new LastMoveDirY(p),
-            new LongProbePopulationForward(grid),
-            new LongProbeBarrierForward(grid),
-            new Population(p, grid),
-            new PopulationForward(grid),
-            new PopulationForward(grid),
+            new LongProbePopulationForward(board.Grid),
+            new LongProbeBarrierForward(board.Grid),
+            new Population(p, board.Grid),
+            new PopulationForward(board.Grid),
+            new PopulationForward(board.Grid),
             new Oscillator(),
             new Age(p),
-            new BarrierForward(p, grid),
-            new BarrierLeftRight(p, grid),
+            new BarrierForward(p, board.Grid),
+            new BarrierLeftRight(p, board.Grid),
             new Random(),
-            new Signal(signals),
-            new SignalFwd(signals),
-            new SignalLR(signals),
+            new Signal(board.Signals),
+            new SignalFwd(board.Signals),
+            new SignalLR(board.Signals),
             new True(),
             new False(),
         };
