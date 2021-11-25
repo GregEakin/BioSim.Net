@@ -16,7 +16,7 @@ public class SetLongProbeDist : IAction
         player._longProbeDist = (uint)level;
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }

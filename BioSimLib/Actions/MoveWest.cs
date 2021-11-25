@@ -11,8 +11,8 @@ public class MoveWest : IAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
-        return (0.0f, 0.0f);
+        return (-actionLevels[(int)Action.MOVE_WEST], 0.0f);
     }
 }

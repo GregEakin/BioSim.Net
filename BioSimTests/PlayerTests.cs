@@ -1,3 +1,4 @@
+using System;
 using BioSimLib;
 using BioSimLib.Actions;
 using BioSimLib.Sensors;
@@ -18,7 +19,7 @@ public class PlayerTests
             }
         );
 
-        var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+        var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var peeps = new Peeps(p);
         var grid = new Grid(p, peeps);
         var dna = new[]
@@ -56,7 +57,7 @@ public class PlayerTests
     [Fact]
     public void MovementTest()
     {
-        var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+        var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var peeps = new Peeps(p);
         var grid = new Grid(p, peeps);
         var signals = new Signals(p);
@@ -88,6 +89,10 @@ public class PlayerTests
         };
 
         var factory = new ActionFactory();
-        player.ExecuteActions(factory, grid, signals, actionLevels, 0);
+        bool IsEnabled(IAction? action) => true;
+        player.ExecuteActions(factory, grid, signals, IsEnabled, actionLevels, 0);
+        var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
+
+        Assert.Equal(new Coord(4, 5), newLoc);
     }
 }

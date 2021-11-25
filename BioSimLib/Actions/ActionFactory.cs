@@ -2,9 +2,9 @@
 
 public class ActionFactory
 {
-    private readonly IAction[] _actions = new IAction[Enum.GetNames<Action>().Length];
+    private readonly IAction?[] _actions = new IAction?[Enum.GetNames<Action>().Length];
 
-    public IAction this[Action action] => _actions[(int)action];
+    public IAction? this[Action action] => _actions[(int)action];
 
     public ActionFactory()
     {
@@ -36,9 +36,10 @@ public class ActionFactory
             _actions[(int)action.Type] = action;
     }
 
-    public ActionFactory(IEnumerable<IAction> actions)
+    public ActionFactory(IEnumerable<IAction?> actions)
     {
         foreach (var action in actions)
-            _actions[(int)action.Type] = action;
+            if (action != null)
+                _actions[(int)action.Type] = action;
     }
 }

@@ -16,7 +16,7 @@ public class EmitSignal : IAction
             signals.Increment(0, player._loc);
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }

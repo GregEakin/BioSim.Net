@@ -1,4 +1,6 @@
-﻿namespace BioSimLib.Actions;
+﻿using System.ComponentModel.Design;
+
+namespace BioSimLib.Actions;
 
 public class MoveRL : IAction
 {
@@ -11,8 +13,16 @@ public class MoveRL : IAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
-        return (0.0f, 0.0f);
+        var level = actionLevels[(int)Action.MOVE_RL];
+        var offset = level switch
+        {
+            < 0.0f => lastMoveDir.Rotate90DegCcw().AsNormalizedCoord(),
+            > 0.0f => lastMoveDir.Rotate90DegCw().AsNormalizedCoord(),
+            _ => new Coord(0, 0)
+        };
+
+        return (offset.X * level, offset.Y * level);
     }
 }

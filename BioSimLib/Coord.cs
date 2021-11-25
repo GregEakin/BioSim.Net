@@ -56,6 +56,10 @@ public struct Coord
 
     public Polar AsPolar() => new Polar((int)Length(), AsDir());
 
+    public bool Equals(Coord coord) => X == coord.X && Y == coord.Y;
+    public override bool Equals(object? obj) => obj is Coord other && Equals(other);
+    public override int GetHashCode() => HashCode.Combine(X, Y);
+
     public static bool operator ==(Coord coord1, Coord coord2) => coord1.X == coord2.X && coord1.Y == coord2.Y;
     public static bool operator !=(Coord coord1, Coord coord2) => coord1.X != coord2.X && coord1.Y != coord2.Y;
 

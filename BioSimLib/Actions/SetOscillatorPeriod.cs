@@ -15,7 +15,7 @@ public class SetOscillatorPeriod : IAction
         player._oscPeriod = newPeriod;
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }

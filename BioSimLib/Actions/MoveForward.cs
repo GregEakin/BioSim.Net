@@ -11,8 +11,10 @@ public class MoveForward : IAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
-        return (0.0f, 0.0f);
+        var level = actionLevels[(int)Action.MOVE_FORWARD];
+        var offset = lastMoveDir.AsNormalizedCoord();
+        return (offset.X * level, offset.Y * level);
     }
 }

@@ -11,8 +11,8 @@ public class MoveY : IAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels)
+    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
-        return (0.0f, 0.0f);
+        return (0.0f, actionLevels[(int)Action.MOVE_X]);
     }
 }

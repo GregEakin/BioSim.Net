@@ -2,9 +2,9 @@
 
 public class SensorFactory
 {
-    private readonly ISensor[] _sensors = new ISensor[Enum.GetNames<Sensor>().Length];
+    private readonly ISensor?[] _sensors = new ISensor?[Enum.GetNames<Sensor>().Length];
 
-    public ISensor this[Sensor sensor] => _sensors[(int)sensor];
+    public ISensor? this[Sensor sensor] => _sensors[(int)sensor];
 
     public SensorFactory(Config p, Grid grid, Signals signals)
     {
@@ -39,9 +39,10 @@ public class SensorFactory
             _sensors[(int)sensor.Type] = sensor;
     }
 
-    public SensorFactory(IEnumerable<ISensor> sensors)
+    public SensorFactory(IEnumerable<ISensor?> sensors)
     {
-        foreach (var sensor in sensors) 
-            _sensors[(int)sensor.Type] = sensor;
+        foreach (var sensor in sensors)
+            if (sensor != null)
+                _sensors[(int)sensor.Type] = sensor;
     }
 }

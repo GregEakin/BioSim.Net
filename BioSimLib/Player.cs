@@ -121,17 +121,12 @@ public class Player
     public float ResponseCurve(float r)
     {
         var k = _p.responsivenessCurveKFactor;
-        var value = Math.Pow((r - 2.0f), -2.0f * k) - Math.Pow(2.0f, -2.0f * k) * (1.0f - r);
+        var value = Math.Pow(r - 2.0f, -2.0f * k) - Math.Pow(2.0f, -2.0f * k) * (1.0f - r);
         return (float)value;
     }
 
-    public void ExecuteActions(ActionFactory factory, Grid grid, Signals signals, float[] actionLevels, uint simStep)
+    public void ExecuteActions(ActionFactory factory, Grid grid, Signals signals, Func<IAction,bool> isEnabled, float[] actionLevels, uint simStep)
     {
-        var IsEnabled = (IAction? action) => action != null && (int)action.Type < (int)Action.KILL_FORWARD && action.Enabled;
-
-        float moveX = 0.0f;
-        float moveY = 0.0f;
-
         var actionEnums = new[]
         {
             Action.SET_RESPONSIVENESS,
@@ -139,6 +134,23 @@ public class Player
             Action.SET_LONGPROBE_DIST,
             Action.EMIT_SIGNAL0,
             Action.KILL_FORWARD,
+        };
+        foreach (var actionEnum in actionEnums)
+        {
+            var action = factory[actionEnum];
+            if (action == null || !isEnabled(action) || !action.Enabled)
+                continue;
+
+            action.Execute(_p, grid, signals, this, simStep, actionLevels);
+        }
+    }
+    public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
+    {
+        var moveX = 0.0f;
+        var moveY = 0.0f;
+
+        var actionEnums = new[]
+        {
             Action.MOVE_X,
             Action.MOVE_Y,
             Action.MOVE_EAST,
@@ -152,16 +164,17 @@ public class Player
             Action.MOVE_RL,
             Action.MOVE_RANDOM,
         };
+
         foreach (var actionEnum in actionEnums)
         {
             var action = factory[actionEnum];
-            if (!IsEnabled(action))
+            if (action == null || !isEnabled(action) || !action.Enabled)
                 continue;
 
-            action.Execute(_p, grid, signals, this, simStep, actionLevels);
+            var (x, y) = action.Move(actionLevels, _lastMoveDir);
+            moveX += x;
+            moveY += y;
         }
-
-        // var lastMoveOffset = _lastMoveDir.AsNormalizedCoord();
 
         moveX = (float)Math.Tanh(moveX) * ResponsivenessAdjusted;
         moveY = (float)Math.Tanh(moveY) * ResponsivenessAdjusted;
@@ -173,11 +186,8 @@ public class Player
         var sigNumY = moveY < 0.0f ? -1 : 1;
 
         var movementOffset = new Coord { X = (short)(probX * sigNumX), Y = (short)(probY * sigNumY) };
-        var newLoc = new Coord { X = (short)(_loc.X + movementOffset.X), Y = (short)(_loc.Y + movementOffset.Y) };
-        // if (_grid.IsInBounds(newLoc)) 
-        //      peeps.QueueForMove(this, newLoc);
-
-        Console.WriteLine("X {0}, Y {1}", newLoc.X, newLoc.Y);
+        var newLoc = _loc + movementOffset;
+        return newLoc;
     }
 
     public static bool Prob2Bool(float factor)

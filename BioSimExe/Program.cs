@@ -4,17 +4,18 @@ using BioSimExe;
 using BioSimLib;
 using BioSimLib.Actions;
 using BioSimLib.Sensors;
+using Action = BioSimLib.Actions.Action;
 
 Console.WriteLine("Hello, World!");
 
-var p = new Config() { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+var p = new Config() { maxNumberNeurons = 2, sizeX = 5, sizeY = 5 };
 Console.WriteLine("Config: {0}", p);
 
 var peeps = new Peeps(p);
 var grid = new Grid(p, peeps);
 var signals = new Signals(p);
 
-var generations = 0;
+var generations = 0u;
 
 //var sensorFactory = new SensorFactory();
 var sensorsFactory = new SensorFactory(
@@ -39,7 +40,7 @@ var dna = new[]
 var genome = new Genome(p, dna);
 Console.WriteLine("Genome: {0}", genome);
 
-var loc = new Coord { X = 3, Y = 4 };
+var loc = new Coord { X = 2, Y = 3 };
 var player = grid.NewPlayer(genome, loc);
 grid.Move(player, loc);
 
@@ -54,14 +55,14 @@ Console.WriteLine();
 
 Console.WriteLine();
 Console.WriteLine("Step 1");
-var actionLevels = player.FeedForward(sensorsFactory, 0);
+var actionLevels = player.FeedForward(sensorsFactory, generations++);
 foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 
-var factory = new ActionFactory(); 
-player.ExecuteActions(factory, grid, signals, actionLevels, 1u);
-
-var newLoc = new Coord { X = 4, Y = 5 };
+var factory = new ActionFactory();
+bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
+player.ExecuteActions(factory, grid, signals, IsEnabled, actionLevels, generations);
+var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, generations);
 peeps.QueueForMove(player, newLoc);
 
 Console.WriteLine(grid);
