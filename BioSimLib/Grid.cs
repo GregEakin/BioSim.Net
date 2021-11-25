@@ -20,11 +20,11 @@ public class Grid
     private readonly ushort[,] _board;
     private readonly Random _random = new();
 
-    public Grid(Config p, Peeps peeps)
+    public Grid(Config p, Peeps peeps, Barriers barriers)
     {
         _p = p;
         _peeps = peeps;
-        _barriers = new Barriers();
+        _barriers = barriers;
         _board = new ushort[p.sizeX, p.sizeY];
     }
 
@@ -72,14 +72,14 @@ public class Grid
     public Player? this[int x, int y] => _peeps[_board[x, y]];
     public Player? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
     
-    public Player NewPlayer(Genome genome, Coord loc)
+    public Player CreatePlayer(Genome genome, Coord loc)
     {
         var player = _peeps.NewPlayer(genome, loc);
         _board[loc.X, loc.Y] = player._index;
         return player;
     }
 
-    public Barrier NewBarrier(BarrierType type, Coord loc)
+    public Barrier CreateBarrier(BarrierType type, Coord loc)
     {
         var barrier = _barriers.NewBarrier(type, loc);
         _board[loc.X, loc.Y] = 1;

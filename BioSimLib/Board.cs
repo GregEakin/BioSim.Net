@@ -1,6 +1,6 @@
 ﻿namespace BioSimLib;
 
-public class Board
+public readonly struct Board
 {
     public Grid Grid { get; }
     public Peeps Peeps { get; }
@@ -9,9 +9,14 @@ public class Board
 
     public Board(Config p)
     {
-        Peeps = new Peeps(p);
-        Grid = new Grid(p, Peeps);
-        Signals = new Signals(p);
         Barriers = new Barriers();
+        Peeps = new Peeps(p);
+        Grid = new Grid(p, Peeps, Barriers);
+        Signals = new Signals(p);
+    }
+
+    public Player NewPlayer(Genome genome, Coord loc)
+    {
+        return Grid.CreatePlayer(genome, loc);
     }
 }

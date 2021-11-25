@@ -37,7 +37,7 @@ var genome = new Genome(p, dna);
 Console.WriteLine("Genome: {0}", genome);
 
 var loc = new Coord { X = 1, Y = 2 };
-var player = board.Grid.NewPlayer(genome, loc);
+var player = board.NewPlayer(genome, loc);
 board.Grid.Move(player, loc);
 
 Console.WriteLine("Player: {0}", player);

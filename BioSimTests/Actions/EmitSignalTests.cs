@@ -41,7 +41,7 @@ public class EmitSignalTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 3, Y = 4 };
-        var player = board.Grid.NewPlayer(genome, loc);
+        var player = board.NewPlayer(genome, loc);
         player.ResponsivenessAdjusted = 1.0f;
 
         var actionLevels = new[]

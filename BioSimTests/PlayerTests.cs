@@ -20,8 +20,7 @@ public class PlayerTests
         );
 
         var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var peeps = new Peeps(p);
-        var grid = new Grid(p, peeps);
+        var board = new Board(p);
         var dna = new[]
         {
             0x00012000u,
@@ -35,7 +34,7 @@ public class PlayerTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 4, Y = 4 };
-        var player = grid.NewPlayer(genome, loc);
+        var player = board.NewPlayer(genome, loc);
         player._nnet[0].Driven = true;
         player._nnet[0].Output = 0.6f;
         player._nnet[1].Driven = true;
@@ -73,7 +72,7 @@ public class PlayerTests
 
         var genome = new Genome(p, dna);
         var loc = new Coord { X = 1, Y = 2 };
-        var player = board.Grid.NewPlayer(genome, loc);
+        var player = board.NewPlayer(genome, loc);
         player._nnet[0].Driven = true;
         player._nnet[0].Output = 0.6f;
         player._nnet[1].Driven = true;
