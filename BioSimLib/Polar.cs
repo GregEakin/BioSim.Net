@@ -1,6 +1,6 @@
 ﻿namespace BioSimLib;
 
-public struct Polar
+public readonly struct Polar
 {
     public int Mag { get; }
     public Dir Dir { get; }

@@ -2,10 +2,10 @@
 
 public readonly struct Board
 {
+    public Barriers Barriers { get; }
     public Grid Grid { get; }
     public Peeps Peeps { get; }
     public Signals Signals { get; }
-    public Barriers Barriers { get; }
 
     public Board(Config p)
     {

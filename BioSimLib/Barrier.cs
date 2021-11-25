@@ -1,6 +1,6 @@
 ﻿namespace BioSimLib;
 
-public struct Barrier
+public readonly struct Barrier
 {
     public Grid.BarrierType Type { get; }
     public Coord Loc { get; }

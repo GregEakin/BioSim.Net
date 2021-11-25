@@ -1,6 +1,6 @@
 ﻿namespace BioSimLib;
 
-public struct Dir
+public readonly struct Dir
 {
     public enum Compass : byte
     {
@@ -64,6 +64,10 @@ public struct Dir
     public Dir Rotate90DegCcw() => Rotate(-2);
     public Dir Rotate180Deg() => Rotate(4);
 
+    public bool Equals(Dir other) => _dir9 == other._dir9;
+    public override bool Equals(object? obj) => obj is Dir other && Equals(other);
+    public override int GetHashCode() => (int)_dir9;
+    
     public static bool operator ==(Dir dir, Compass compass) => dir.AsInt() == (byte)compass;
     public static bool operator !=(Dir dir, Compass compass) => dir.AsInt() != (byte)compass;
     public static bool operator ==(Dir dir1, Dir dir2) => dir1.AsInt() == dir2.AsInt();
