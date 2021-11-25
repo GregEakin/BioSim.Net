@@ -1,5 +1,8 @@
 using BioSimLib;
 using BioSimLib.Actions;
+using BioSimLib.Field;
+using BioSimLib.Genes;
+using BioSimLib.Positions;
 using Xunit;
 using Action = BioSimLib.Actions.Action;
 

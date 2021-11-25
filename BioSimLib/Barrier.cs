@@ -1,4 +1,7 @@
-﻿namespace BioSimLib;
+﻿using BioSimLib.Field;
+using BioSimLib.Positions;
+
+namespace BioSimLib;
 
 public readonly struct Barrier
 {

@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.Design;
+using BioSimLib.Field;
+using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 

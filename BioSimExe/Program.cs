@@ -3,6 +3,9 @@
 using BioSimExe;
 using BioSimLib;
 using BioSimLib.Actions;
+using BioSimLib.Field;
+using BioSimLib.Genes;
+using BioSimLib.Positions;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 

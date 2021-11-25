@@ -1,4 +1,8 @@
-﻿namespace BioSimLib.Sensors;
+﻿using BioSimLib.Field;
+using BioSimLib.Genes;
+using BioSimLib.Positions;
+
+namespace BioSimLib.Sensors;
 
 public class GeneticSimilarityForward : ISensor
 {

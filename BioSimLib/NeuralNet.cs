@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Text;
+using BioSimLib.Genes;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 

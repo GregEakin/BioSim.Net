@@ -1,5 +1,8 @@
 ﻿using System.Collections.Specialized;
 using BioSimLib.Actions;
+using BioSimLib.Field;
+using BioSimLib.Genes;
+using BioSimLib.Positions;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 

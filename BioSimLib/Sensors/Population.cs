@@ -1,4 +1,7 @@
-﻿namespace BioSimLib.Sensors;
+﻿using BioSimLib.Field;
+using BioSimLib.Positions;
+
+namespace BioSimLib.Sensors;
 
 public class Population : ISensor
 {

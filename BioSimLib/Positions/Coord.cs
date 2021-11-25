@@ -1,4 +1,4 @@
-﻿namespace BioSimLib;
+﻿namespace BioSimLib.Positions;
 
 public struct Coord
 {

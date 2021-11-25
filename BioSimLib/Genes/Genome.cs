@@ -3,7 +3,7 @@ using System.Text;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 
-namespace BioSimLib;
+namespace BioSimLib.Genes;
 
 public class Genome : IEnumerable<Gene>
 {

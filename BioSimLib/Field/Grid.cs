@@ -1,7 +1,8 @@
 ﻿using System.Text;
+using BioSimLib.Genes;
+using BioSimLib.Positions;
 
-namespace BioSimLib;
-
+namespace BioSimLib.Field;
 public class Grid
 {
     public enum BarrierType

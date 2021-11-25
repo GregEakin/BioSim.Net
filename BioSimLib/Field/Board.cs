@@ -1,4 +1,7 @@
-﻿namespace BioSimLib;
+﻿using BioSimLib.Genes;
+using BioSimLib.Positions;
+
+namespace BioSimLib.Field;
 
 public readonly struct Board
 {

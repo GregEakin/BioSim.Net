@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using BioSimLib;
+using BioSimLib.Genes;
 using Xunit;
 
 namespace BioSimTests;

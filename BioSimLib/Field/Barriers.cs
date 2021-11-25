@@ -1,4 +1,6 @@
-﻿namespace BioSimLib;
+﻿using BioSimLib.Positions;
+
+namespace BioSimLib.Field;
 
 public class Barriers
 {

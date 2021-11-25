@@ -1,4 +1,7 @@
-﻿namespace BioSimLib.Actions;
+﻿using BioSimLib.Field;
+using BioSimLib.Positions;
+
+namespace BioSimLib.Actions;
 
 public class Suicide : IAction
 {

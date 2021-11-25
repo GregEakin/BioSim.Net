@@ -1,4 +1,6 @@
-﻿namespace BioSimLib.Sensors;
+﻿using BioSimLib.Field;
+
+namespace BioSimLib.Sensors;
 
 public class LongProbeBarrierForward : ISensor
 {

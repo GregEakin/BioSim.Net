@@ -1,4 +1,4 @@
-﻿namespace BioSimLib;
+﻿namespace BioSimLib.Genes;
 
 public class GeneBank
 {
