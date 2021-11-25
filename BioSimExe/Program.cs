@@ -16,14 +16,14 @@ Console.WriteLine("Config: {0}", p);
 
 var board = new Board(p);
 
-//var sensorFactory = new SensorFactory();
-var sensorsFactory = new SensorFactory(
-    new ISensor[]
-    {
-        new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
-        new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
-    }
-);
+var sensorsFactory = new SensorFactory(p, board);
+// var sensorsFactory = new SensorFactory(
+//     new ISensor[]
+//     {
+//         new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
+//         new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
+//     }
+// );
 
 var dna = new[]
 {
@@ -59,33 +59,20 @@ Console.WriteLine(board.Grid);
 var factory = new ActionFactory();
 bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
 
-var simStep = 0u;
-Console.WriteLine("Step {0}", ++simStep);
-var actionLevels1 = player.FeedForward(sensorsFactory, simStep);
-Console.Write("  Action levels: ");
-foreach (var level in actionLevels1) Console.Write("{0}, ", level);
-Console.WriteLine();
+for (var simStep = 0u; simStep < 3u; ++simStep)
+{
+    Console.WriteLine("Step {0}", ++simStep);
+    var actionLevels1 = player.FeedForward(sensorsFactory, simStep);
+    Console.Write("  Action levels: ");
+    foreach (var level in actionLevels1) Console.Write("{0}, ", level);
+    Console.WriteLine();
 
-player.ExecuteActions(factory, board, IsEnabled, actionLevels1, simStep);
-var newLoc1 = player.ExecuteMoves(factory, IsEnabled, actionLevels1, simStep);
-if (board.Grid.IsInBounds(newLoc1) && board.Grid.IsEmptyAt(newLoc1))
-    board.Peeps.QueueForMove(player, newLoc1);
+    player.ExecuteActions(factory, board, IsEnabled, actionLevels1, simStep);
+    var newLoc1 = player.ExecuteMoves(factory, IsEnabled, actionLevels1, simStep);
+    if (board.Grid.IsInBounds(newLoc1) && board.Grid.IsEmptyAt(newLoc1))
+        board.Peeps.QueueForMove(player, newLoc1);
 
-board.Peeps.DrainMoveQueue(board.Grid);
-Console.WriteLine();
-Console.WriteLine(board.Grid);
-
-Console.WriteLine("Step {0}", ++simStep);
-var actionLevels2 = player.FeedForward(sensorsFactory, simStep);
-Console.Write("  Action levels: ");
-foreach (var level in actionLevels2) Console.Write("{0}, ", level);
-Console.WriteLine();
-
-player.ExecuteActions(factory, board, IsEnabled, actionLevels2, simStep);
-var newLoc2 = player.ExecuteMoves(factory, IsEnabled, actionLevels2, simStep);
-if (board.Grid.IsInBounds(newLoc2) && board.Grid.IsEmptyAt(newLoc2))
-    board.Peeps.QueueForMove(player, newLoc2);
-
-board.Peeps.DrainMoveQueue(board.Grid);
-Console.WriteLine();
-Console.WriteLine(board.Grid);
+    board.Peeps.DrainMoveQueue(board.Grid);
+    Console.WriteLine();
+    Console.WriteLine(board.Grid);
+}

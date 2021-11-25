@@ -48,6 +48,7 @@ public class Player
         _alive = true;
         _lastMoveDir = Dir.Random8();
         _responsiveness = 0.5f; // range 0.0..1.0
+        ResponsivenessAdjusted = 1.0f;
         _longProbeDist = p.longProbeDistance;
         _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
 
