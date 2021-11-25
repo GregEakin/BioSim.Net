@@ -15,4 +15,9 @@ public class EmitSignal : IAction
         if (level > emitThreshold && Player.Prob2Bool(level)) 
             signals.Increment(0, player._loc);
     }
+
+    public (float, float) Move(float[] actionLevels)
+    {
+        return (0.0f, 0.0f);
+    }
 }

@@ -69,6 +69,5 @@ public class Signals
 
     public void Increment(int i, Coord loc)
     {
-        throw new NotImplementedException();
     }
 }

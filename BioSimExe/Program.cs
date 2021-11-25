@@ -2,6 +2,7 @@
 
 using BioSimExe;
 using BioSimLib;
+using BioSimLib.Actions;
 using BioSimLib.Sensors;
 
 Console.WriteLine("Hello, World!");
@@ -38,7 +39,7 @@ var dna = new[]
 var genome = new Genome(p, dna);
 Console.WriteLine("Genome: {0}", genome);
 
-var loc = new Coord { X = 4, Y = 4 };
+var loc = new Coord { X = 3, Y = 4 };
 var player = grid.NewPlayer(genome, loc);
 grid.Move(player, loc);
 
@@ -57,9 +58,10 @@ var actionLevels = player.FeedForward(sensorsFactory, 0);
 foreach (var level in actionLevels) Console.Write("{0}, ", level);
 Console.WriteLine();
 
-player.ExecuteActions(grid, signals, actionLevels, 1u);
+var factory = new ActionFactory(); 
+player.ExecuteActions(factory, grid, signals, actionLevels, 1u);
 
-var newLoc = new Coord { X = 5, Y = 5 };
+var newLoc = new Coord { X = 4, Y = 5 };
 peeps.QueueForMove(player, newLoc);
 
 Console.WriteLine(grid);

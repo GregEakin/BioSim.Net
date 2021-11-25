@@ -17,15 +17,15 @@ public class Player
 
     public Coord _loc;
     public bool _alive;
-    public float _responsiveness; 
-    public uint _oscPeriod; 
-    public uint _longProbeDist; 
+    public float _responsiveness;
+    public uint _oscPeriod;
+    public uint _longProbeDist;
     public Dir _lastMoveDir;
-    
+
     public bool Alive => true;
     public Dir LastMoveDir { get; set; }
     public float ResponsivenessAdjusted { get; set; }
-    
+
     public override string ToString()
     {
         return $"Neural Net {_nnet}";
@@ -95,7 +95,7 @@ public class Player
         //     if (newConn.SourceType == Gene.GeneType.Neuron)
         //         newConn.SourceNum = nodeMap[newConn.SourceNum].remappedNumber;
         // }
-        
+
         // foreach (var conn in connectionList)
         // {
         //     if (conn.SinkType != Gene.GeneType.Action) continue;
@@ -125,11 +125,9 @@ public class Player
         return (float)value;
     }
 
-    public void ExecuteActions(Grid grid, Signals signals, float[] actionLevels, uint simStep)
+    public void ExecuteActions(ActionFactory factory, Grid grid, Signals signals, float[] actionLevels, uint simStep)
     {
-        var factory = new ActionFactory();
-
-        var IsEnabled = (IAction action) => (int)action.Type < (int)Action.KILL_FORWARD && action.Enabled;
+        var IsEnabled = (IAction? action) => action != null && (int)action.Type < (int)Action.KILL_FORWARD && action.Enabled;
 
         float moveX = 0.0f;
         float moveY = 0.0f;
@@ -179,7 +177,7 @@ public class Player
         // if (_grid.IsInBounds(newLoc)) 
         //      peeps.QueueForMove(this, newLoc);
 
-        Console.WriteLine("X {0}, Y {0}", newLoc.X, newLoc.Y);
+        Console.WriteLine("X {0}, Y {1}", newLoc.X, newLoc.Y);
     }
 
     public static bool Prob2Bool(float factor)

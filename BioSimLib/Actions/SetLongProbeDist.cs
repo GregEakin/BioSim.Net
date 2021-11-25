@@ -15,4 +15,9 @@ public class SetLongProbeDist : IAction
         level = 1.0f + level * maxLongProbeDistance;
         player._longProbeDist = (uint)level;
     }
+
+    public (float, float) Move(float[] actionLevels)
+    {
+        return (0.0f, 0.0f);
+    }
 }

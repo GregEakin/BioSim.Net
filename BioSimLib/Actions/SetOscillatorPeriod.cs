@@ -14,4 +14,9 @@ public class SetOscillatorPeriod : IAction
         var newPeriod = 1u + (uint)(1.5f + Math.Exp(7.0f * newPeriodF01));
         player._oscPeriod = newPeriod;
     }
+
+    public (float, float) Move(float[] actionLevels)
+    {
+        return (0.0f, 0.0f);
+    }
 }

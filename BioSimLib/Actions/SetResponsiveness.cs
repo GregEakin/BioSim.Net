@@ -13,4 +13,9 @@ public class SetResponsiveness : IAction
         level = (float)((Math.Tanh(level) + 1.0) / 2.0); // convert to 0.0..1.0
         player._responsiveness = level;
     }
+
+    public (float, float) Move(float[] actionLevels)
+    {
+        return (0.0f, 0.0f);
+    }
 }

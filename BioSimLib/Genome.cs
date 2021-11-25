@@ -37,14 +37,14 @@ public class Genome : IEnumerable<Gene>
         }
     }
 
-    public int Length => _genome.Length;
-
     public Genome(Config p, IEnumerable<uint> dna)
     {
         _p = p;
         _genome = dna.Select(code => new Gene(code)).ToArray();
         _connectionList = MakeRenumberedConnectionList().ToArray();
     }
+
+    public int Length => _genome.Length;
 
     public Gene this[int index] => _genome[index];
 
@@ -82,7 +82,8 @@ public class Genome : IEnumerable<Gene>
         return connectionList;
     }
 
-    public void RemoveConnectionsToNeuron(IEnumerable<Gene> connections, Dictionary<int, Node> nodeMap, int neuronNumber)
+    public void RemoveConnectionsToNeuron(IEnumerable<Gene> connections, Dictionary<int, Node> nodeMap,
+        int neuronNumber)
     {
         foreach (var itConn in connections)
         {
@@ -118,7 +119,7 @@ public class Genome : IEnumerable<Gene>
             if (conn.SourceType == Gene.GeneType.Neuron)
             {
                 var found = nodeMap.TryGetValue(conn.SourceNum, out var it);
-                if (!found)
+                if (!found || it == null)
                 {
                     it = new Node();
                     nodeMap.Add(conn.SourceNum, it);
@@ -130,7 +131,7 @@ public class Genome : IEnumerable<Gene>
             if (conn.SinkType == Gene.GeneType.Neuron)
             {
                 var found = nodeMap.TryGetValue(conn.SinkNum, out var it);
-                if (!found)
+                if (!found || it == null)
                 {
                     it = new Node();
                     nodeMap.Add(conn.SinkNum, it);
@@ -146,7 +147,7 @@ public class Genome : IEnumerable<Gene>
         return nodeMap;
     }
 
-    public string PrintGraphInfo()
+    public string ToGraphInfo()
     {
         var builder = new StringBuilder();
         foreach (var conn in _genome)
@@ -203,19 +204,22 @@ public class Genome : IEnumerable<Gene>
         return builder.ToString();
     }
 
-    public byte MakeGeneticColor()
+    public byte Color
     {
-        var front = _genome.First();
-        var back = _genome.Last();
-        var color = (_genome.Length & 1)
-                    | ((front.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 1)
-                    | ((back.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 2)
-                    | ((front.SinkType == Gene.GeneType.Action ? 1 : 0) << 3)
-                    | ((back.SinkType == Gene.GeneType.Action ? 1 : 0) << 4)
-                    | ((front.SourceNum & 1) << 5)
-                    | ((front.SinkNum & 1) << 6)
-                    | ((back.SourceNum & 1) << 7);
-        return (byte)color;
+        get
+        {
+            var front = _genome.First();
+            var back = _genome.Last();
+            var color = (_genome.Length & 1)
+                        | ((front.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 1)
+                        | ((back.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 2)
+                        | ((front.SinkType == Gene.GeneType.Action ? 1 : 0) << 3)
+                        | ((back.SinkType == Gene.GeneType.Action ? 1 : 0) << 4)
+                        | ((front.SourceNum & 1) << 5)
+                        | ((front.SinkNum & 1) << 6)
+                        | ((back.SourceNum & 1) << 7);
+            return (byte)color;
+        }
     }
 
     public void Optimize()
