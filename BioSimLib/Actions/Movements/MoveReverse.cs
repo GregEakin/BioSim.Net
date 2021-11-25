@@ -1,9 +1,9 @@
 ﻿using BioSimLib.Field;
 using BioSimLib.Positions;
 
-namespace BioSimLib.Actions;
+namespace BioSimLib.Actions.Movements;
 
-public class MoveReverse : IAction
+public class MoveReverse : IMovementAction
 {
     public Action Type => Action.MOVE_REVERSE;
     public override string ToString() => "move reverse";

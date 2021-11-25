@@ -8,8 +8,8 @@ public class KillForward : IAction
     public Action Type => Action.KILL_FORWARD;
     public override string ToString() => "kill fwd";
     public string ShortName => "KlF";
-
     public bool Enabled => false;
+
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
@@ -28,7 +28,7 @@ public class KillForward : IAction
         if (!(player2?.Alive ?? false))
             return;
 
-        // peeps.queueForDeath(player2);
+        board.Peeps.QueueForDeath(player2);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

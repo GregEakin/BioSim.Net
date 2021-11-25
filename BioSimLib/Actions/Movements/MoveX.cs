@@ -1,9 +1,9 @@
 ﻿using BioSimLib.Field;
 using BioSimLib.Positions;
 
-namespace BioSimLib.Actions;
+namespace BioSimLib.Actions.Movements;
 
-public class MoveX : IAction
+public class MoveX : IMovementAction
 {
     public Action Type => Action.MOVE_X;
     public override string ToString() => "move X";

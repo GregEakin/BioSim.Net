@@ -1,22 +1,21 @@
 ﻿using BioSimLib.Field;
 using BioSimLib.Positions;
 
-namespace BioSimLib.Actions;
+namespace BioSimLib.Actions.Movements;
 
-public class MoveEast : IAction
+public class MoveNorth : IMovementAction
 {
-    public Action Type => Action.MOVE_EAST;
-    public override string ToString() => "move east";
-    public string ShortName => "MvE";
+    public Action Type => Action.MOVE_NORTH;
+    public override string ToString() => "move north";
+    public string ShortName => "MvN";
 
     public bool Enabled => true;
-
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
-        return (actionLevels[(int)Action.MOVE_EAST], 0.0f);
+        return (0.0f, actionLevels[(int)Action.MOVE_NORTH]);
     }
 }

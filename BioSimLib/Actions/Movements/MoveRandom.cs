@@ -1,9 +1,9 @@
 ﻿using BioSimLib.Field;
 using BioSimLib.Positions;
 
-namespace BioSimLib.Actions;
+namespace BioSimLib.Actions.Movements;
 
-public class MoveRandom : IAction
+public class MoveRandom : IMovementAction
 {
     public Action Type => Action.MOVE_RANDOM;
     public override string ToString() => "move random";

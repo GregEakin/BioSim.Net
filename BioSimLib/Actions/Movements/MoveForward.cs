@@ -1,9 +1,9 @@
 ﻿using BioSimLib.Field;
 using BioSimLib.Positions;
 
-namespace BioSimLib.Actions;
+namespace BioSimLib.Actions.Movements;
 
-public class MoveForward : IAction
+public class MoveForward : IMovementAction
 {
     public Action Type => Action.MOVE_FORWARD;
     public override string ToString() => "move fwd";

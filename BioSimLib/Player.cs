@@ -76,7 +76,6 @@ public class Player
         return actionLevels;
     }
 
-
     public void CreateWiringFromGenome()
     {
         var connectionList = _genome.MakeRenumberedConnectionList();
@@ -147,12 +146,13 @@ public class Player
             action.Execute(_p, board, this, simStep, actionLevels);
         }
     }
+
     public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
     {
         var moveX = 0.0f;
         var moveY = 0.0f;
 
-        var actionEnums = new[]
+        var moveEnums = new[]
         {
             Action.MOVE_X,
             Action.MOVE_Y,
@@ -168,9 +168,9 @@ public class Player
             Action.MOVE_RANDOM,
         };
 
-        foreach (var actionEnum in actionEnums)
+        foreach (var moveEnum in moveEnums)
         {
-            var action = factory[actionEnum];
+            var action = factory[moveEnum];
             if (action == null || !isEnabled(action) || !action.Enabled)
                 continue;
 

@@ -2,9 +2,9 @@
 using BioSimLib.Field;
 using BioSimLib.Positions;
 
-namespace BioSimLib.Actions;
+namespace BioSimLib.Actions.Movements;
 
-public class MoveRL : IAction
+public class MoveRL : IMovementAction
 {
     public Action Type => Action.MOVE_RL;
     public override string ToString() => "move R-L";

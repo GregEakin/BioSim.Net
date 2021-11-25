@@ -1,4 +1,6 @@
-﻿namespace BioSimLib.Actions;
+﻿using BioSimLib.Actions.Movements;
+
+namespace BioSimLib.Actions;
 
 public class ActionFactory
 {
