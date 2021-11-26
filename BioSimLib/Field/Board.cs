@@ -18,8 +18,7 @@ public readonly struct Board
         Signals = new Signals(p);
     }
 
-    public Player NewPlayer(Genome genome, Coord loc)
-    {
-        return Grid.CreatePlayer(genome, loc);
-    }
+    public Player NewPlayer(Genome genome, Coord loc) => Grid.CreatePlayer(genome, loc);
+
+    public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(Grid.BarrierType.A, loc);
 }
