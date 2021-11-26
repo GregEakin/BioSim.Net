@@ -21,12 +21,12 @@ public class Signals
         var sum = 0uL;
         var center = loc;
 
-        var f = (Coord tloc) => {
+        void F(Coord tloc) {
             ++countLocs;
             sum += GetMagnitude(layerNum, tloc);
         };
 
-        VisitNeighborhood(center, _p.signalSensorRadius, f);
+        VisitNeighborhood(center, _p.signalSensorRadius, F);
         var maxSum = (float)countLocs * byte.MaxValue;
         var sensorVal = sum / maxSum; 
 
@@ -50,18 +50,17 @@ public class Signals
     public float GetSignalDensityAlongAxis(uint layerNum, Coord loc, Dir dir)
     {
         var sum = 0.0;
-        var f = (Coord tloc) => {
-            if (tloc != loc)
-            {
-                var offset = tloc - loc;
-                var anglePosCos = offset.RaySameness(dir);
-                var dist = Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
-                var contrib = (1.0 / dist) * anglePosCos * GetMagnitude(layerNum, loc);
-                sum += contrib;
-            }
+        void F(Coord tloc)
+        {
+            if (tloc == loc) return;
+            var offset = tloc - loc;
+            var anglePosCos = offset.RaySameness(dir);
+            var dist = Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
+            var contrib = (1.0 / dist) * anglePosCos * GetMagnitude(layerNum, loc);
+            sum += contrib;
         };
 
-        VisitNeighborhood(loc, _p.signalSensorRadius, f);
+        VisitNeighborhood(loc, _p.signalSensorRadius, F);
         var maxSumMag = 6.0 * _p.signalSensorRadius * byte.MaxValue;
         var sensorVal = sum / maxSumMag;
         sensorVal = (sensorVal + 1.0) / 2.0;

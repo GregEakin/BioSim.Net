@@ -22,17 +22,17 @@ public struct Coord
         if (X == 0 && Y == 0)
             return new Dir(Dir.Compass.CENTER);
 
-        var TWO_PI = (float)(2.0 * Math.PI);
-        var angle = Math.Atan2(Y, X);
+        var TWO_PI = 2.0 * Math.PI;
+        var angle = Math.Atan2(X, Y);
 
-        if (angle < 0.0f)
+        if (angle < 0.0)
             angle += TWO_PI;
 
-        angle += TWO_PI / 16.0f;
+        angle += TWO_PI / 16.0;
         if (angle > TWO_PI)
             angle -= TWO_PI;
 
-        var slice = (uint)(angle / (TWO_PI / 8.0f));
+        var slice = (uint)(angle / (TWO_PI / 8.0));
         /*
             We have to convert slice values:
 
@@ -73,19 +73,18 @@ public struct Coord
     public static Coord operator +(Coord coord, Dir dir) => coord + dir.AsNormalizedCoord();
     public static Coord operator -(Coord coord, Dir dir) => coord - dir.AsNormalizedCoord();
 
-    public double RaySameness(Coord other)
+    public float RaySameness(Coord other)
     {
         var mag1 = Math.Sqrt(X * X + Y * Y);
         var mag2 = Math.Sqrt(other.X * other.X + other.Y * other.Y);
         if (mag1 == 0.0f || mag2 == 0.0f)
             return 1.0f;
 
-        var otherX = X * other.X + Y * other.Y;
-        var dot = otherX;
+        var dot = X * other.X + Y * other.Y;
         var cos = dot / (mag1 * mag2);
-        cos = Math.Min(Math.Max(cos, -1.0), 1.0);
-        return cos;
+        var normalized = Math.Min(Math.Max(cos, -1.0), 1.0);
+        return (float)normalized;
     }
 
-    public double RaySameness(Dir dir) => RaySameness(dir.AsNormalizedCoord());
+    public float RaySameness(Dir dir) => RaySameness(dir.AsNormalizedCoord());
 }

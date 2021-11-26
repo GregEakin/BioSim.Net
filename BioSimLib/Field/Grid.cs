@@ -169,17 +169,17 @@ public class Grid
     public float GetPopulationDensityAlongAxis(Coord loc, Dir dir)
     {
         var sum = 0.0;
-        var f = (Coord tloc) =>
+        void F(Coord tloc)
         {
             if (tloc == loc || !IsOccupiedAt(tloc)) return;
             var offset = tloc - loc;
             var anglePosCos = offset.RaySameness(dir);
-            var dist = Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
-            var contrib = 1.0 / dist * anglePosCos;
+            var dist = (float)Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
+            var contrib = 1.0f / dist * anglePosCos;
             sum += contrib;
-        };
+        }
 
-        VisitNeighborhood(_p, loc, _p.populationSensorRadius, f);
+        VisitNeighborhood(_p, loc, _p.populationSensorRadius, F);
         var maxSumMag = 6.0 * _p.populationSensorRadius;
 
         var sensorVal = (sum / maxSumMag + 1.0) / 2.0; 

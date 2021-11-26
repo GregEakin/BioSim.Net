@@ -24,10 +24,9 @@ public readonly struct Dir
         return new Coord { X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1) };
     }
 
-    public Coord AsNormalizedPolar()
+    public Polar AsNormalizedPolar()
     {
-        var d = AsInt();
-        return new Coord { X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1) };
+        return new Polar(1, _dir9);
     }
 
     public Dir Rotate(int n = 0)
@@ -38,23 +37,23 @@ public readonly struct Dir
         switch (n)
         {
             case < 0:
-            {
-                while (n++ < 0)
                 {
-                    n9 = rotateLeft[n9];
-                }
+                    while (n++ < 0)
+                    {
+                        n9 = rotateLeft[n9];
+                    }
 
-                break;
-            }
+                    break;
+                }
             case > 0:
-            {
-                while (n-- > 0)
                 {
-                    n9 = rotateRight[n9];
-                }
+                    while (n-- > 0)
+                    {
+                        n9 = rotateRight[n9];
+                    }
 
-                break;
-            }
+                    break;
+                }
         }
 
         return new Dir((Compass)n9);
@@ -67,7 +66,7 @@ public readonly struct Dir
     public bool Equals(Dir other) => _dir9 == other._dir9;
     public override bool Equals(object? obj) => obj is Dir other && Equals(other);
     public override int GetHashCode() => (int)_dir9;
-    
+
     public static bool operator ==(Dir dir, Compass compass) => dir.AsInt() == (byte)compass;
     public static bool operator !=(Dir dir, Compass compass) => dir.AsInt() != (byte)compass;
     public static bool operator ==(Dir dir1, Dir dir2) => dir1.AsInt() == dir2.AsInt();

@@ -25,6 +25,7 @@ public class MoveRL : IMovementAction
             _ => new Coord(0, 0)
         };
 
-        return (offset.X * level, offset.Y * level);
+        var absLevel = Math.Abs(level);
+        return (offset.X * absLevel, offset.Y * absLevel);
     }
 }

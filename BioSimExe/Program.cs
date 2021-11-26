@@ -62,15 +62,15 @@ bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
 for (var simStep = 0u; simStep < 3u; ++simStep)
 {
     Console.WriteLine("Step {0}", ++simStep);
-    var actionLevels1 = player.FeedForward(sensorsFactory, simStep);
+    var actionLevels = player.FeedForward(sensorsFactory, simStep);
     Console.Write("  Action levels: ");
-    foreach (var level in actionLevels1) Console.Write("{0}, ", level);
+    foreach (var level in actionLevels) Console.Write("{0}, ", level);
     Console.WriteLine();
 
-    player.ExecuteActions(factory, board, IsEnabled, actionLevels1, simStep);
-    var newLoc1 = player.ExecuteMoves(factory, IsEnabled, actionLevels1, simStep);
-    if (board.Grid.IsInBounds(newLoc1) && board.Grid.IsEmptyAt(newLoc1))
-        board.Peeps.QueueForMove(player, newLoc1);
+    player.ExecuteActions(factory, board, IsEnabled, actionLevels, simStep);
+    var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, simStep);
+    if (board.Grid.IsInBounds(newLoc) && board.Grid.IsEmptyAt(newLoc))
+        board.Peeps.QueueForMove(player, newLoc);
 
     board.Peeps.DrainMoveQueue(board.Grid);
     Console.WriteLine();
