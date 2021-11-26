@@ -13,7 +13,7 @@ public class MoveRLTests
     {
         var movement = new MoveRL();
         var actionLevels = new float[Enum.GetNames<Action>().Length];
-        actionLevels[(int)Action.MOVE_RL] = 0.0f;
+        actionLevels[(int)Action.MOVE_RL] = 0.5f;
         var lastMoveDir = new Dir(Dir.Compass.W);
         var (x, y) = movement.Move(actionLevels, lastMoveDir);
         Assert.Equal(0.0f, x);
@@ -21,11 +21,11 @@ public class MoveRLTests
     }
 
     [Fact]
-    public void MoveEnabledCcwTest()
+    public void MoveLeftTest()
     {
         var movement = new MoveRL();
         var actionLevels = new float[Enum.GetNames<Action>().Length];
-        actionLevels[(int)Action.MOVE_RL] = -1.0f;
+        actionLevels[(int)Action.MOVE_RL] = 0.0f;
         var lastMoveDir = new Dir(Dir.Compass.W);
         var (x, y) = movement.Move(actionLevels, lastMoveDir);
         Assert.Equal(0.0f, x);
@@ -33,7 +33,7 @@ public class MoveRLTests
     }
 
     [Fact]
-    public void MoveEnabledCwTest()
+    public void MoveRightTest()
     {
         var movement = new MoveRL();
         var actionLevels = new float[Enum.GetNames<Action>().Length];

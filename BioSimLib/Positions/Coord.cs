@@ -23,7 +23,7 @@ public struct Coord
             return new Dir(Dir.Compass.CENTER);
 
         var TWO_PI = 2.0 * Math.PI;
-        var angle = Math.Atan2(X, Y);
+        var angle = Math.Atan2(Y, X);
 
         if (angle < 0.0)
             angle += TWO_PI;

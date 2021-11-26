@@ -19,7 +19,7 @@ public class BarrierForward : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player._loc, player._lastMoveDir, _p.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(player._loc, player.LastMoveDir, _p.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

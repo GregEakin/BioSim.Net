@@ -23,10 +23,9 @@ public class Player
     public float _responsiveness;
     public uint _oscPeriod;
     public uint _longProbeDist;
-    public Dir _lastMoveDir;
 
     public bool Alive => true;
-    public Dir LastMoveDir { get; set; }
+    public Dir LastMoveDir { get; set; } = Dir.Random8();
     public float ResponsivenessAdjusted { get; set; }
 
     public override string ToString()
@@ -46,7 +45,6 @@ public class Player
         _birth = 0u;
         _oscPeriod = 34u; // ToDo !!! define a constant
         _alive = true;
-        _lastMoveDir = Dir.Random8();
         _responsiveness = 0.5f; // range 0.0..1.0
         ResponsivenessAdjusted = 1.0f;
         _longProbeDist = p.longProbeDistance;
@@ -175,7 +173,7 @@ public class Player
             if (action == null || !isEnabled(action) || !action.Enabled)
                 continue;
 
-            var (x, y) = action.Move(actionLevels, _lastMoveDir);
+            var (x, y) = action.Move(actionLevels, LastMoveDir);
             moveX += x;
             moveY += y;
         }

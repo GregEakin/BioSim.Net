@@ -18,14 +18,8 @@ public class MoveRL : IMovementAction
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
     {
         var level = actionLevels[(int)Action.MOVE_RL];
-        var offset = level switch
-        {
-            < 0.0f => lastMoveDir.Rotate90DegCcw().AsNormalizedCoord(),
-            > 0.0f => lastMoveDir.Rotate90DegCw().AsNormalizedCoord(),
-            _ => new Coord(0, 0)
-        };
-
-        var absLevel = Math.Abs(level);
-        return (offset.X * absLevel, offset.Y * absLevel);
+        var offset = lastMoveDir.Rotate90DegCw().AsNormalizedCoord();
+        level = 2.0f * (level - 0.5f);
+        return (offset.X * level, offset.Y * level);
     }
 }

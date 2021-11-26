@@ -19,7 +19,7 @@ public class BarrierLeftRight : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player._loc, player._lastMoveDir.Rotate90DegCw(), _p.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(player._loc, player.LastMoveDir.Rotate90DegCw(), _p.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

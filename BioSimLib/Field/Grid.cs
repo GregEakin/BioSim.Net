@@ -168,22 +168,27 @@ public class Grid
 
     public float GetPopulationDensityAlongAxis(Coord loc, Dir dir)
     {
-        var sum = 0.0;
+        if (dir == Dir.Compass.CENTER || _p.populationSensorRadius == 0.0f)
+            return 0.0f;
+
+        var sum = 0.0f;
+        var dirVec = dir.AsNormalizedCoord();
+        var len = (float)Math.Sqrt(dirVec.X * dirVec.X + dirVec.Y + dirVec.Y);
+        var dirVecX = dirVec.X / len;
+        var dirVecY = dirVec.Y / len;
         void F(Coord tloc)
         {
             if (tloc == loc || !IsOccupiedAt(tloc)) return;
             var offset = tloc - loc;
-            var anglePosCos = offset.RaySameness(dir);
-            var dist = (float)Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
-            var contrib = 1.0f / dist * anglePosCos;
+            var proj = dirVecX * offset.X + dirVecY * offset.Y;
+            var contrib = proj / (offset.X * offset.X + offset.Y * offset.Y);
             sum += contrib;
         }
 
         VisitNeighborhood(_p, loc, _p.populationSensorRadius, F);
-        var maxSumMag = 6.0 * _p.populationSensorRadius;
-
-        var sensorVal = (sum / maxSumMag + 1.0) / 2.0; 
-        return (float)sensorVal;
+        var maxSumMag = 6.0f * _p.populationSensorRadius;
+        var sensorVal = (sum / maxSumMag + 1.0f) / 2.0f; 
+        return sensorVal;
     }
 
     public float GetShortProbeBarrierDistance(Coord loc0, Dir dir, uint probeDistance)

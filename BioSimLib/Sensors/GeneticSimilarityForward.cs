@@ -19,7 +19,7 @@ public class GeneticSimilarityForward : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var forward = new Coord(); // player._loc + player._lastMoveDir;
+        var forward = new Coord(); // player._loc + player.LastMoveDir;
         var partner = _grid[forward];
         if (partner is not { Alive: true }) return 0.0f;
         var sensorVal = GeneBank.GenomeSimilarity(player._genome, partner._genome); 

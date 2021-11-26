@@ -17,7 +17,7 @@ public class PopulationLeftRight : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(player._loc, player._lastMoveDir.Rotate90DegCw());
+        var sensorVal = _grid.GetPopulationDensityAlongAxis(player._loc, player.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

@@ -51,7 +51,7 @@ public class Peeps
 
             player._loc = newLoc;
             var moveDir = (newLoc - player._loc).AsDir();
-            player._lastMoveDir = moveDir;
+            player.LastMoveDir = moveDir;
         }
 
         _moveQueue.Clear();

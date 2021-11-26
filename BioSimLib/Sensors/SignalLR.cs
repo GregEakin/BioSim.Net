@@ -17,7 +17,7 @@ public class SignalLR : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player._lastMoveDir.Rotate90DegCw());
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }
