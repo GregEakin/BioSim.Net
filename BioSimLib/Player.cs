@@ -33,6 +33,8 @@ public class Player
         return $"Neural Net {_nnet}";
     }
 
+    public (byte, byte, byte) Color => _genome.Color;
+
     public Player(Config p, Genome genome, Coord loc, ushort index)
     {
         _p = p;

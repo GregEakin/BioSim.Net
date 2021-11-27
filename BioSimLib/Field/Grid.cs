@@ -59,7 +59,7 @@ public class Grid
         player._loc = new Coord(x, y);
     }
 
-    Coord FindEmptyLocation()
+    public Coord FindEmptyLocation()
     {
         while (true)
         {
@@ -108,15 +108,15 @@ public class Grid
                 var index = _board[x, y];
                 if (index == 0)
                 {
-                    Console.Write(" .");
+                    builder.Append(" .");
                     continue;
                 }
 
                 var player = _peeps[index];
-                Console.Write(" {0}", player != null ? player._index : ".");
+                builder.Append($" {(player != null ? player._index : ".")}");
             }
 
-            Console.WriteLine();
+            builder.AppendLine();
         }
 
         return builder.ToString();

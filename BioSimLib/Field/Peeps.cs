@@ -25,6 +25,13 @@ public class Peeps
         return player;
     }
 
+    public void Clear()
+    {
+        _count = 1;
+        _moveQueue.Clear();
+        _deathQueue.Clear();
+    }
+
     public Player? this[int index]
     {
         get
@@ -73,4 +80,6 @@ public class Peeps
 
         _moveQueue.Clear();
     }
+
+    public IEnumerable<Genome> Survivor() => from player in _players where player._loc.X > _p.sizeX / 2 select player._genome;
 }

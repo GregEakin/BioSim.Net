@@ -71,4 +71,8 @@ public class Signals
     public void Increment(int i, Coord loc)
     {
     }
+
+    public void ZeroFill()
+    {
+    }
 }

@@ -13,7 +13,7 @@ public class SensorFactory
         var sensors = new ISensor[]
         {
             new LocationX(p),
-            new LocationX(p),
+            new LocationY(p),
             new BoundaryDistX(p),
             new BoundaryDist(p),
             new BoundaryDistY(p),
@@ -24,7 +24,7 @@ public class SensorFactory
             new LongProbeBarrierForward(board.Grid),
             new Population(p, board.Grid),
             new PopulationForward(board.Grid),
-            new PopulationForward(board.Grid),
+            new PopulationLeftRight(board.Grid),
             new Oscillator(),
             new Age(p),
             new BarrierForward(p, board.Grid),

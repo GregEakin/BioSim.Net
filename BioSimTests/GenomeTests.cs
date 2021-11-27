@@ -160,6 +160,8 @@ public class GenomeTests
 
         var genome = new Genome(p, dna);
         var color = genome.Color;
-        Assert.Equal(0xdc, color);
+        Assert.Equal(0x21, color.Item1);
+        Assert.Equal(0x51, color.Item2);
+        Assert.Equal(0x80, color.Item3);
     }
 }

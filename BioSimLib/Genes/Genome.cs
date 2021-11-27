@@ -2,6 +2,7 @@
 using System.Text;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
+using Random = System.Random;
 
 namespace BioSimLib.Genes;
 
@@ -18,6 +19,7 @@ public class Genome : IEnumerable<Gene>
     private readonly Config _p;
     private readonly Gene[] _genome;
     private readonly Gene[] _connectionList;
+    private readonly Random _random = new();
 
     public int NeuronsNeeded
     {
@@ -37,6 +39,28 @@ public class Genome : IEnumerable<Gene>
         }
     }
 
+    public Genome(Config p)
+    {
+        _p = p;
+
+        var list = new List<Gene>();
+        for (var i = 0; i < _p.genomeMaxLength; i++)
+        {
+            var dna = (uint)_random.Next();
+            list.Add(new Gene(dna));
+        }
+
+        _genome = list.ToArray();
+        _connectionList = MakeRenumberedConnectionList().ToArray();
+    }
+
+    public Genome(Config p, Genome genome)
+    {
+        _p = p;
+        _genome = genome._genome;
+        _connectionList = genome._connectionList;
+    }
+
     public Genome(Config p, IEnumerable<uint> dna)
     {
         _p = p;
@@ -48,15 +72,9 @@ public class Genome : IEnumerable<Gene>
 
     public Gene this[int index] => _genome[index];
 
-    public IEnumerator<Gene> GetEnumerator()
-    {
-        return _connectionList.Cast<Gene>().GetEnumerator();
-    }
+    public IEnumerator<Gene> GetEnumerator() => _connectionList.Cast<Gene>().GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return _connectionList.GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => _connectionList.GetEnumerator();
 
     public IEnumerable<Gene> MakeRenumberedConnectionList()
     {
@@ -204,21 +222,41 @@ public class Genome : IEnumerable<Gene>
         return builder.ToString();
     }
 
-    public byte Color
+    public (byte, byte, byte) Color
     {
         get
         {
+            // var front = _genome.First();
+            // var red = (byte)(((front.SourceType == Gene.GeneType.Neuron ? 1 : 0) << 7) 
+            //                  | ((front.SinkType == Gene.GeneType.Neuron ? 1 : 0) << 6)
+            //                  | ((front.WeightAsShort & 0x7E00) >> 9));
+            //
+            // var mid = _genome.Skip(_genome.Length / 2).First();
+            // var green = (byte)(((mid.SourceType == Gene.GeneType.Neuron ? 1 : 0) << 7)
+            //                    | ((mid.SinkType == Gene.GeneType.Neuron ? 1 : 0) << 6)
+            //                    | ((mid.WeightAsShort & 0x7E00) >> 9));
+            //
+            // var back = _genome.Last();
+            // var blue = (byte)(((back.SourceType == Gene.GeneType.Neuron ? 1 : 0) << 7)
+            //                   | ((back.SinkType == Gene.GeneType.Neuron ? 1 : 0) << 6)
+            //                   | ((back.WeightAsShort & 0x7E00) >> 9));
+
             var front = _genome.First();
+            var red = (byte)(((front.SourceNum & 0x03) << 6)
+                             | (front.SinkNum & 0x03 << 4)
+                             | ((front.WeightAsShort & 0x7800) >> 11));
+
+            var mid = _genome.Skip(_genome.Length / 2).First();
+            var blue = (byte)(((mid.SourceNum & 0x03) << 6)
+                              | (mid.SinkNum & 0x03 << 4)
+                              | ((mid.WeightAsShort & 0x7800) >> 11));
+
             var back = _genome.Last();
-            var color = (_genome.Length & 1)
-                        | ((front.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 1)
-                        | ((back.SourceType == Gene.GeneType.Sensor ? 1 : 0) << 2)
-                        | ((front.SinkType == Gene.GeneType.Action ? 1 : 0) << 3)
-                        | ((back.SinkType == Gene.GeneType.Action ? 1 : 0) << 4)
-                        | ((front.SourceNum & 1) << 5)
-                        | ((front.SinkNum & 1) << 6)
-                        | ((back.SourceNum & 1) << 7);
-            return (byte)color;
+            var green = (byte)(((back.SourceNum & 0x03) << 6)
+                               | (back.SinkNum & 0x03 << 4)
+                               | ((back.WeightAsShort & 0x7800) >> 11));
+
+            return (red, green, blue);
         }
     }
 
@@ -226,5 +264,38 @@ public class Genome : IEnumerable<Gene>
     {
         // This prunes unused neurons
         //
+    }
+
+    public Genome Mutate()
+    {
+        var genes = new uint[_genome.Length];
+        for (var i = 0; i < genes.Length; i++)
+        {
+            var gene = _genome[i];
+            var chance = _random.Next(1000);
+            switch (chance)
+            {
+                case < 3:
+                {
+                    var builder = new GeneBuilder(gene);
+                    builder.WeightAsFloat = (float)(builder.WeightAsFloat * (0.1 * _random.NextDouble() + 0.95));
+                    genes[i] = new Gene(builder).ToUint;
+                    break;
+                }
+                case < 5:
+                {
+                    var builder = new GeneBuilder(gene);
+                    var bit = _random.Next(16);
+                    var value = new Gene(builder).ToUint ^ (0x00010000 << bit);
+                    genes[i] = (uint)value;
+                    break;
+                }
+                default:
+                    genes[i] = gene.ToUint;
+                    break;
+            }
+        }
+
+        return new Genome(_p, genes);
     }
 }

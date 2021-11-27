@@ -24,4 +24,9 @@ public class GeneBuilder
         SinkNum = gene.SinkNum;
         Weight = gene.WeightAsShort;
     }
+
+    public uint AsUint()
+    {
+        throw new NotImplementedException();
+    }
 }

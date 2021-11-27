@@ -13,7 +13,6 @@ public class BoundaryDistXTests
     public void TypeTest()
     {
         var p = new Config() { sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
         var sensor = new BoundaryDistX(p);
         Assert.Equal(Sensor.BOUNDARY_DIST_X, sensor.Type);
     }
@@ -22,7 +21,6 @@ public class BoundaryDistXTests
     public void StringTest()
     {
         var p = new Config() { sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
         var sensor = new BoundaryDistX(p);
         Assert.Equal("boundary dist X", sensor.ToString());
     }
@@ -31,7 +29,6 @@ public class BoundaryDistXTests
     public void ShortNameTest()
     {
         var p = new Config() { sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
         var sensor = new BoundaryDistX(p);
         Assert.Equal("EDx", sensor.ShortName);
     }
