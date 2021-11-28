@@ -30,7 +30,7 @@ public readonly struct Board
 
         Grid.ZeroFill();
         Signals.ZeroFill();
-        var survivors = Peeps.Survivor().ToArray();
+        var survivors = Peeps.Survivors().ToArray();
         if (survivors.Length == 0) throw new NotImplementedException("Everybody died.");
         Peeps.Clear();
         for (var i = 0; i < _p.population; i++)

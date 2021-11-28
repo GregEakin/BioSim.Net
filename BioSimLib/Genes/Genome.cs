@@ -226,21 +226,6 @@ public class Genome : IEnumerable<Gene>
     {
         get
         {
-            // var front = _genome.First();
-            // var red = (byte)(((front.SourceType == Gene.GeneType.Neuron ? 1 : 0) << 7) 
-            //                  | ((front.SinkType == Gene.GeneType.Neuron ? 1 : 0) << 6)
-            //                  | ((front.WeightAsShort & 0x7E00) >> 9));
-            //
-            // var mid = _genome.Skip(_genome.Length / 2).First();
-            // var green = (byte)(((mid.SourceType == Gene.GeneType.Neuron ? 1 : 0) << 7)
-            //                    | ((mid.SinkType == Gene.GeneType.Neuron ? 1 : 0) << 6)
-            //                    | ((mid.WeightAsShort & 0x7E00) >> 9));
-            //
-            // var back = _genome.Last();
-            // var blue = (byte)(((back.SourceType == Gene.GeneType.Neuron ? 1 : 0) << 7)
-            //                   | ((back.SinkType == Gene.GeneType.Neuron ? 1 : 0) << 6)
-            //                   | ((back.WeightAsShort & 0x7E00) >> 9));
-
             var front = _genome.First();
             var red = (byte)(((front.SourceNum & 0x03) << 6)
                              | (front.SinkNum & 0x03 << 4)
@@ -284,9 +269,8 @@ public class Genome : IEnumerable<Gene>
                 }
                 case < 5:
                 {
-                    var builder = new GeneBuilder(gene);
                     var bit = _random.Next(16);
-                    var value = new Gene(builder).ToUint ^ (0x00010000 << bit);
+                    var value = gene.ToUint ^ (0x00010000 << bit);
                     genes[i] = (uint)value;
                     break;
                 }

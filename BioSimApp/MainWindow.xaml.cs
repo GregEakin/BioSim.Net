@@ -17,7 +17,8 @@ namespace BioSimApp;
 public partial class MainWindow : Window
 {
     private double ScaleFactor { get; set; } = 1.0;
-    private uint SimStep { get; set; } = 0u;
+    private uint _generation;
+    private uint _simStep;
     
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(30) };
     private readonly Config _p = new()
@@ -59,19 +60,26 @@ public partial class MainWindow : Window
         _timer.Start();
 
         SizeChanged += MainWindow_SizeChanged;
+
+        WorldSize.Text = $"{_p.sizeX}x{_p.sizeY}";
+        Population.Text = _p.population.ToString();
+        StepGen.Text = _p.stepsPerGeneration.ToString();
+        GenomeLen.Text = $"{_p.genomeMaxLength} genes";
+        NeuronLen.Text = _p.maxNumberNeurons.ToString();
     }
 
     public void Update()
     {
-        if (SimStep > _p.stepsPerGeneration)
+        _simStep++;
+        if (_simStep > _p.stepsPerGeneration)
         {
-            SimStep = 0u;
+            _generation++;
+            _simStep = 0u;
             var players = _board.NewGeneration().ToArray();
             for (var i = 0; i < _p.population; i++)
                 _critters[i] = new Cell(players[i]);
         }
 
-        SimStep++;
         foreach (var critter in _critters)
             critter.Update(_board, _sensorFactory, _actionFactory, 0u);
 
@@ -81,14 +89,17 @@ public partial class MainWindow : Window
     public void Draw()
     {
         MyCanvas.Children.Clear();
+        Generation.Text = _generation.ToString();
+        SimStep.Text = _simStep.ToString();
+
         foreach (var critter in _critters) 
             critter.Draw(MyCanvas, ScaleFactor);
     }
 
     private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var w1 = 0.90 * e.NewSize.Width / _p.sizeX;
-        var h1 = 0.90 * e.NewSize.Height / _p.sizeY;
+        var w1 = MyCanvas.ActualWidth / _p.sizeX;
+        var h1 = MyCanvas.ActualHeight / _p.sizeY;
         ScaleFactor = Math.Min(w1, h1);
     }
 

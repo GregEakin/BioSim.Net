@@ -5,6 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BioSimApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Canvas x:Name="MyCanvas"/>
+        Title="MainWindow" Height="600" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" BorderThickness="5">
+            <Canvas x:Name="MyCanvas"/>
+        </Border>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock>Gregory Eakin</TextBlock>
+                <TextBlock>greg@eakin.dev</TextBlock>
+                <TextBlock/>
+                <TextBlock>World size:</TextBlock>
+                <TextBlock>Population:</TextBlock>
+                <TextBlock>Steps/gen:</TextBlock>
+                <TextBlock>Genome length:</TextBlock>
+                <TextBlock>Inner neurons:</TextBlock>
+                <TextBlock/>
+                <TextBlock>Generation:</TextBlock>
+                <TextBlock>Sim Step:</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock/>
+                <TextBlock/>
+                <TextBlock/>
+                <TextBlock x:Name="WorldSize"/>
+                <TextBlock x:Name="Population"/>
+                <TextBlock x:Name="StepGen"/>
+                <TextBlock x:Name="GenomeLen"/>
+                <TextBlock x:Name="NeuronLen"/>
+                <TextBlock/>
+                <TextBlock x:Name="Generation"/>
+                <TextBlock x:Name="SimStep"/>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Column="1" >
+        </StackPanel>
+    </Grid>
+
 </Window>
