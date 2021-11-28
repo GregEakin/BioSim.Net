@@ -14,40 +14,39 @@
         <Border Grid.Column="0" BorderThickness="5">
             <Canvas x:Name="MyCanvas"/>
         </Border>
-        <Grid Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
-                <TextBlock>Gregory Eakin</TextBlock>
-                <TextBlock>greg@eakin.dev</TextBlock>
-                <TextBlock/>
-                <TextBlock>World size:</TextBlock>
-                <TextBlock>Population:</TextBlock>
-                <TextBlock>Steps/gen:</TextBlock>
-                <TextBlock>Genome length:</TextBlock>
-                <TextBlock>Inner neurons:</TextBlock>
-                <TextBlock/>
-                <TextBlock>Generation:</TextBlock>
-                <TextBlock>Sim Step:</TextBlock>
-            </StackPanel>
-            <StackPanel Grid.Column="2">
-                <TextBlock/>
-                <TextBlock/>
-                <TextBlock/>
-                <TextBlock x:Name="WorldSize"/>
-                <TextBlock x:Name="Population"/>
-                <TextBlock x:Name="StepGen"/>
-                <TextBlock x:Name="GenomeLen"/>
-                <TextBlock x:Name="NeuronLen"/>
-                <TextBlock/>
-                <TextBlock x:Name="Generation"/>
-                <TextBlock x:Name="SimStep"/>
-            </StackPanel>
-        </Grid>
-        <StackPanel Grid.Column="1" >
+        <StackPanel Grid.Column="1">
+            <TextBlock>Gregory Eakin</TextBlock>
+            <TextBlock>greg@eakin.dev</TextBlock>
+            <TextBlock/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock>World size:</TextBlock>
+                    <TextBlock>Population:</TextBlock>
+                    <TextBlock>Steps/gen:</TextBlock>
+                    <TextBlock>Genome length:</TextBlock>
+                    <TextBlock>Inner neurons:</TextBlock>
+                    <TextBlock/>
+                    <TextBlock>Generation:</TextBlock>
+                    <TextBlock>Sim Step:</TextBlock>
+                    <TextBlock>Census:</TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock x:Name="WorldSize"/>
+                    <TextBlock x:Name="Population"/>
+                    <TextBlock x:Name="StepGen"/>
+                    <TextBlock x:Name="GenomeLen"/>
+                    <TextBlock x:Name="NeuronLen"/>
+                    <TextBlock/>
+                    <TextBlock x:Name="Generation"/>
+                    <TextBlock x:Name="SimStep"/>
+                    <TextBlock x:Name="Census"/>
+                </StackPanel>
+            </Grid>
         </StackPanel>
     </Grid>
 

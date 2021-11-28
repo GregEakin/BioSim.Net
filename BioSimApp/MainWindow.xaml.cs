@@ -1,7 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//    Copyright 2021 Gregory Eakin
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using BioSimLib;
 using BioSimLib.Actions;
@@ -26,7 +41,7 @@ public partial class MainWindow : Window
         stepsPerGeneration = 300,
         genomeMaxLength = 24,
         maxNumberNeurons = 12,
-        populationSensorRadius = 10, 
+        populationSensorRadius = 10,
         shortProbeBarrierDistance = 4,
         longProbeDistance = 10,
         signalLayers = 1,
@@ -42,6 +57,7 @@ public partial class MainWindow : Window
     private double ScaleFactor { get; set; } = 1.0;
     private uint _generation;
     private uint _simStep;
+    private int _census;
 
     public MainWindow()
     {
@@ -71,18 +87,22 @@ public partial class MainWindow : Window
         StepGen.Text = _p.stepsPerGeneration.ToString();
         GenomeLen.Text = $"{_p.genomeMaxLength} genes";
         NeuronLen.Text = _p.maxNumberNeurons.ToString();
+
+        foreach (var critter in _critters)
+            critter.Draw(MyCanvas, ScaleFactor);
     }
 
     public void Update()
     {
-        _simStep++;
+        if (_simStep == 0 && _generation % 20 == 0)
+        {
+            var census = _board.Peeps.Census();
+            _census = census.Count;
+        }
+
         if (_simStep > _p.stepsPerGeneration)
         {
             _generation++;
-
-            if (_generation > 10)
-                _timer.Stop();
-
             _simStep = 0u;
             var players = _board.NewGeneration().ToArray();
             for (var i = 0; i < _p.population; i++)
@@ -92,17 +112,69 @@ public partial class MainWindow : Window
         foreach (var critter in _critters)
             critter.Update(_board, _sensorFactory, _actionFactory, _actionLevels, _neuronAccumulators, _simStep);
 
+        _board.Peeps.DrainDeathQueue(_board.Grid);
         _board.Peeps.DrainMoveQueue(_board.Grid);
+
+        _simStep++;
     }
 
     public void Draw()
     {
-        MyCanvas.Children.Clear();
         Generation.Text = _generation.ToString();
         SimStep.Text = _simStep.ToString();
+        Census.Text = _census.ToString();
 
-        foreach (var critter in _critters) 
-            critter.Draw(MyCanvas, ScaleFactor);
+        // if (_simStep == 2)
+        // {
+        //     MyCanvas.Children.Clear();
+        //     DrawKillZone();
+        //
+        //     foreach (var critter in _critters)
+        //         critter.Draw(MyCanvas, ScaleFactor);
+        // }
+        // else
+            foreach (var critter in _critters)
+                critter.Update(MyCanvas, ScaleFactor);
+
+    }
+
+    private void DrawKillZone()
+    {
+        //     < Rectangle
+        //     Canvas.Top = "0"
+        //     Canvas.Left = "0"
+        //     Height = "574"
+        //     Width = "300"
+        //     Fill = "LightPink" />
+        //         < Rectangle
+        //     Canvas.Top = "0"
+        //     Canvas.Left = "570"
+        //     Height = "574"
+        //     Width = "20"
+        //     Fill = "LightPink" />
+
+        var box1 = new Rectangle
+        {
+
+            Stroke = Brushes.LightPink,
+            Fill = Brushes.LightPink,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            Height = _p.sizeY * ScaleFactor,
+            Width = _p.sizeX * ScaleFactor / 2.0
+        };
+        MyCanvas.Children.Add(box1);
+
+        // var box2 = new Rectangle
+        // {
+        //     Stroke = Brushes.Green,
+        //     Fill = Brushes.Green,
+        //     HorizontalAlignment = HorizontalAlignment.Right,
+        //     VerticalAlignment = VerticalAlignment.Center,
+        //     Height = _p.sizeY * ScaleFactor,
+        //     Width = 2 * ScaleFactor,
+        // };
+        // MyCanvas.Children.Add(box2);
     }
 
     private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -116,6 +188,7 @@ public partial class MainWindow : Window
     {
         for (var i = 0; i < 10; i++)
             Update();
+
         Draw();
     }
 }

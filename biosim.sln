@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BioSimLib", "BioSimLib\BioS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BioSimExe", "BioSimExe\BioSimExe.csproj", "{ED288D8C-E4C0-4799-946E-59493C711327}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioSimApp", "BioSimApp\BioSimApp.csproj", "{0E51D946-62D5-49C8-AFF2-DEFA02A56BE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BioSimApp", "BioSimApp\BioSimApp.csproj", "{0E51D946-62D5-49C8-AFF2-DEFA02A56BE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA4CFEB0-4F9C-4AE7-BBBB-ECD849980221}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
