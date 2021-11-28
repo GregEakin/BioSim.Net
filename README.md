@@ -1,7 +1,6 @@
 # Biological Evolution Simulator
 
-This is largely based on the BioSim4 simulator from @davidrmiller
-	@davidrmiller/biosim4
+This is inspired from [BioSim4](https://github.com/davidrmiller/biosim4) simulator from [David R Miller](https://github.com/davidrmiller)
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=N3tRFayqVtk" target="_blank"><img src="http://img.youtube.com/vi/N3tRFayqVtk/0.jpg" alt="I programmed some creatures. They Evolved." width="240" height="180" border="10" /></a>
 
