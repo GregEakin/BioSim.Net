@@ -39,8 +39,8 @@ public class Cell
 
     public void Draw(Canvas myCanvas, double scaleFactor)
     {
-        var tx = 2.0 + _player._loc.X * scaleFactor;
-        var ty = 2.0 + _player._loc.Y * scaleFactor;
+        var tx = (0.5 + _player._loc.X) * scaleFactor;
+        var ty = (0.5 + _player._loc.Y) * scaleFactor;
         var radius = 0.5 * scaleFactor;
         var center = new Point(tx, ty);
         var circle = new EllipseGeometry(center, radius, radius, null);

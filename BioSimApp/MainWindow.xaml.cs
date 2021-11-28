@@ -15,6 +15,7 @@
 using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -54,10 +55,11 @@ public partial class MainWindow : Window
     private readonly float[] _actionLevels = new float[Enum.GetNames<Action>().Length];
     private readonly float[] _neuronAccumulators;
 
-    private double ScaleFactor { get; set; } = 1.0;
+    private double _saleFactor = 1.0;
     private uint _generation;
     private uint _simStep;
     private int _census;
+    private int _skipUpdate = 10;
 
     public MainWindow()
     {
@@ -91,7 +93,7 @@ public partial class MainWindow : Window
 
     public void Update()
     {
-        if (_simStep < 10 && _generation % 5 == 0)
+        if (_simStep < _skipUpdate && _generation % 5 == 0)
         {
             var census = _board.Peeps.Census();
             _census = census.Count;
@@ -123,60 +125,43 @@ public partial class MainWindow : Window
 
         MyCanvas.Children.Clear();
         DrawKillZone();
-        
+
         foreach (var critter in _critters)
-            critter.Draw(MyCanvas, ScaleFactor);
+            critter.Draw(MyCanvas, _saleFactor);
     }
 
     private void DrawKillZone()
     {
-        //     < Rectangle
-        //     Canvas.Top = "0"
-        //     Canvas.Left = "0"
-        //     Height = "574"
-        //     Width = "300"
-        //     Fill = "LightPink" />
-        //         < Rectangle
-        //     Canvas.Top = "0"
-        //     Canvas.Left = "570"
-        //     Height = "574"
-        //     Width = "20"
-        //     Fill = "LightPink" />
-
         var box1 = new Rectangle
         {
-
             Stroke = Brushes.LightPink,
             Fill = Brushes.LightPink,
-            HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Center,
-            Height = _p.sizeY * ScaleFactor,
-            Width = _p.sizeX * ScaleFactor / 2.0
+            Height = _p.sizeY * _saleFactor,
+            Width = _p.sizeX * _saleFactor / 2.0
         };
         MyCanvas.Children.Add(box1);
 
-        // var box2 = new Rectangle
-        // {
-        //     Stroke = Brushes.Green,
-        //     Fill = Brushes.Green,
-        //     HorizontalAlignment = HorizontalAlignment.Right,
-        //     VerticalAlignment = VerticalAlignment.Center,
-        //     Height = _p.sizeY * ScaleFactor,
-        //     Width = 2 * ScaleFactor,
-        // };
-        // MyCanvas.Children.Add(box2);
+        var box2 = new Rectangle
+        {
+            Stroke = Brushes.LightPink,
+            Fill = Brushes.LightPink,
+            Height = _p.sizeY * _saleFactor,
+            Width = 2 * _saleFactor,
+        };
+        box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2.0) * _saleFactor);
+        MyCanvas.Children.Add(box2);
     }
 
     private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
     {
         var w1 = MyCanvas.ActualWidth / _p.sizeX;
         var h1 = MyCanvas.ActualHeight / _p.sizeY;
-        ScaleFactor = Math.Min(w1, h1);
+        _saleFactor = Math.Min(w1, h1);
     }
 
     private void OnTimerOnTick(object? s, EventArgs e)
     {
-        for (var i = 0; i < 10; i++)
+        for (var i = 0; i < _skipUpdate; i++)
             Update();
 
         Draw();
