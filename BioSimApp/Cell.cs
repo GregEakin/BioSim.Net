@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -26,7 +27,6 @@ public class Cell
 {
     private readonly Player _player;
     private readonly Brush _brush;
-    private Ellipse _circle;
 
     public Cell(Player player)
     {
@@ -42,34 +42,15 @@ public class Cell
         var tx = 2.0 + _player._loc.X * scaleFactor;
         var ty = 2.0 + _player._loc.Y * scaleFactor;
         var radius = 0.5 * scaleFactor;
-
-        _circle = new Ellipse()
+        var center = new Point(tx, ty);
+        var circle = new EllipseGeometry(center, radius, radius, null);
+        var path = new Path
         {
-            
-        };
-        Canvas.SetLeft(_circle, tx);
-        Canvas.SetTop(_circle, ty);
-        myCanvas.Children.Add(_circle);
-    }
-
-    public void Update(Canvas myCanvas, double scaleFactor)
-    {
-        var tx = 2.0 + _player._loc.X * scaleFactor;
-        var ty = 2.0 + _player._loc.Y * scaleFactor;
-        var radius = 0.5 * scaleFactor;
-        // _center.X = tx;
-        // _center.Y = ty;
-        // _circle = new EllipseGeometry(_center, radius, radius, null);
-        // _path = new Path
-        // {
-        //     Fill = _brush,
-        //     Stroke = _brush,
-        //     StrokeThickness = 0.1,
-        //     Data = _circle,
-        // };
-
-        Canvas.SetLeft(_circle, tx);
-        Canvas.SetTop(_circle, ty);
+            Fill = _brush,
+            Stroke = _brush,
+            StrokeThickness = 0.1,
+            Data = circle,
+        }; myCanvas.Children.Add(path);
     }
 
     static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;

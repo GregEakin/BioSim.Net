@@ -87,9 +87,6 @@ public partial class MainWindow : Window
         StepGen.Text = _p.stepsPerGeneration.ToString();
         GenomeLen.Text = $"{_p.genomeMaxLength} genes";
         NeuronLen.Text = _p.maxNumberNeurons.ToString();
-
-        foreach (var critter in _critters)
-            critter.Draw(MyCanvas, ScaleFactor);
     }
 
     public void Update()
@@ -124,18 +121,11 @@ public partial class MainWindow : Window
         SimStep.Text = _simStep.ToString();
         Census.Text = _census.ToString();
 
-        // if (_simStep == 2)
-        // {
-        //     MyCanvas.Children.Clear();
-        //     DrawKillZone();
-        //
-        //     foreach (var critter in _critters)
-        //         critter.Draw(MyCanvas, ScaleFactor);
-        // }
-        // else
-            foreach (var critter in _critters)
-                critter.Update(MyCanvas, ScaleFactor);
-
+        MyCanvas.Children.Clear();
+        DrawKillZone();
+        
+        foreach (var critter in _critters)
+            critter.Draw(MyCanvas, ScaleFactor);
     }
 
     private void DrawKillZone()
