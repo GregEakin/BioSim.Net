@@ -55,10 +55,8 @@ public class Player
         CreateWiringFromGenome();
     }
 
-    public float[] FeedForward(SensorFactory sensors, uint simStep)
+    public void FeedForward(SensorFactory sensors, float[] actionLevels, float[] neuronAccumulators, uint simStep)
     {
-        var actionLevels = new float[Enum.GetNames<Action>().Length];
-        var neuronAccumulators = new float[_nnet.Length];
         foreach (var conn in _genome)
         {
             var value = conn.SourceType == Gene.GeneType.Sensor
@@ -73,8 +71,6 @@ public class Player
 
         for (var i = 0; i < _nnet.Length; i++)
             _nnet[i].Output = neuronAccumulators[i];
-
-        return actionLevels;
     }
 
     public void CreateWiringFromGenome()

@@ -17,7 +17,7 @@ public class LongProbeBarrierForward : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _grid.LongProbeBarrierFwd(player._loc, player.LastMoveDir, player._longProbeDist) / (float)player._longProbeDist;
+        var sensorVal = _grid.LongProbeBarrierFwd(player._loc, player.LastMoveDir, player._longProbeDist) / player._longProbeDist;
         return sensorVal;
     }
 }

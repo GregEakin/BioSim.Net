@@ -81,5 +81,5 @@ public class Peeps
         _moveQueue.Clear();
     }
 
-    public IEnumerable<Genome> Survivor() => from player in _players where player._loc.X > _p.sizeX / 2 select player._genome;
+    public IEnumerable<Genome> Survivors() => from player in _players where player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2 select player._genome;
 }

@@ -6,6 +6,7 @@ using BioSimLib.Genes;
 using BioSimLib.Positions;
 using BioSimLib.Sensors;
 using Xunit;
+using Action = BioSimLib.Actions.Action;
 
 namespace BioSimTests;
 
@@ -43,7 +44,9 @@ public class PlayerTests
         player._nnet[1].Driven = true;
         player._nnet[1].Output = 0.4f;
 
-        var actionLevels = player.FeedForward(factory, 0);
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        var neuronAccumulators = new float[p.maxNumberNeurons];
+        player.FeedForward(factory, actionLevels, neuronAccumulators, 0);
         Assert.Equal(0.5773243f, player._nnet[0].Output);
         Assert.Equal(0.916998565f, player._nnet[1].Output);
 

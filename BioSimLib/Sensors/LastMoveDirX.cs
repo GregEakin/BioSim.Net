@@ -2,13 +2,6 @@
 
 public class LastMoveDirX : ISensor
 {
-    private readonly Config _p;
-
-    public LastMoveDirX(Config p)
-    {
-        _p = p;
-    }
-
     public Sensor Type => Sensor.LAST_MOVE_DIR_X;
     public override string ToString() => "last move dir X";
     public string ShortName => "LMx";

@@ -8,6 +8,7 @@ using BioSimLib.Actions;
 using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Sensors;
+using Action = BioSimLib.Actions.Action;
 
 namespace BioSimApp;
 
@@ -16,10 +17,6 @@ namespace BioSimApp;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private double ScaleFactor { get; set; } = 1.0;
-    private uint _generation;
-    private uint _simStep;
-    
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(30) };
     private readonly Config _p = new()
     {
@@ -27,10 +24,11 @@ public partial class MainWindow : Window
         sizeY = 128,
         population = 1000,
         stepsPerGeneration = 300,
-        genomeMaxLength = 4,
-        maxNumberNeurons = 3,
+        genomeMaxLength = 24,
+        maxNumberNeurons = 12,
         populationSensorRadius = 10, 
-        shortProbeBarrierDistance = 4, 
+        shortProbeBarrierDistance = 4,
+        longProbeDistance = 10,
         signalLayers = 1,
     };
 
@@ -38,6 +36,12 @@ public partial class MainWindow : Window
     private readonly SensorFactory _sensorFactory;
     private readonly ActionFactory _actionFactory;
     private readonly Cell[] _critters;
+    private readonly float[] _actionLevels = new float[Enum.GetNames<Action>().Length];
+    private readonly float[] _neuronAccumulators;
+
+    private double ScaleFactor { get; set; } = 1.0;
+    private uint _generation;
+    private uint _simStep;
 
     public MainWindow()
     {
@@ -45,6 +49,7 @@ public partial class MainWindow : Window
         _sensorFactory = new SensorFactory(_p, _board);
         _actionFactory = new ActionFactory();
         _critters = new Cell[_p.population];
+        _neuronAccumulators = new float[_p.maxNumberNeurons];
 
         for (var i = 0; i < _p.population; i++)
         {
@@ -74,6 +79,10 @@ public partial class MainWindow : Window
         if (_simStep > _p.stepsPerGeneration)
         {
             _generation++;
+
+            if (_generation > 10)
+                _timer.Stop();
+
             _simStep = 0u;
             var players = _board.NewGeneration().ToArray();
             for (var i = 0; i < _p.population; i++)
@@ -81,7 +90,7 @@ public partial class MainWindow : Window
         }
 
         foreach (var critter in _critters)
-            critter.Update(_board, _sensorFactory, _actionFactory, 0u);
+            critter.Update(_board, _sensorFactory, _actionFactory, _actionLevels, _neuronAccumulators, _simStep);
 
         _board.Peeps.DrainMoveQueue(_board.Grid);
     }
@@ -105,7 +114,8 @@ public partial class MainWindow : Window
 
     private void OnTimerOnTick(object? s, EventArgs e)
     {
-        Update();
+        for (var i = 0; i < 10; i++)
+            Update();
         Draw();
     }
 }

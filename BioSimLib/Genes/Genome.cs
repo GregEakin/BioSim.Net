@@ -19,7 +19,7 @@ public class Genome : IEnumerable<Gene>
     private readonly Config _p;
     private readonly Gene[] _genome;
     private readonly Gene[] _connectionList;
-    private readonly Random _random = new();
+    private static readonly Random _random = new();
 
     public int NeuronsNeeded
     {

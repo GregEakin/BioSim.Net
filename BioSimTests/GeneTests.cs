@@ -1,6 +1,9 @@
+using System;
 using System.Runtime.InteropServices;
 using BioSimLib;
+using BioSimLib.Field;
 using BioSimLib.Genes;
+using BioSimLib.Positions;
 using Xunit;
 
 namespace BioSimTests;
@@ -193,5 +196,14 @@ public class GeneTests
         var gene = new Gene(builder);
         Assert.Equal(0x00002000u, gene.ToUint);
         Assert.Equal(1.0f, gene.WeightAsFloat);
+    }
+
+    [Fact]
+    public void EqualsTest()
+    {
+        var gene1 = new Gene(new GeneBuilder { Weight = 0x0000 });
+        var gene2 = new Gene(new GeneBuilder { Weight = 0x0007 });
+
+        Assert.True(gene1.Equals(gene2));
     }
 }

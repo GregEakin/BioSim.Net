@@ -54,7 +54,9 @@ static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FOR
 for (var simStep = 0u; simStep < 3u; ++simStep)
 {
     Console.WriteLine("Step {0}", ++simStep);
-    var actionLevels = player.FeedForward(sensorFactory, simStep);
+    var actionLevels = new float[Enum.GetNames<Action>().Length];
+    var neuronAccumulators = new float[p.maxNumberNeurons];
+    player.FeedForward(sensorFactory, actionLevels, neuronAccumulators, simStep);
     Console.Write("  Action levels: ");
     foreach (var level in actionLevels) Console.Write("{0}, ", level);
     Console.WriteLine();

@@ -57,6 +57,12 @@ public readonly struct Gene
 
     public override string ToString() => ToUint.ToString("X8");
 
+    public override bool Equals(object? obj) => obj is Gene other && Equals(other);
+
+    public override int GetHashCode() => HashCode.Combine(_source, _sink, WeightAsShort);
+
+    public bool Equals(Gene g2) => _source == g2._source && _sink == g2._sink && Math.Abs(WeightAsShort - g2.WeightAsShort) < 8;
+
     public string ToEdge()
     {
         var builder = new StringBuilder();

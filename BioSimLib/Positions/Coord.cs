@@ -81,9 +81,9 @@ public struct Coord
             return 1.0f;
 
         var dot = X * other.X + Y * other.Y;
-        var cos = dot / (mag1 * mag2);
-        var normalized = Math.Min(Math.Max(cos, -1.0), 1.0);
-        return (float)normalized;
+        var cos = (float)(dot / (mag1 * mag2));
+        var normalized = Math.Min(Math.Max(cos, -1.0f), 1.0f);
+        return normalized;
     }
 
     public float RaySameness(Dir dir) => RaySameness(dir.AsNormalizedCoord());

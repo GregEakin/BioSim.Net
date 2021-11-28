@@ -141,7 +141,7 @@ public class Grid
         var count = 0u;
         loc += dir;
         var numLocsToTest = longProbeDist;
-        while (numLocsToTest > 0u && IsInBounds(loc) && IsEmptyAt(loc))
+        while (numLocsToTest > 0u && IsInBounds(loc) && !IsEmptyAt(loc))
         {
             ++count;
             loc += dir;
@@ -156,7 +156,7 @@ public class Grid
         var count = 0u;
         loc += dir;
         var numLocsToTest = longProbeDist;
-        while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
+        while (numLocsToTest > 0u && IsInBounds(loc) && IsBarrierAt(loc))
         {
             ++count;
             loc += dir;
