@@ -91,7 +91,7 @@ public partial class MainWindow : Window
 
     public void Update()
     {
-        if (_simStep == 0 && _generation % 20 == 0)
+        if (_simStep < 10 && _generation % 5 == 0)
         {
             var census = _board.Peeps.Census();
             _census = census.Count;
@@ -119,7 +119,7 @@ public partial class MainWindow : Window
     {
         Generation.Text = _generation.ToString();
         SimStep.Text = _simStep.ToString();
-        Census.Text = _census.ToString();
+        Census.Text = $"{_census} colors";
 
         MyCanvas.Children.Clear();
         DrawKillZone();
