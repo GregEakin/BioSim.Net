@@ -25,32 +25,46 @@ namespace BioSimApp;
 
 public class Cell
 {
-    private readonly Player _player;
+    public Player Player { get; set; }
     private readonly Brush _brush;
+    private readonly Path _path;
+
+    public UIElement Element => _path;
 
     public Cell(Player player)
     {
-        _player = player;
+        Player = player;
 
-        var c = _player.Color;
-        var color = Color.FromRgb(c.Item1, c.Item2, c.Item3);
+        var (red, green, blue) = Player.Color;
+        var color = Color.FromRgb(red, green, blue);
         _brush = new SolidColorBrush(color);
+        _path = new Path
+        {
+            Fill = _brush,
+            Stroke = _brush,
+            Data = new EllipseGeometry
+            {
+                RadiusX = 0.5,
+                RadiusY = 0.5
+            },
+            StrokeThickness = 0.1,
+        };
+
+        _path.SetValue(Canvas.LeftProperty, 0.5 + Player._loc.X);
+        _path.SetValue(Canvas.TopProperty, 0.5 + Player._loc.Y);
     }
 
     public void Draw(Canvas myCanvas, double scaleFactor)
     {
-        var tx = (0.5 + _player._loc.X) * scaleFactor;
-        var ty = (0.5 + _player._loc.Y) * scaleFactor;
-        var radius = 0.5 * scaleFactor;
-        var center = new Point(tx, ty);
-        var circle = new EllipseGeometry(center, radius, radius, null);
-        var path = new Path
+        if (!Player.Alive)
         {
-            Fill = _brush,
-            Stroke = _brush,
-            StrokeThickness = 0.1,
-            Data = circle,
-        }; myCanvas.Children.Add(path);
+            _path.SetValue(Canvas.LeftProperty, -100.0);
+            _path.SetValue(Canvas.TopProperty, -100.0);
+            return;
+        }
+
+        _path.SetValue(Canvas.LeftProperty, (0.5 + Player._loc.X) * scaleFactor);
+        _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
     }
 
     static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
@@ -60,10 +74,22 @@ public class Cell
         for (var i = 0; i < actionLevels.Length; i++) actionLevels[i] = 0.0f;
         for (var i = 0; i < neuronAccumlator.Length; i++) neuronAccumlator[i] = 0.0f;
 
-        _player.FeedForward(sensorsFactory, actionLevels, neuronAccumlator, simStep);
-        _player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
-        var newLoc = _player.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
+        Player.FeedForward(sensorsFactory, actionLevels, neuronAccumlator, simStep);
+        Player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
+        var newLoc = Player.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
         if (board.Grid.IsInBounds(newLoc))
-            board.Peeps.QueueForMove(_player, newLoc);
+            board.Peeps.QueueForMove(Player, newLoc);
+    }
+
+    public void SizeChanged(double scaleFactor)
+    {
+        _path.Data = new EllipseGeometry
+        {
+            RadiusX = 0.5 * scaleFactor,
+            RadiusY = 0.5 * scaleFactor
+        };
+
+        _path.SetValue(Canvas.LeftProperty, (0.5 + Player._loc.X) * scaleFactor);
+        _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
     }
 }
