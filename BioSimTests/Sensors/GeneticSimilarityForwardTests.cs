@@ -55,7 +55,7 @@ public class GeneticSimilarityForwardTests
     {
         var p = new Config() { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
-        var genome = new Genome(p, new[] { 0x00000000u });
+        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
         var player = board.NewPlayer(genome, new Coord(2, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);
@@ -69,8 +69,8 @@ public class GeneticSimilarityForwardTests
     {
         var p = new Config() { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
-        var genome1 = new Genome(p, new[] { 0x00000000u });
-        var genome2 = new Genome(p, new[] { 0x00000008u });
+        var genome1 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
+        var genome2 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821008u }).ToGenome();
 
         var player = board.NewPlayer(genome1, new Coord(2, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);
@@ -85,8 +85,8 @@ public class GeneticSimilarityForwardTests
     {
         var p = new Config() { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
-        var genome1 = new Genome(p, new[] { 0x00000000u });
-        var genome2 = new Genome(p, new[] { 0x00000007u });
+        var genome1 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
+        var genome2 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821007u }).ToGenome();
 
         var player = board.NewPlayer(genome1, new Coord(2, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);

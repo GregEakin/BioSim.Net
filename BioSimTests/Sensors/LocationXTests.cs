@@ -52,7 +52,7 @@ public class LocationXTests
     {
         var p = new Config() { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
-        var genome = new Genome(p, new[] { 0x00000000u });
+        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
         var player = board.NewPlayer(genome, new Coord(2, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);

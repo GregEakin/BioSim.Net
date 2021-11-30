@@ -55,7 +55,7 @@ public class EmitSignalTests
             0x95882000u,  // TRUE * 1  => EMIT_SIGNAL0
         };
 
-        var genome = new Genome(p, dna);
+        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 3, Y = 4 };
         var player = board.NewPlayer(genome, loc);
         player.ResponsivenessAdjusted = 1.0f;

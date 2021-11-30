@@ -21,7 +21,7 @@ public class Config
     public uint maxGenerations; // >= 0
     public uint numThreads; // > 0
     public uint signalLayers; // >= 0
-    public uint genomeMaxLength; // > 0
+    public int genomeMaxLength; // > 0
     public int maxNumberNeurons; // > 0
     public double pointMutationRate; // 0.0..1.0
     public double geneInsertionDeletionRate; // 0.0..1.0

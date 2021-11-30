@@ -27,7 +27,7 @@ public class AnalysisTests
         {
             maxNumberNeurons = 5
         };
-        var genome = new Genome(p, new []{ 0x840B7FFFu });
+        var genome = new GenomeBuilder(p.maxNumberNeurons, new []{ 0x840B7FFFu }).ToGenome();
         var net = new NeuralNet(genome);
         Assert.Equal("840B7FFF", net.ToString());
     }

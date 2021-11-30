@@ -50,7 +50,7 @@ public class PlayerTests
             0x91842000u,
         };
 
-        var genome = new Genome(p, dna);
+        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 4, Y = 4 };
         var player = board.NewPlayer(genome, loc);
         player._nnet[0].Driven = true;
@@ -90,7 +90,7 @@ public class PlayerTests
             0x81822000u,
         };
 
-        var genome = new Genome(p, dna);
+        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 1, Y = 2 };
         var player = board.NewPlayer(genome, loc);
         player._nnet[0].Driven = true;
@@ -107,9 +107,8 @@ public class PlayerTests
         };
 
         var factory = new ActionFactory();
-        bool IsEnabled(IAction? action) => true;
-        player.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);
-        var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
+        player.ExecuteActions(factory, board, actionLevels, 0);
+        var newLoc = player.ExecuteMoves(factory, actionLevels, 0);
 
         // Assert.Equal(2, newLoc.X);
         // Assert.Equal(3, newLoc.Y);

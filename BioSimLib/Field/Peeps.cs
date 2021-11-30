@@ -69,7 +69,7 @@ public class Peeps
     {
         foreach (var (player, newLoc) in _moveQueue)
         {
-            if (!grid.Move(player, newLoc)) 
+            if (!grid.Move(player, newLoc))
                 continue;
 
             player._loc = newLoc;

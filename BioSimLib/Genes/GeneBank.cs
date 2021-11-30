@@ -31,16 +31,16 @@ public class GeneBank
         var found = _bank.TryGetValue(dna, out var genomeReference);
         if (!found || genomeReference == null)
         {
-            var genome1 = new Genome(_p, dna);
+            var genome1 = new GenomeBuilder(_p.maxNumberNeurons, dna);
             // genome1.Optimize();
-            _bank.Add(dna, new WeakReference<Genome>(genome1));
-            return genome1;
+            _bank.Add(dna, new WeakReference<Genome>(genome1.ToGenome()));
+            return genome1.ToGenome();
         }
 
         var available = genomeReference.TryGetTarget(out var genome3);
         if (!available || genome3 == null)
         {
-            genome3 = new Genome(_p, dna);
+            genome3 = new GenomeBuilder(_p.maxNumberNeurons, dna).ToGenome();
             // genome3.Optimize();
             genomeReference.SetTarget(genome3);
             return genome3;
@@ -55,7 +55,7 @@ public class GeneBank
         // Perform mutations
         //    Swap genes between the two
         //    Adjust the weights by +- %
-        return new Genome(_p, new uint[] { });
+        return new GenomeBuilder(_p.maxNumberNeurons, new uint[] { }).ToGenome();
     }
 
     public override string ToString()
@@ -111,7 +111,7 @@ public class GeneBank
             return 0.0f;
 
         var sFlags = new bool[sl];
-        var aFlags = new bool[sl];
+        var aFlags = new bool[al];
         var range = max(0, max(sl, al) / 2 - 1);
 
         /* calculate matching characters */
@@ -159,7 +159,7 @@ public class GeneBank
     {
         // Works only for genomes of equal length
         if (genome1.Length != genome2.Length)
-            throw new ArgumentException();
+            return 0.0f;
 
         var bitCount = genome1.Select((gene, i) => (int)NumberOfSetBits(gene.ToUint ^ genome2[i].ToUint)).Sum();
         var lengthBits = genome1.Length * Marshal.SizeOf<Gene>() * 8;
@@ -183,7 +183,7 @@ public class GeneBank
     {
         // Works only for genomes of equal length
         if (genome1.Length != genome2.Length)
-            throw new ArgumentException();
+            return 0.0f;
 
         var byteCount = genome1.Select((gene, i) => gene.Equals(genome2[i]) ? 1.0f : 0.0f).Sum();
         return byteCount / genome1.Length;

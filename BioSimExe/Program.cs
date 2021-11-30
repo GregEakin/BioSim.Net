@@ -40,11 +40,11 @@ var dna = new[]
     0x01002000u,
 };
 
-var genome = new Genome(p, dna);
+var genome = new GenomeBuilder(p.maxNumberNeurons, dna);
 Console.WriteLine("Genome: {0}", genome);
 
 var loc = new Coord { X = 1, Y = 2 };
-var player = board.NewPlayer(genome, loc);
+var player = board.NewPlayer(genome.ToGenome(), loc);
 board.Grid.Move(player, loc);
 
 Console.WriteLine("Player: {0}", player);
@@ -61,7 +61,6 @@ Console.WriteLine();
 Console.WriteLine(board.Grid);
 
 var actionFactory = new ActionFactory();
-static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
 
 for (var simStep = 0u; simStep < 3u; ++simStep)
 {
@@ -73,8 +72,8 @@ for (var simStep = 0u; simStep < 3u; ++simStep)
     foreach (var level in actionLevels) Console.Write("{0}, ", level);
     Console.WriteLine();
 
-    player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
-    var newLoc = player.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
+    player.ExecuteActions(actionFactory, board, actionLevels, simStep);
+    var newLoc = player.ExecuteMoves(actionFactory, actionLevels, simStep);
     if (board.Grid.IsInBounds(newLoc) && board.Grid.IsEmptyAt(newLoc))
         board.Peeps.QueueForMove(player, newLoc);
 

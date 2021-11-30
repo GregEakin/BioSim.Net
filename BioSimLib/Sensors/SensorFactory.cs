@@ -20,7 +20,7 @@ public class SensorFactory
 {
     private readonly ISensor?[] _sensors = new ISensor?[Enum.GetNames<Sensor>().Length];
 
-    public ISensor? this[Sensor sensor] => _sensors[(int)sensor];
+    public ISensor this[Sensor sensor] => _sensors[(int)sensor] ?? new False();
 
     public SensorFactory(Config p, Board board)
     {

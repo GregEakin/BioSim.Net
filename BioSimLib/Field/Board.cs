@@ -45,17 +45,27 @@ public readonly struct Board
         Grid.ZeroFill();
         Signals.ZeroFill();
         var survivors = Peeps.Survivors().ToArray();
-        if (survivors.Length == 0) throw new NotImplementedException("Everybody died.");
         Peeps.Clear();
-        for (var i = 0; i < _p.population; i++)
-        {
-            var index = i % survivors.Length;
-            var survivor = survivors[index];
-            var genome = survivor.Mutate();
-            var loc = Grid.FindEmptyLocation();
-            var player = NewPlayer(genome, loc);
-            players.Add(player);
-        }
+        if (survivors.Length <= 0)
+            for (var i = 0; i < _p.population; i++)
+            {
+                var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+                var genome = builder.ToGenome();
+                var loc = Grid.FindEmptyLocation();
+                var player = NewPlayer(genome, loc);
+                players.Add(player);
+            }
+        else
+            for (var i = 0; i < _p.population; i++)
+            {
+                var index = i % survivors.Length;
+                var survivor = survivors[index];
+                var genome = new GenomeBuilder(_p.maxNumberNeurons, survivor);
+                genome.Mutate();
+                var loc = Grid.FindEmptyLocation();
+                var player = NewPlayer(genome.ToGenome(), loc);
+                players.Add(player);
+            }
 
         return players;
     }

@@ -22,13 +22,13 @@ namespace BioSimLib;
 
 public class NeuralNet : IEnumerable<Neuron>
 {
-    private readonly Genome _connections;
+    private readonly Genome _genome;
     private readonly Neuron[] _neurons;
 
     public NeuralNet(Genome genome)
     {
-        _connections = genome;
-        _neurons = new Neuron[genome.NeuronsNeeded];
+        _genome = genome;
+        _neurons = new Neuron[genome.Neurons];
         for (var i = 0; i < _neurons.Length; i++)
             _neurons[i] = new Neuron();
     }
@@ -44,7 +44,7 @@ public class NeuralNet : IEnumerable<Neuron>
     public override string ToString()
     {
         var sb = new StringBuilder();
-        sb.Append(_connections.ToDna());
+        sb.Append(_genome.ToDna());
         // foreach (var neuron in _neurons)
         //     sb.Append(neuron);
         return sb.ToString();
@@ -55,13 +55,13 @@ public class NeuralNet : IEnumerable<Neuron>
         var sensors = new int[Enum.GetNames<Sensor>().Length];
         var actions = new int[Enum.GetNames<Action>().Length];
 
-        foreach (var gene in _connections)
+        foreach (var gene in _genome)
         {
             if (gene.SourceType == Gene.GeneType.Sensor)
                 ++sensors[(byte)gene.SourceSensor];
 
             if (gene.SinkType == Gene.GeneType.Action)
-                ++actions[(byte)gene.SinkNeuron];
+                ++actions[(byte)gene.SinkAction];
         }
 
         return (sensors, actions);

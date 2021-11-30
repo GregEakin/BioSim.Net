@@ -12,6 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using BioSimLib.Sensors;
+using Action = BioSimLib.Actions.Action;
+
 namespace BioSimLib.Genes;
 
 public class GeneBuilder
@@ -22,6 +25,10 @@ public class GeneBuilder
     public int SinkNum { get; set; }
     public short Weight { get; set; }
 
+    public Sensor SourceSensor => (Sensor)(SourceNum & 0x7F);
+    public Action SinkAction => (Action)(SinkNum & 0x7F);
+
+
     public float WeightAsFloat
     {
         get => Weight / 8192.0f;
@@ -29,6 +36,17 @@ public class GeneBuilder
     }
 
     public GeneBuilder() {}
+
+    public GeneBuilder(uint dna)
+    {
+        SourceType = (dna & 0x80000000u) == 0x80000000u ? Gene.GeneType.Sensor : Gene.GeneType.Neuron;
+        SourceNum = (byte)((dna & 0x7F000000u) >> 24);
+
+        SinkType = (dna & 0x00800000) == 0x00800000u ? Gene.GeneType.Action : Gene.GeneType.Neuron;
+        SinkNum = (byte)((dna & 0x007F0000u) >> 16);
+
+        Weight = (short)(dna & 0x0000FFFFu);
+    }
 
     public GeneBuilder(Gene gene)
     {
@@ -39,8 +57,15 @@ public class GeneBuilder
         Weight = gene.WeightAsShort;
     }
 
-    public uint AsUint()
+    public Gene ToGene() => new(this);
+
+    public uint ToUint()
     {
-        throw new NotImplementedException();
+        var dna = ((SourceType == Gene.GeneType.Sensor) ? 0x80000000u : 0x00000000u)
+                    | ((SourceNum & 0x7Fu) << 24)
+                    | ((SinkType == Gene.GeneType.Action) ? 0x00800000u : 0x00000000u)
+                    | ((SinkNum & 0x7Fu) << 16)
+                    | ((ushort)Weight);
+        return (uint)dna;
     }
 }

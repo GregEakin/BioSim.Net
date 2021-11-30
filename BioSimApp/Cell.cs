@@ -53,8 +53,6 @@ public class Cell
         _path.SetValue(Canvas.TopProperty, 0.5 + Player._loc.Y);
     }
 
-    static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
-
     public void Update(Board board, SensorFactory sensorsFactory, ActionFactory actionFactory, float[] actionLevels, float[] neuronAccumlator, uint simStep)
     {
         if (!Player.Alive)
@@ -64,8 +62,8 @@ public class Cell
         for (var i = 0; i < neuronAccumlator.Length; i++) neuronAccumlator[i] = 0.0f;
 
         Player.FeedForward(sensorsFactory, actionLevels, neuronAccumlator, simStep);
-        Player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
-        var newLoc = Player.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
+        Player.ExecuteActions(actionFactory, board, actionLevels, simStep);
+        var newLoc = Player.ExecuteMoves(actionFactory, actionLevels, simStep);
         if (board.Grid.IsInBounds(newLoc))
             board.Peeps.QueueForMove(Player, newLoc);
     }
@@ -92,11 +90,6 @@ public class Cell
         var brush = new SolidColorBrush(color);
         _path.Fill = brush;
         _path.Stroke = brush;
-        _path.Data = new EllipseGeometry
-            {
-                RadiusX = 0.5 * scaleFactor,
-                RadiusY = 0.5 * scaleFactor
-            };
     }
 
     public void SizeChanged(double scaleFactor)

@@ -14,11 +14,10 @@
 
 using System.Runtime.InteropServices;
 using System.Text;
-using BioSimLib.Genes;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 
-namespace BioSimLib;
+namespace BioSimLib.Genes;
 
 // Represents a half-precision floating point number. 
 // https://gist.github.com/vermorel/1d5c0212752b3e611faf84771ad4ff0d
@@ -59,13 +58,11 @@ public readonly struct Gene
 
     public GeneType SinkType => (_sink & 0x80) == 0x80 ? GeneType.Action : GeneType.Neuron;
 
-    public Action SinkNeuron => (Action)(_sink & 0x7F);
+    public Action SinkAction => (Action)(_sink & 0x7F);
 
     public byte SinkNum => (byte)(_sink & 0x7F);
 
     public float WeightAsFloat => WeightAsShort / 8192.0f;
-
-    // public short RandomWeight() { return randomUint(0u, 0xefffu) - 0x8000u; }
 
     public uint ToUint => ((uint)_source << 24) | ((uint)_sink << 16) | (ushort)WeightAsShort;
 
@@ -76,6 +73,10 @@ public readonly struct Gene
     public override int GetHashCode() => HashCode.Combine(_source, _sink, WeightAsShort);
 
     public bool Equals(Gene g2) => _source == g2._source && _sink == g2._sink && Math.Abs(WeightAsShort - g2.WeightAsShort) < 8;
+
+    public static bool operator ==(Gene g1, Gene g2) => g1.Equals(g2);
+    
+    public static bool operator !=(Gene g1, Gene g2) => !g1.Equals(g2);
 
     public string ToEdge()
     {
@@ -89,7 +90,7 @@ public readonly struct Gene
         builder.Append(' ');
 
         if (SinkType == GeneType.Action)
-            builder.Append(SinkNeuron);
+            builder.Append(SinkAction);
         else
             builder.Append($"N{SinkNum}");
 

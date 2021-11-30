@@ -49,7 +49,7 @@ public class TrueTests
     {
         var p = new Config() { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
-        var genome = new Genome(p, new[] { 0x00000000u });
+        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         var player = board.NewPlayer(genome, new Coord(1, 2));
 
         var sensor = new True();

@@ -100,7 +100,13 @@ public partial class MainWindow : Window
 
         for (var i = 0; i < _p.population; i++)
         {
-            var genome = new Genome(_p);
+            Genome genome;
+            do
+            {
+                var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+                genome = builder.ToGenome();
+            } while (genome.Length == 0);
+
             var loc = _board.Grid.FindEmptyLocation();
             var player = _board.NewPlayer(genome, loc);
             _critters[i] = new Cell(player);
