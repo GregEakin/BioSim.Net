@@ -26,7 +26,6 @@ namespace BioSimApp;
 public class Cell
 {
     public Player Player { get; set; }
-    private readonly Brush _brush;
     private readonly Path _path;
 
     public UIElement Element => _path;
@@ -37,11 +36,11 @@ public class Cell
 
         var (red, green, blue) = Player.Color;
         var color = Color.FromRgb(red, green, blue);
-        _brush = new SolidColorBrush(color);
+        var brush = new SolidColorBrush(color);
         _path = new Path
         {
-            Fill = _brush,
-            Stroke = _brush,
+            Fill = brush,
+            Stroke = brush,
             Data = new EllipseGeometry
             {
                 RadiusX = 0.5,
@@ -52,19 +51,6 @@ public class Cell
 
         _path.SetValue(Canvas.LeftProperty, 0.5 + Player._loc.X);
         _path.SetValue(Canvas.TopProperty, 0.5 + Player._loc.Y);
-    }
-
-    public void Draw(Canvas myCanvas, double scaleFactor)
-    {
-        if (!Player.Alive)
-        {
-            _path.SetValue(Canvas.LeftProperty, -100.0);
-            _path.SetValue(Canvas.TopProperty, -100.0);
-            return;
-        }
-
-        _path.SetValue(Canvas.LeftProperty, (0.5 + Player._loc.X) * scaleFactor);
-        _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
     }
 
     static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
@@ -84,6 +70,30 @@ public class Cell
             board.Peeps.QueueForMove(Player, newLoc);
     }
 
+    public void Draw(Canvas myCanvas, double scaleFactor)
+    {
+        if (!Player.Alive)
+        {
+            _path.SetValue(Canvas.LeftProperty, -100.0);
+            _path.SetValue(Canvas.TopProperty, -100.0);
+            return;
+        }
+
+        _path.SetValue(Canvas.LeftProperty, (0.5 + Player._loc.X) * scaleFactor);
+        _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
+    }
+
+    public void PlayerChanged(Player player, double scaleFactor)
+    {
+        Player = player;
+
+        var (red, green, blue) = Player.Color;
+        var color = Color.FromRgb(red, green, blue);
+        var brush = new SolidColorBrush(color);
+        _path.Fill = brush;
+        _path.Stroke = brush;
+    }
+
     public void SizeChanged(double scaleFactor)
     {
         _path.Data = new EllipseGeometry
@@ -91,8 +101,5 @@ public class Cell
             RadiusX = 0.5 * scaleFactor,
             RadiusY = 0.5 * scaleFactor
         };
-
-        _path.SetValue(Canvas.LeftProperty, (0.5 + Player._loc.X) * scaleFactor);
-        _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
     }
 }

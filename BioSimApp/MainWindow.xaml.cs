@@ -127,7 +127,7 @@ public partial class MainWindow : Window
             _simStep = 0u;
             var players = _board.NewGeneration().ToArray();
             for (var i = 0; i < _p.population; i++)
-                _critters[i].Player = players[i];
+                _critters[i].PlayerChanged(players[i], _scaleFactor);
         }
 
         foreach (var critter in _critters)
