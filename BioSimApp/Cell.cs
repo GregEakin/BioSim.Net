@@ -92,6 +92,11 @@ public class Cell
         var brush = new SolidColorBrush(color);
         _path.Fill = brush;
         _path.Stroke = brush;
+        _path.Data = new EllipseGeometry
+            {
+                RadiusX = 0.5 * scaleFactor,
+                RadiusY = 0.5 * scaleFactor
+            };
     }
 
     public void SizeChanged(double scaleFactor)
