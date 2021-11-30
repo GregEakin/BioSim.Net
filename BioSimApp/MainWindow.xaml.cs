@@ -115,13 +115,13 @@ public partial class MainWindow : Window
 
     public void Update()
     {
-        if (_simStep < _skipUpdate && _generation % 5 == 0)
+        if (_simStep == 1u && _generation % 5 == 0)
         {
             var census = _board.Peeps.Census();
             _census = census.Count;
         }
 
-        if (_simStep > _p.stepsPerGeneration)
+        if (_simStep >= _p.stepsPerGeneration)
         {
             _generation++;
             _simStep = 0u;

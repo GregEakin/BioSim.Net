@@ -38,7 +38,7 @@ public class Player
     public uint _oscPeriod;
     public uint _longProbeDist;
 
-    public bool Alive { get; set; } = true;
+    public bool Alive => _alive;
     public Dir LastMoveDir { get; set; } = Dir.Random8();
     public float ResponsivenessAdjusted { get; set; }
 
@@ -60,13 +60,11 @@ public class Player
 
         _birth = 0u;
         _oscPeriod = 34u; // ToDo !!! define a constant
-        _alive = true;
+        _alive = genome.Length > 0;
         _responsiveness = 0.5f; // range 0.0..1.0
         ResponsivenessAdjusted = 1.0f;
         _longProbeDist = p.longProbeDistance;
         _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
-
-        CreateWiringFromGenome();
     }
 
     public void FeedForward(SensorFactory sensors, float[] actionLevels, float[] neuronAccumulators, uint simStep)
@@ -87,50 +85,6 @@ public class Player
             _nnet[i].Output = neuronAccumulators[i];
     }
 
-    public void CreateWiringFromGenome()
-    {
-        var connectionList = _genome.MakeRenumberedConnectionList();
-        var nodeMap = _genome.MakeNodeList();
-        //@@ CullUselessNeurons(connectionList, nodeMap);
-
-        byte newNumber = 0;
-        foreach (var node in nodeMap)
-            node.Value.RemappedNumber = newNumber++;
-
-        // _nnet._connections.Clear();
-
-        // foreach (var conn in connectionList)
-        // {
-        //     if (conn.SinkType != Gene.GeneType.Neuron) continue;
-        //     // _nnet._connections.Add(conn);
-        //     var newConn = conn; // _nnet._connections.Last();
-        //     newConn.SinkNum = nodeMap[newConn.SinkNum].remappedNumber;
-        //     if (newConn.SourceType == Gene.GeneType.Neuron)
-        //         newConn.SourceNum = nodeMap[newConn.SourceNum].remappedNumber;
-        // }
-
-        // foreach (var conn in connectionList)
-        // {
-        //     if (conn.SinkType != Gene.GeneType.Action) continue;
-        //     // _nnet._connections.Add(conn);
-        //     var newConn = conn; // _nnet._connections.Last();
-        //     if (newConn.SourceType == Gene.GeneType.Neuron)
-        //         newConn.SourceNum = nodeMap[newConn.SourceNum].remappedNumber;
-        // }
-
-        // _nnet._neurons.Clear();
-        // for (var neuronNum = 0; neuronNum < nodeMap.Length; neuronNum++)
-        // {
-        //     var neuron = new NeuralNet.Neuron
-        //     {
-        //         Output = NeuralNet.Neuron.InitialNeuronOutput(),
-        //         Driven = nodeMap[neuronNum].numInputsFromSensorsOrOtherNeurons != 0u
-        //     };
-        //
-        //     _nnet._neurons.Add(neuron);
-        // }
-    }
-
     public float ResponseCurve(float r)
     {
         var k = _p.responsivenessCurveKFactor;
@@ -138,16 +92,16 @@ public class Player
         return (float)value;
     }
 
+    private static readonly Action[] actionEnums = {
+        Action.SET_RESPONSIVENESS,
+        Action.SET_OSCILLATOR_PERIOD,
+        Action.SET_LONGPROBE_DIST,
+        Action.EMIT_SIGNAL0,
+        Action.KILL_FORWARD,
+    };
+
     public void ExecuteActions(ActionFactory factory, Board board, Func<IAction,bool> isEnabled, float[] actionLevels, uint simStep)
     {
-        var actionEnums = new[]
-        {
-            Action.SET_RESPONSIVENESS,
-            Action.SET_OSCILLATOR_PERIOD,
-            Action.SET_LONGPROBE_DIST,
-            Action.EMIT_SIGNAL0,
-            Action.KILL_FORWARD,
-        };
         foreach (var actionEnum in actionEnums)
         {
             var action = factory[actionEnum];
@@ -158,26 +112,25 @@ public class Player
         }
     }
 
+    private static Action[] moveEnums = {
+        Action.MOVE_X,
+        Action.MOVE_Y,
+        Action.MOVE_EAST,
+        Action.MOVE_WEST,
+        Action.MOVE_NORTH,
+        Action.MOVE_SOUTH,
+        Action.MOVE_FORWARD,
+        Action.MOVE_REVERSE,
+        Action.MOVE_LEFT,
+        Action.MOVE_RIGHT,
+        Action.MOVE_RL,
+        Action.MOVE_RANDOM,
+    };
+
     public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
     {
         var moveX = 0.0f;
         var moveY = 0.0f;
-
-        var moveEnums = new[]
-        {
-            Action.MOVE_X,
-            Action.MOVE_Y,
-            Action.MOVE_EAST,
-            Action.MOVE_WEST,
-            Action.MOVE_NORTH,
-            Action.MOVE_SOUTH,
-            Action.MOVE_FORWARD,
-            Action.MOVE_REVERSE,
-            Action.MOVE_LEFT,
-            Action.MOVE_RIGHT,
-            Action.MOVE_RL,
-            Action.MOVE_RANDOM,
-        };
 
         foreach (var moveEnum in moveEnums)
         {

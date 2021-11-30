@@ -71,6 +71,9 @@ public class Cell
 
     public void Update(Board board, SensorFactory sensorsFactory, ActionFactory actionFactory, float[] actionLevels, float[] neuronAccumlator, uint simStep)
     {
+        if (!Player.Alive)
+            return;
+
         for (var i = 0; i < actionLevels.Length; i++) actionLevels[i] = 0.0f;
         for (var i = 0; i < neuronAccumlator.Length; i++) neuronAccumlator[i] = 0.0f;
 

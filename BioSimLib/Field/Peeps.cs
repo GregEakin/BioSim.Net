@@ -89,7 +89,7 @@ public class Peeps
     {
         foreach (var player in _deathQueue)
         {
-            player.Alive = false;
+            player._alive = false;
             grid.Remove(player);
             _players[player._index] = null;
         }
@@ -97,7 +97,7 @@ public class Peeps
         _deathQueue.Clear();
     }
 
-    public IEnumerable<Genome> Survivors() => from player in _players where player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2 select player._genome;
+    public IEnumerable<Genome> Survivors() => from player in _players where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2 select player._genome;
 
     public IDictionary<int, int> Census()
     {
