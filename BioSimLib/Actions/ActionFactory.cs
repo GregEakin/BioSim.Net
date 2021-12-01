@@ -22,33 +22,33 @@ public class ActionFactory
 
     public IAction? this[Action action] => _actions[(int)action];
 
+    private static readonly IAction[] Actions = new IAction[]
+    {
+        new EmitSignal(),
+        new KillForward(),
+        new MoveEast(),
+        new MoveForward(),
+        new MoveLeft(),
+        new MoveNorth(),
+        new MoveRandom(),
+        new MoveReverse(),
+        new MoveRight(),
+        new MoveRL(),
+        new MoveSouth(),
+        new MoveWest(),
+        new MoveX(),
+        new MoveY(),
+        new None(),
+        new Procreate(),
+        new SetLongProbeDist(),
+        new SetOscillatorPeriod(),
+        new SetResponsiveness(),
+        new Suicide(),
+    };
+
     public ActionFactory()
     {
-        var actions = new IAction[]
-        {
-            new EmitSignal(),
-            new KillForward(),
-            new MoveEast(),
-            new MoveForward(),
-            new MoveLeft(),
-            new MoveNorth(),
-            new MoveRandom(),
-            new MoveReverse(),
-            new MoveRight(),
-            new MoveRL(),
-            new MoveSouth(),
-            new MoveWest(),
-            new MoveX(),
-            new MoveY(),
-            new None(),
-            new Procreate(),
-            new SetLongProbeDist(),
-            new SetOscillatorPeriod(),
-            new SetResponsiveness(),
-            new Suicide(),
-        };
-
-        foreach (var action in actions)
+        foreach (var action in Actions)
             _actions[(int)action.Type] = action;
     }
 

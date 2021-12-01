@@ -92,7 +92,7 @@ public class Player
         return (float)value;
     }
 
-    private static readonly Action[] actionEnums = {
+    private static readonly Action[] ActionEnums = {
         Action.SET_RESPONSIVENESS,
         Action.SET_OSCILLATOR_PERIOD,
         Action.SET_LONGPROBE_DIST,
@@ -102,7 +102,7 @@ public class Player
 
     public void ExecuteActions(ActionFactory factory, Board board, Func<IAction,bool> isEnabled, float[] actionLevels, uint simStep)
     {
-        foreach (var actionEnum in actionEnums)
+        foreach (var actionEnum in ActionEnums)
         {
             var action = factory[actionEnum];
             if (action == null || !isEnabled(action) || !action.Enabled)
@@ -112,7 +112,7 @@ public class Player
         }
     }
 
-    private static Action[] moveEnums = {
+    private static readonly Action[] MoveEnums = {
         Action.MOVE_X,
         Action.MOVE_Y,
         Action.MOVE_EAST,
@@ -132,7 +132,7 @@ public class Player
         var moveX = 0.0f;
         var moveY = 0.0f;
 
-        foreach (var moveEnum in moveEnums)
+        foreach (var moveEnum in MoveEnums)
         {
             var action = factory[moveEnum];
             if (action == null || !isEnabled(action) || !action.Enabled)

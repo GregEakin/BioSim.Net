@@ -25,7 +25,7 @@ namespace BioSimApp;
 
 public class Cell
 {
-    public Player Player { get; set; }
+    public Player Player { get; private set; }
     private readonly Path _path;
 
     public UIElement Element => _path;
@@ -83,7 +83,7 @@ public class Cell
         _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
     }
 
-    public void PlayerChanged(Player player, double scaleFactor)
+    public void PlayerChanged(Player player)
     {
         Player = player;
 
