@@ -72,7 +72,7 @@ public class Player
         foreach (var conn in _genome)
         {
             var value = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor].Output(this, simStep)
+                ? sensors[conn.SourceSensor]?.Output(this, simStep) ?? 0.0f
                 : _nnet[conn.SourceNum].Output;
 
             if (conn.SinkType == Gene.GeneType.Action)
@@ -100,12 +100,12 @@ public class Player
         Action.KILL_FORWARD,
     };
 
-    public void ExecuteActions(ActionFactory factory, Board board, float[] actionLevels, uint simStep)
+    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
     {
         foreach (var actionEnum in ActionEnums)
         {
             var action = factory[actionEnum];
-            if (!action.Enabled)
+            if (action == null || !isEnabled(action) || !action.Enabled)
                 continue;
 
             action.Execute(_p, board, this, simStep, actionLevels);
@@ -127,7 +127,7 @@ public class Player
         Action.MOVE_RANDOM,
     };
 
-    public Coord ExecuteMoves(ActionFactory factory, float[] actionLevels, uint simStep)
+    public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
     {
         var moveX = 0.0f;
         var moveY = 0.0f;
@@ -135,7 +135,7 @@ public class Player
         foreach (var moveEnum in MoveEnums)
         {
             var action = factory[moveEnum];
-            if (!action.Enabled)
+            if (action == null || !isEnabled(action) || !action.Enabled)
                 continue;
 
             var (x, y) = action.Move(actionLevels, LastMoveDir);

@@ -20,7 +20,7 @@ public class ActionFactory
 {
     private readonly IAction?[] _actions = new IAction?[Enum.GetNames<Action>().Length];
 
-    public IAction this[Action action] => _actions[(int)action] ?? new None();
+    public IAction? this[Action action] => _actions[(int)action];
 
     private static readonly IAction[] Actions = new IAction[]
     {

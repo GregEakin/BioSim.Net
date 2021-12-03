@@ -73,6 +73,8 @@ public class PlayerTests
         }, actionLevels);
     }
 
+    static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
+
     [Fact]
     public void MovementTest()
     {
@@ -107,8 +109,8 @@ public class PlayerTests
         };
 
         var factory = new ActionFactory();
-        player.ExecuteActions(factory, board, actionLevels, 0);
-        var newLoc = player.ExecuteMoves(factory, actionLevels, 0);
+        player.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);
+        var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
 
         // Assert.Equal(2, newLoc.X);
         // Assert.Equal(3, newLoc.Y);

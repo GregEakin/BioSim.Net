@@ -72,8 +72,8 @@ for (var simStep = 0u; simStep < 3u; ++simStep)
     foreach (var level in actionLevels) Console.Write("{0}, ", level);
     Console.WriteLine();
 
-    player.ExecuteActions(actionFactory, board, actionLevels, simStep);
-    var newLoc = player.ExecuteMoves(actionFactory, actionLevels, simStep);
+    player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
+    var newLoc = player.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
     if (board.Grid.IsInBounds(newLoc) && board.Grid.IsEmptyAt(newLoc))
         board.Peeps.QueueForMove(player, newLoc);
 
@@ -81,3 +81,5 @@ for (var simStep = 0u; simStep < 3u; ++simStep)
     Console.WriteLine();
     Console.WriteLine(board.Grid);
 }
+
+static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
