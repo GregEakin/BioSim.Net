@@ -42,9 +42,9 @@ public readonly struct Board
     {
         var players = new Player[_p.population];
 
+        var survivors = Peeps.Survivors().ToArray();
         Grid.ZeroFill();
         Signals.ZeroFill();
-        var survivors = Peeps.Survivors().ToArray();
         Peeps.Clear();
         if (survivors.Length <= 0)
             for (var i = 0; i < _p.population; i++)
@@ -60,10 +60,11 @@ public readonly struct Board
             {
                 var index = i % survivors.Length;
                 var survivor = survivors[index];
-                var genome = new GenomeBuilder(_p.maxNumberNeurons, survivor);
-                genome.Mutate();
+                var builder = new GenomeBuilder(_p.maxNumberNeurons, survivor);
+                builder.Mutate();
+                var genome = builder.ToGenome();
                 var loc = Grid.FindEmptyLocation();
-                var player = NewPlayer(genome.ToGenome(), loc);
+                var player = NewPlayer(genome, loc);
                 players[i] = player;
             }
 

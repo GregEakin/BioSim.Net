@@ -22,38 +22,38 @@ public class Genome : IEnumerable<Gene>
 {
     private static readonly Random Rng = new();
     private readonly uint[] _dna;
-    private readonly Gene[] _genome;
+    private readonly Gene[] _genes;
 
     public int Neurons { get; }
     public (byte, byte, byte) Color { get; }
 
-    public Genome(uint[] dna, Gene[] genome, int neurons, (byte, byte, byte) color)
+    public Genome(uint[] dna, Gene[] genes, int neurons, (byte, byte, byte) color)
     {
         _dna = dna;
-        _genome = genome;
+        _genes = genes;
         Neurons = neurons;
         Color = color;
     }
 
-    public int Length => _genome.Length;
+    public int Length => _genes.Length;
 
-    public Gene this[int index] => _genome[index];
+    public Gene this[int index] => _genes[index];
 
-    public IEnumerator<Gene> GetEnumerator() => _genome.Cast<Gene>().GetEnumerator();
+    public IEnumerator<Gene> GetEnumerator() => _genes.Cast<Gene>().GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => _genome.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => _genes.GetEnumerator();
 
     public string ToGraphInfo()
     {
         var builder = new StringBuilder();
-        foreach (var conn in _genome)
+        foreach (var conn in _genes)
             builder.AppendLine(conn.ToEdge());
 
         return builder.ToString();
     }
 
     public uint[] Dna => _dna;
-    public Gene[] Genes => _genome;
+    public Gene[] Genes => _genes;
 
     public string ToDna()
     {
@@ -80,7 +80,7 @@ public class Genome : IEnumerable<Gene>
     public override string ToString()
     {
         var builder = new StringBuilder();
-        foreach (var gene in _genome)
+        foreach (var gene in _genes)
         {
             if (gene.SourceType == Gene.GeneType.Sensor)
                 builder.Append(gene.SourceSensor);

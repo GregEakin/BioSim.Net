@@ -1,6 +1,19 @@
-﻿using System.Collections;
-using System.Net;
-using System.Text;
+﻿//    Copyright 2021 Gregory Eakin
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+using System.Collections;
+using System.Runtime.CompilerServices;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 using Random = System.Random;
@@ -20,14 +33,14 @@ public class GenomeBuilder : IEnumerable<Gene>
     private static readonly Random Rng = new();
     private readonly int _maxNumberNeurons;
     private readonly uint[] _dna;
-    private readonly List<GeneBuilder> _genome = new();
+    private readonly List<GeneBuilder> _genes = new();
 
     public int Neurons
     {
         get
         {
             var neurons = new HashSet<int>();
-            foreach (var builder in _genome)
+            foreach (var builder in _genes)
             {
                 if (builder.SourceType == Gene.GeneType.Neuron)
                     neurons.Add(builder.SourceNum);
@@ -43,12 +56,12 @@ public class GenomeBuilder : IEnumerable<Gene>
     {
         get
         {
-            if (_genome.Count == 0)
+            if (_genes.Count == 0)
                 return (0xFF, 0xFF, 0xFF);
 
-            var red = _genome.First().Color;
-            var blue = _genome.Skip(_genome.Count / 2).First().Color;
-            var green = _genome.Last().Color;
+            var red = _genes.First().Color;
+            var blue = _genes.Skip(_genes.Count / 2).First().Color;
+            var green = _genes.Last().Color;
             return (red, green, blue);
         }
     }
@@ -69,22 +82,22 @@ public class GenomeBuilder : IEnumerable<Gene>
     public GenomeBuilder(int maxNeurons, IEnumerable<uint> dna)
     {
         _maxNumberNeurons = maxNeurons;
-        _dna = dna.Select(c => c).ToArray();
+        _dna = dna.ToArray();
     }
 
     public GenomeBuilder(int maxNeurons, Genome genome)
     {
         _maxNumberNeurons = maxNeurons;
-        _dna = genome.Dna;
+        _dna = genome.Dna.ToArray();
     }
 
     public int Length => _dna.Length;
 
-    public Gene this[int index] => _genome[index].ToGene();
+    public Gene this[int index] => _genes[index].ToGene();
 
-    public IEnumerator<Gene> GetEnumerator() => _genome.Cast<Gene>().GetEnumerator();
+    public IEnumerator<Gene> GetEnumerator() => _genes.Cast<Gene>().GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator() => _genome.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => _genes.GetEnumerator();
 
     public void Mutate()
     {
@@ -97,7 +110,7 @@ public class GenomeBuilder : IEnumerable<Gene>
                 case < 3:
                 {
                     var builder = new GeneBuilder(dna);
-                    builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * (float)Rng.NextDouble() - 0.05f);
+                    builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * Rng.NextSingle() - 0.05f);
                     _dna[i] = new Gene(builder).ToUint;
                     break;
                 }
@@ -116,32 +129,27 @@ public class GenomeBuilder : IEnumerable<Gene>
     {
         SetupGenome();
         MakeRenumberedConnectionList();
-        _genome.RemoveAll(gene => gene.SourceType == Gene.GeneType.Sensor && gene.SourceSensor == Sensor.FALSE);
-        _genome.RemoveAll(gene => gene.SinkType == Gene.GeneType.Action && gene.SinkAction == Action.NONE);
-        _genome.RemoveAll(gene => gene.SinkType == Gene.GeneType.Action && gene.SinkAction == Action.KILL_FORWARD);
-        _genome.RemoveAll(gene => gene.SinkType == Gene.GeneType.Action && gene.SinkAction == Action.PROCREATE);
-        _genome.RemoveAll(gene => gene.SinkType == Gene.GeneType.Action && gene.SinkAction == Action.SUICIDE);
-        _genome.RemoveAll(gene => gene.Weight == 0);
-        // CombineDuplicateNeurons()
+        _genes.RemoveAll(UnusedSensorsAndActions);
         RemoveUnusedNeurons();
+        CombineDuplicateNeurons();
         CompressNeurons();
 
-        var sortedList = _genome.OrderBy(o => o.ToUint());
-        var genome = sortedList.Select(builder => new Gene(builder)).ToArray();
+        var sortedList = _genes.OrderBy(o => o.ToUint());
+        var genes = sortedList.Select(builder => new Gene(builder));
 
-        return new Genome(_dna, genome, Neurons, Color);
+        return new Genome(_dna, genes.ToArray(), Neurons, Color);
     }
 
     public void SetupGenome()
     {
-        _genome.Clear();
+        _genes.Clear();
         foreach (var dna in _dna)
-            _genome.Add(new GeneBuilder(dna));
+            _genes.Add(new GeneBuilder(dna));
     }
 
     public void MakeRenumberedConnectionList()
     {
-        foreach (var builder in _genome)
+        foreach (var builder in _genes)
         {
             builder.SourceNum %= builder.SourceType == Gene.GeneType.Sensor
                 ? (byte)Enum.GetNames<Sensor>().Length
@@ -152,6 +160,11 @@ public class GenomeBuilder : IEnumerable<Gene>
                 : (byte)_maxNumberNeurons;
         }
     }
+
+    private bool UnusedSensorsAndActions(GeneBuilder gene) =>
+        gene.SourceType == Gene.GeneType.Sensor && gene.SourceSensor is Sensor.FALSE
+        || gene.SinkType == Gene.GeneType.Action && gene.SinkAction is Action.NONE or Action.KILL_FORWARD or Action.PROCREATE or Action.SUICIDE
+        || gene.Weight == 0;
 
     public void RemoveUnusedNeurons()
     {
@@ -167,16 +180,21 @@ public class GenomeBuilder : IEnumerable<Gene>
                     continue;
 
                 allDone = false;
-                _genome.RemoveAll(gene => gene.SourceType == Gene.GeneType.Neuron && gene.SourceNum == num
+                _genes.RemoveAll(gene => gene.SourceType == Gene.GeneType.Neuron && gene.SourceNum == num
                                           || gene.SinkType == Gene.GeneType.Neuron && gene.SinkNum == num);
             }
         }
     }
 
+    public void CombineDuplicateNeurons()
+    {
+
+    }
+
     public Dictionary<int, Node> MakeNodeList()
     {
         var nodeMap = new Dictionary<int, Node>();
-        foreach (var conn in _genome)
+        foreach (var conn in _genes)
         {
             if (conn.SourceType == Gene.GeneType.Neuron)
             {
@@ -211,7 +229,7 @@ public class GenomeBuilder : IEnumerable<Gene>
 
     public void CompressNeurons()
     {
-        foreach (var builder in _genome)
+        foreach (var builder in _genes)
         {
             var neurons = new Dictionary<byte, byte>();
             if (builder.SourceType == Gene.GeneType.Neuron)

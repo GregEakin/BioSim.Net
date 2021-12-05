@@ -26,27 +26,44 @@ public class GeneBank
         _p = p;
     }
 
+    public IEnumerable<Genome> Startup()
+    {
+        for (var i = 0u; i < _p.population; i++)
+        {
+            Genome genome;
+            do
+            {
+                var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+                genome = builder.ToGenome();
+            } while (genome.Length == 0);
+
+            // _bank.Add(i, new WeakReference<Genome>(genome));
+
+            yield return genome;
+        }
+    }
+
     Genome AddGene(uint[] dna)
     {
         var found = _bank.TryGetValue(dna, out var genomeReference);
         if (!found || genomeReference == null)
         {
-            var genome1 = new GenomeBuilder(_p.maxNumberNeurons, dna);
+            var builder1 = new GenomeBuilder(_p.maxNumberNeurons, dna);
             // genome1.Optimize();
-            _bank.Add(dna, new WeakReference<Genome>(genome1.ToGenome()));
-            return genome1.ToGenome();
+            _bank.Add(dna, new WeakReference<Genome>(builder1.ToGenome()));
+            return builder1.ToGenome();
         }
 
-        var available = genomeReference.TryGetTarget(out var genome3);
-        if (!available || genome3 == null)
+        var available = genomeReference.TryGetTarget(out var builder3);
+        if (!available || builder3 == null)
         {
-            genome3 = new GenomeBuilder(_p.maxNumberNeurons, dna).ToGenome();
+            builder3 = new GenomeBuilder(_p.maxNumberNeurons, dna).ToGenome();
             // genome3.Optimize();
-            genomeReference.SetTarget(genome3);
-            return genome3;
+            genomeReference.SetTarget(builder3);
+            return builder3;
         }
 
-        return genome3;
+        return builder3;
     }
 
     Genome Sex(string mother, string father)
