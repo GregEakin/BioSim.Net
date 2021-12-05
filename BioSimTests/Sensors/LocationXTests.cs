@@ -26,7 +26,7 @@ public class LocationXTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var sensor = new LocationX(p);
         Assert.Equal(Sensor.LOC_X, sensor.Type);
     }
@@ -34,7 +34,7 @@ public class LocationXTests
     [Fact]
     public void StringTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var sensor = new LocationX(p);
         Assert.Equal("location x", sensor.ToString());
     }
@@ -42,7 +42,7 @@ public class LocationXTests
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var sensor = new LocationX(p);
         Assert.Equal("Lx", sensor.ShortName);
     }
@@ -50,7 +50,7 @@ public class LocationXTests
     [Fact]
     public void OutputTest()
     {
-        var p = new Config() { population = 10, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 

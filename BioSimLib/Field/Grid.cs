@@ -17,6 +17,7 @@ using BioSimLib.Genes;
 using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
+
 public class Grid
 {
     public enum BarrierType
@@ -46,8 +47,8 @@ public class Grid
     public void ZeroFill()
     {
         for (var x = 0; x < _board.GetLength(0); x++)
-            for (var y = 0; y < _board.GetLength(1); y++)
-                _board[x, y] = 0;
+        for (var y = 0; y < _board.GetLength(1); y++)
+            _board[x, y] = 0;
     }
 
     public short SizeX() => (short)_board.GetLength(0);
@@ -95,7 +96,7 @@ public class Grid
 
     public Player? this[int x, int y] => _peeps[_board[x, y]];
     public Player? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
-    
+
     public Player CreatePlayer(Genome genome, Coord loc)
     {
         var player = _peeps.NewPlayer(genome, loc);
@@ -198,6 +199,7 @@ public class Grid
         var len = (float)Math.Sqrt((double)dirVec.X * dirVec.X + (double)dirVec.Y * dirVec.Y);
         var dirVecX = dirVec.X / len;
         var dirVecY = dirVec.Y / len;
+
         void F(Coord tloc)
         {
             if (tloc == loc || !IsOccupiedAt(tloc)) return;
@@ -209,7 +211,7 @@ public class Grid
 
         VisitNeighborhood(_p, loc, _p.populationSensorRadius, F);
         var maxSumMag = 6.0f * _p.populationSensorRadius;
-        var sensorVal = (sum / maxSumMag + 1.0f) / 2.0f; 
+        var sensorVal = (sum / maxSumMag + 1.0f) / 2.0f;
         return sensorVal;
     }
 
@@ -227,11 +229,12 @@ public class Grid
             loc += dir;
             --numLocsToTest;
         }
+
         if (numLocsToTest > 0u && !IsInBounds(loc))
         {
             countFwd = probeDistance;
         }
-        
+
         // Scan negative direction
         numLocsToTest = probeDistance;
         loc = loc0 - dir;
@@ -241,13 +244,14 @@ public class Grid
             loc -= dir;
             --numLocsToTest;
         }
+
         if (numLocsToTest > 0u && !IsInBounds(loc))
         {
             countRev = probeDistance;
         }
 
-        float sensorVal = countFwd - countRev + probeDistance; 
-        sensorVal = sensorVal / 2.0f / probeDistance; 
+        float sensorVal = countFwd - countRev + probeDistance;
+        sensorVal = sensorVal / 2.0f / probeDistance;
         return sensorVal;
     }
 }

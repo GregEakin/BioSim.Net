@@ -30,7 +30,7 @@ public class SetOscillatorPeriod : IAction
                 break;
 
         var level = actionLevels[(int)Action.SET_OSCILLATOR_PERIOD];
-        var newPeriodF01 = (float)((Math.Tanh(level) + 1.0f) / 2.0f); 
+        var newPeriodF01 = (float)((Math.Tanh(level) + 1.0f) / 2.0f);
         var newPeriod = 1u + (uint)(1.5f + Math.Exp(7.0f * newPeriodF01));
         player._oscPeriod = newPeriod;
 

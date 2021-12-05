@@ -25,7 +25,7 @@ public class PeepsTests
     [Fact]
     public void IndexTest()
     {
-        var p = new Config() { population = 5, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 5, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var players = new Player[2];
@@ -42,7 +42,7 @@ public class PeepsTests
     [Fact]
     public void CountTest()
     {
-        var p = new Config() { population = 10, populationSensorRadius = 2.0f, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, populationSensorRadius = 2.0f, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 

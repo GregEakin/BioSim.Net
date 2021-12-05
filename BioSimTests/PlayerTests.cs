@@ -108,4 +108,10 @@ public class PlayerTests
         // Assert.Equal(2, newLoc.X);
         // Assert.Equal(3, newLoc.Y);
     }
+
+    [Fact]
+    public void GetSignalDensityAlongAxisTest()
+    {
+        // GetSignalDensityAlongAxis
+    }
 }

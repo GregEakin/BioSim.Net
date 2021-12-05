@@ -31,7 +31,7 @@ public class PopulationForward : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(player._loc, player.LastMoveDir); 
+        var sensorVal = _grid.GetPopulationDensityAlongAxis(player._loc, player.LastMoveDir);
         return sensorVal;
     }
 }

@@ -26,7 +26,7 @@ public class BoundaryDistYTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var sensor = new BoundaryDistY(p);
         Assert.Equal(Sensor.BOUNDARY_DIST_Y, sensor.Type);
     }
@@ -34,7 +34,7 @@ public class BoundaryDistYTests
     [Fact]
     public void StringTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var sensor = new BoundaryDistY(p);
         Assert.Equal("boundary dist Y", sensor.ToString());
     }
@@ -42,7 +42,7 @@ public class BoundaryDistYTests
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var sensor = new BoundaryDistY(p);
         Assert.Equal("EDy", sensor.ShortName);
     }
@@ -50,7 +50,7 @@ public class BoundaryDistYTests
     [Fact]
     public void OutputTest()
     {
-        var p = new Config() { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         board.NewBarrier(new Coord(2, 0));

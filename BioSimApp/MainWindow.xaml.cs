@@ -34,6 +34,7 @@ namespace BioSimApp;
 public partial class MainWindow : Window
 {
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(30) };
+
     private readonly Config _p = new()
     {
         sizeX = 128,
@@ -168,7 +169,7 @@ public partial class MainWindow : Window
         _box2.Width = 2.0 * _scaleFactor;
         _box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2) * _scaleFactor);
 
-        foreach (var critter in _critters) 
+        foreach (var critter in _critters)
             critter.SizeChanged(_scaleFactor);
     }
 

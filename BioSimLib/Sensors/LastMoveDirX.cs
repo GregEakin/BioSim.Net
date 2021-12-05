@@ -23,9 +23,11 @@ public class LastMoveDirX : ISensor
     public float Output(Player player, uint simStep)
     {
         var lastX = player.LastMoveDir.AsNormalizedCoord().X;
-        var sensorVal = lastX == 0 
-            ? 0.5f 
-            : lastX == -1 ? 0.0f : 1.0f;
+        var sensorVal = lastX == 0
+            ? 0.5f
+            : lastX == -1
+                ? 0.0f
+                : 1.0f;
         return sensorVal;
     }
 }

@@ -36,6 +36,7 @@ public class Population : ISensor
     {
         var count = 0u;
         var occupied = 0u;
+
         void F(Coord loc)
         {
             ++count;

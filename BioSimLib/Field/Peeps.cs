@@ -98,7 +98,9 @@ public class Peeps
         _deathQueue.Clear();
     }
 
-    public IEnumerable<Genome> Survivors() => from player in _players where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2 select player._genome;
+    public IEnumerable<Genome> Survivors() => from player in _players
+        where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2
+        select player._genome;
 
     public IDictionary<int, int> Census()
     {
@@ -115,6 +117,7 @@ public class Peeps
                 dict.Add(key, 1);
                 continue;
             }
+
             dict[key]++;
         }
 

@@ -35,14 +35,15 @@ public class Signals
         var sum = 0uL;
         var center = loc;
 
-        void F(Coord tloc) {
+        void F(Coord tloc)
+        {
             ++countLocs;
             sum += GetMagnitude(layerNum, tloc);
-        };
+        }
 
         VisitNeighborhood(center, _p.signalSensorRadius, F);
         var maxSum = (float)countLocs * byte.MaxValue;
-        var sensorVal = sum / maxSum; 
+        var sensorVal = sum / maxSum;
 
         return sensorVal;
     }
@@ -56,7 +57,7 @@ public class Signals
             for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _p.sizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
-                f(new Coord { X = (short)x, Y = (short)y} );
+                f(new Coord { X = (short)x, Y = (short)y });
             }
         }
     }
@@ -64,6 +65,7 @@ public class Signals
     public float GetSignalDensityAlongAxis(uint layerNum, Coord loc, Dir dir)
     {
         var sum = 0.0;
+
         void F(Coord tloc)
         {
             if (tloc == loc) return;
@@ -72,7 +74,7 @@ public class Signals
             var dist = Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
             var contrib = (1.0 / dist) * anglePosCos * GetMagnitude(layerNum, loc);
             sum += contrib;
-        };
+        }
 
         VisitNeighborhood(loc, _p.signalSensorRadius, F);
         var maxSumMag = 6.0 * _p.signalSensorRadius * byte.MaxValue;

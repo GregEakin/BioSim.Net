@@ -43,7 +43,9 @@ public class GeneBuilder
         set => Weight = (short)(value * 8192.0f);
     }
 
-    public GeneBuilder() {}
+    public GeneBuilder()
+    {
+    }
 
     public GeneBuilder(uint dna)
     {
@@ -70,10 +72,10 @@ public class GeneBuilder
     public uint ToUint()
     {
         var dna = ((SourceType == Gene.GeneType.Sensor) ? 0x80000000u : 0x00000000u)
-                    | ((SourceNum & 0x7Fu) << 24)
-                    | ((SinkType == Gene.GeneType.Action) ? 0x00800000u : 0x00000000u)
-                    | ((SinkNum & 0x7Fu) << 16)
-                    | ((ushort)Weight);
+                  | ((SourceNum & 0x7Fu) << 24)
+                  | ((SinkType == Gene.GeneType.Action) ? 0x00800000u : 0x00000000u)
+                  | ((SinkNum & 0x7Fu) << 16)
+                  | ((ushort)Weight);
         return (uint)dna;
     }
 

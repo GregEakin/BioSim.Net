@@ -31,7 +31,7 @@ public class Suicide : IAction
         level *= player.ResponsivenessAdjusted;
         if (level <= dieThreshold || !Player.Prob2Bool(level))
             return;
-        
+
         board.Peeps.QueueForDeath(player);
     }
 

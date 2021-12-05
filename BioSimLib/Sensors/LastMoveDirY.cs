@@ -25,7 +25,9 @@ public class LastMoveDirY : ISensor
         var lastY = player.LastMoveDir.AsNormalizedCoord().Y;
         var sensorVal = lastY == 0
             ? 0.5f
-            : lastY == -1 ? 0.0f : 1.0f;
+            : lastY == -1
+                ? 0.0f
+                : 1.0f;
         return sensorVal;
     }
 }

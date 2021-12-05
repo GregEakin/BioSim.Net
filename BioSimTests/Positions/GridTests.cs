@@ -25,14 +25,14 @@ public class GridTests
     [Fact]
     public void PopulationDensityAlongAxisTest()
     {
-        var p = new Config() { population = 10, populationSensorRadius = 2.0f, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, populationSensorRadius = 2.0f, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         for (var i = 0; i < 5; i++)
             board.NewPlayer(genome, new Coord(1, (short)i));
 
         var loc = new Coord { X = 2, Y = 2 };
-        
+
         var dir1 = new Dir(Dir.Compass.W);
         var population1 = board.Grid.GetPopulationDensityAlongAxis(loc, dir1);
         Assert.Equal(0.5833333f, population1);
@@ -45,7 +45,7 @@ public class GridTests
     [Fact]
     public void PopulationDensityAlongAxis_CenterTest()
     {
-        var p = new Config() { population = 10, populationSensorRadius = 2.0f, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, populationSensorRadius = 2.0f, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         for (var i = 0; i < 5; i++)
@@ -61,7 +61,7 @@ public class GridTests
     [Fact]
     public void VisitNeighborhoodTest()
     {
-        var p = new Config() { population = 10, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         for (var i = 0; i < 5; i++)
@@ -71,6 +71,7 @@ public class GridTests
 
         var squares = 0;
         var critters = 0;
+
         void F(Coord tloc)
         {
             squares++;

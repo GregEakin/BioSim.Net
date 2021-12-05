@@ -123,7 +123,7 @@ public class GeneTests
     [Fact]
     public void Test3()
     {
-        var gene = new Gene(0xFF00FFFFu);   // 267419647
+        var gene = new Gene(0xFF00FFFFu); // 267419647
 
         Assert.Equal(Gene.GeneType.Sensor, gene.SourceType);
         Assert.Equal(127, (byte)gene.SourceSensor);

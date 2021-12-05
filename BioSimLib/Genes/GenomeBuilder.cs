@@ -95,19 +95,19 @@ public class GenomeBuilder : IEnumerable<Gene>
             switch (chance)
             {
                 case < 3:
-                    {
-                        var builder = new GeneBuilder(dna);
-                        builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * (float)Rng.NextDouble() - 0.05f);
-                        _dna[i] = new Gene(builder).ToUint;
-                        break;
-                    }
+                {
+                    var builder = new GeneBuilder(dna);
+                    builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * (float)Rng.NextDouble() - 0.05f);
+                    _dna[i] = new Gene(builder).ToUint;
+                    break;
+                }
                 case < 5:
-                    {
-                        var bit = Rng.Next(16);
-                        var value = dna ^ (0x00010000 << bit);
-                        _dna[i] = (uint)value;
-                        break;
-                    }
+                {
+                    var bit = Rng.Next(16);
+                    var value = dna ^ (0x00010000 << bit);
+                    _dna[i] = (uint)value;
+                    break;
+                }
             }
         }
     }

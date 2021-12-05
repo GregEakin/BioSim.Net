@@ -26,7 +26,7 @@ public class GeneticSimilarityForwardTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config() { population = 10, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var sensor = new GeneticSimilarityForward(p, board.Grid);
         Assert.Equal(Sensor.GENETIC_SIM_FWD, sensor.Type);
@@ -35,7 +35,7 @@ public class GeneticSimilarityForwardTests
     [Fact]
     public void StringTest()
     {
-        var p = new Config() { population = 10, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var sensor = new GeneticSimilarityForward(p, board.Grid);
         Assert.Equal("genetic similarity forward", sensor.ToString());
@@ -44,7 +44,7 @@ public class GeneticSimilarityForwardTests
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config() { population = 10, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var sensor = new GeneticSimilarityForward(p, board.Grid);
         Assert.Equal("Gen", sensor.ShortName);
@@ -53,7 +53,7 @@ public class GeneticSimilarityForwardTests
     [Fact]
     public void Output_EmptyCellTest()
     {
-        var p = new Config() { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
@@ -67,7 +67,7 @@ public class GeneticSimilarityForwardTests
     [Fact]
     public void Output_DifferentTest()
     {
-        var p = new Config() { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome1 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         var genome2 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821008u }).ToGenome();
@@ -83,7 +83,7 @@ public class GeneticSimilarityForwardTests
     [Fact]
     public void OutputTest()
     {
-        var p = new Config() { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, genomeComparisonMethod = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome1 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         var genome2 = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821007u }).ToGenome();

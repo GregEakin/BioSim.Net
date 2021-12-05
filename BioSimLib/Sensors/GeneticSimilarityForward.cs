@@ -39,7 +39,7 @@ public class GeneticSimilarityForward : ISensor
         var partner = _grid[forward];
         if (partner is not { Alive: true }) return 0.0f;
         var method = (GeneBank.ComparisonMethods)_p.genomeComparisonMethod;
-        var sensorVal = GeneBank.GenomeSimilarity(method, player._genome, partner._genome); 
+        var sensorVal = GeneBank.GenomeSimilarity(method, player._genome, partner._genome);
         return sensorVal;
     }
 }

@@ -29,7 +29,7 @@ public class Age : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal= (float)(simStep - player._birth) / _p.stepsPerGeneration;
+        var sensorVal = (float)(simStep - player._birth) / _p.stepsPerGeneration;
         return sensorVal;
     }
 }

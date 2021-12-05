@@ -26,7 +26,7 @@ public class BarrierForwardTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var sensor = new BarrierForward(p, board.Grid);
         Assert.Equal(Sensor.BARRIER_FWD, sensor.Type);
@@ -35,7 +35,7 @@ public class BarrierForwardTests
     [Fact]
     public void StringTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var sensor = new BarrierForward(p, board.Grid);
         Assert.Equal("short probe barrier fwd-rev", sensor.ToString());
@@ -44,7 +44,7 @@ public class BarrierForwardTests
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config() { sizeX = 5, sizeY = 5 };
+        var p = new Config { sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var sensor = new BarrierForward(p, board.Grid);
         Assert.Equal("Bfd", sensor.ShortName);
@@ -53,7 +53,7 @@ public class BarrierForwardTests
     [Fact]
     public void OutputTest()
     {
-        var p = new Config() { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
+        var p = new Config { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         board.NewBarrier(new Coord(0, 2));

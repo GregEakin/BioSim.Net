@@ -92,7 +92,8 @@ public class Player
         return (float)value;
     }
 
-    private static readonly Action[] ActionEnums = {
+    private static readonly Action[] ActionEnums =
+    {
         Action.SET_RESPONSIVENESS,
         Action.SET_OSCILLATOR_PERIOD,
         Action.SET_LONGPROBE_DIST,
@@ -100,7 +101,8 @@ public class Player
         Action.KILL_FORWARD,
     };
 
-    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
+    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction, bool> isEnabled, float[] actionLevels,
+        uint simStep)
     {
         foreach (var actionEnum in ActionEnums)
         {
@@ -112,7 +114,8 @@ public class Player
         }
     }
 
-    private static readonly Action[] MoveEnums = {
+    private static readonly Action[] MoveEnums =
+    {
         Action.MOVE_X,
         Action.MOVE_Y,
         Action.MOVE_EAST,

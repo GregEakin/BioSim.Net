@@ -72,10 +72,12 @@ public readonly struct Gene
 
     public override int GetHashCode() => HashCode.Combine(_source, _sink, WeightAsShort);
 
-    public bool Equals(Gene g2) => _source == g2._source && _sink == g2._sink && Math.Abs(WeightAsShort - g2.WeightAsShort) < 8;
+    public bool Equals(Gene g2) => _source == g2._source
+                                   && _sink == g2._sink
+                                   && Math.Abs(WeightAsShort - g2.WeightAsShort) < 8;
 
     public static bool operator ==(Gene g1, Gene g2) => g1.Equals(g2);
-    
+
     public static bool operator !=(Gene g1, Gene g2) => !g1.Equals(g2);
 
     public string ToEdge()
