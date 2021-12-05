@@ -45,13 +45,11 @@ public class GeneBank
         }
     }
 
-    public IEnumerable<Genome> FindSurvivors()
-    {
-        throw new NotImplementedException();
-    }
+    public List<((byte, byte, byte), int)> Survivors { get; } = new();
 
     public IEnumerable<Genome> NewGeneration(IEnumerable<Genome> survivors)
     {
+        Survivors.Clear();
         var data = survivors.ToArray();
         if (data.Length <= 0)
         {
@@ -73,6 +71,12 @@ public class GeneBank
         }
         else
         {
+            foreach (var genome in data)
+            {
+                Survivors.Add((genome.Color, genome.LiveCount));
+                genome.LiveCount = 0;
+            }
+
             _count = data.Length;
 
             for (var i = 0u; i < _p.population; i++)

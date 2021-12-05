@@ -24,6 +24,8 @@ public class Genome : IEnumerable<Gene>
     private readonly uint[] _dna;
     private readonly Gene[] _genes;
 
+    public int LiveCount { get; set; }
+
     public int Neurons { get; }
     public (byte, byte, byte) Color { get; }
 
@@ -105,9 +107,11 @@ public class Genome : IEnumerable<Gene>
 
     public void AddPlayer()
     {
+        LiveCount++;
     }
 
     public void RemovePlayer()
     {
+        LiveCount--;
     }
 }

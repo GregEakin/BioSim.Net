@@ -137,6 +137,107 @@ public partial class MainWindow : Window
                 _critters[i].PlayerChanged(player);
                 i++;
             }
+
+            var sortedList = _bank.Survivors.OrderByDescending(o => o.Item2).ToArray();
+            {
+                var (red, green, blue) = sortedList[0].Item1;
+                var color = Color.FromRgb(red, green, blue);
+                var brush = new SolidColorBrush(color);
+                var path = new Path
+                {
+                    Fill = brush,
+                    Stroke = brush,
+                    Data = new EllipseGeometry
+                    {
+                        RadiusX = 7.0,
+                        RadiusY = 7.0
+                    },
+                    StrokeThickness = 0.1,
+                };
+                Icon0.Children.Add(path);
+
+                Item0.Text = sortedList[0].Item2.ToString();
+            }
+
+            {
+                var (red, green, blue) = sortedList[1].Item1;
+                var color = Color.FromRgb(red, green, blue);
+                var brush = new SolidColorBrush(color);
+                var path = new Path
+                {
+                    Fill = brush,
+                    Stroke = brush,
+                    Data = new EllipseGeometry
+                    {
+                        RadiusX = 7.0,
+                        RadiusY = 7.0
+                    },
+                    StrokeThickness = 0.1,
+                };
+                Icon1.Children.Add(path);
+
+                Item1.Text = sortedList[1].Item2.ToString();
+            }
+
+            {
+                var (red, green, blue) = sortedList[2].Item1;
+                var color = Color.FromRgb(red, green, blue);
+                var brush = new SolidColorBrush(color);
+                var path = new Path
+                {
+                    Fill = brush,
+                    Stroke = brush,
+                    Data = new EllipseGeometry
+                    {
+                        RadiusX = 7.0,
+                        RadiusY = 7.0
+                    },
+                    StrokeThickness = 0.1,
+                };
+                Icon2.Children.Add(path);
+
+                Item2.Text = sortedList[2].Item2.ToString();
+            }
+
+            {
+                var (red, green, blue) = sortedList[3].Item1;
+                var color = Color.FromRgb(red, green, blue);
+                var brush = new SolidColorBrush(color);
+                var path = new Path
+                {
+                    Fill = brush,
+                    Stroke = brush,
+                    Data = new EllipseGeometry
+                    {
+                        RadiusX = 7.0,
+                        RadiusY = 7.0
+                    },
+                    StrokeThickness = 0.1,
+                };
+                Icon3.Children.Add(path);
+
+                Item3.Text = sortedList[3].Item2.ToString();
+            }
+
+            {
+                var (red, green, blue) = sortedList[4].Item1;
+                var color = Color.FromRgb(red, green, blue);
+                var brush = new SolidColorBrush(color);
+                var path = new Path
+                {
+                    Fill = brush,
+                    Stroke = brush,
+                    Data = new EllipseGeometry
+                    {
+                        RadiusX = 7.0,
+                        RadiusY = 7.0
+                    },
+                    StrokeThickness = 0.1,
+                };
+                Icon4.Children.Add(path);
+
+                Item4.Text = sortedList[4].Item2.ToString();
+            }
         }
 
         foreach (var critter in _critters)

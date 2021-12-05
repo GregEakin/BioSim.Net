@@ -8,21 +8,21 @@
         Title="MainWindow" Height="600" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
         <Border Grid.Column="0" BorderThickness="5">
-            <Canvas x:Name="MyCanvas"/>
+            <Canvas x:Name="MyCanvas" />
         </Border>
         <StackPanel Grid.Column="1">
             <TextBlock>Gregory Eakin</TextBlock>
             <TextBlock>greg@eakin.dev</TextBlock>
-            <TextBlock/>
+            <TextBlock />
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
                     <TextBlock>World size:</TextBlock>
@@ -30,23 +30,46 @@
                     <TextBlock>Steps/gen:</TextBlock>
                     <TextBlock>Genome length:</TextBlock>
                     <TextBlock>Inner neurons:</TextBlock>
-                    <TextBlock/>
+                    <TextBlock />
                     <TextBlock>Generation:</TextBlock>
                     <TextBlock>Sim Step:</TextBlock>
                     <TextBlock>Census:</TextBlock>
                 </StackPanel>
                 <StackPanel Grid.Column="2">
-                    <TextBlock x:Name="WorldSize"/>
-                    <TextBlock x:Name="Population"/>
-                    <TextBlock x:Name="StepGen"/>
-                    <TextBlock x:Name="GenomeLen"/>
-                    <TextBlock x:Name="NeuronLen"/>
-                    <TextBlock/>
-                    <TextBlock x:Name="Generation"/>
-                    <TextBlock x:Name="SimStep"/>
-                    <TextBlock x:Name="Census"/>
+                    <TextBlock x:Name="WorldSize" />
+                    <TextBlock x:Name="Population" />
+                    <TextBlock x:Name="StepGen" />
+                    <TextBlock x:Name="GenomeLen" />
+                    <TextBlock x:Name="NeuronLen" />
+                    <TextBlock />
+                    <TextBlock x:Name="Generation" />
+                    <TextBlock x:Name="SimStep" />
+                    <TextBlock x:Name="Census" />
                 </StackPanel>
             </Grid>
+            <TextBlock />
+            <ListView Name="Survivors">
+                <StackPanel Orientation="Horizontal">
+                    <Canvas x:Name="Icon0" Width="10" Height="10" />
+                    <TextBlock Name="Item0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Canvas x:Name="Icon1" Width="10" Height="10" />
+                    <TextBlock Name="Item1" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Canvas x:Name="Icon2" Width="10" Height="10" />
+                    <TextBlock Name="Item2" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Canvas x:Name="Icon3" Width="10" Height="10" />
+                    <TextBlock Name="Item3" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Canvas x:Name="Icon4" Width="10" Height="10" />
+                    <TextBlock Name="Item4" />
+                </StackPanel>
+            </ListView>
         </StackPanel>
     </Grid>
 
