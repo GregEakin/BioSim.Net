@@ -101,4 +101,6 @@ public struct Coord
     }
 
     public float RaySameness(Dir dir) => RaySameness(dir.AsNormalizedCoord());
+
+    public override string ToString() => $"({X}, {Y})";
 }

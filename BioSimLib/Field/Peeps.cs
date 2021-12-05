@@ -90,7 +90,7 @@ public class Peeps
     {
         foreach (var player in _deathQueue)
         {
-            player._alive = false;
+            player.Alive = false;
             grid.Remove(player);
             _players[player._index] = null;
         }

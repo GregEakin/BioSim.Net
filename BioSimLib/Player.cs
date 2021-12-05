@@ -33,19 +33,29 @@ public class Player
     public readonly uint _birth;
 
     public Coord _loc;
-    public bool _alive;
+    private bool _alive;
     public float _responsiveness;
     public uint _oscPeriod;
     public uint _longProbeDist;
 
-    public bool Alive => _alive;
+    public bool Alive
+    {
+        get => _alive;
+        set
+        {
+            _alive = value;
+            if (value)
+                _genome.AddPlayer();
+            else
+                _genome.RemovePlayer();
+        }
+    }
+
     public Dir LastMoveDir { get; set; } = Dir.Random8();
+
     public float ResponsivenessAdjusted { get; set; }
 
-    public override string ToString()
-    {
-        return $"Neural Net {_nnet}";
-    }
+    public override string ToString() => $"Index {_index}, Pos {_loc}, Neural Net {_nnet}";
 
     public (byte, byte, byte) Color => _genome.Color;
 
@@ -56,11 +66,11 @@ public class Player
         _birthLoc = loc;
         _index = index;
         _genome = genome;
-        _nnet = new NeuralNet(genome);
+        _alive = _genome.Length > 0;
+        _nnet = new NeuralNet(_genome);
 
         _birth = 0u;
         _oscPeriod = 34u; // ToDo !!! define a constant
-        _alive = genome.Length > 0;
         _responsiveness = 0.5f; // range 0.0..1.0
         ResponsivenessAdjusted = 1.0f;
         _longProbeDist = p.longProbeDistance;
@@ -69,16 +79,16 @@ public class Player
 
     public void FeedForward(SensorFactory sensorFactory, float[] actionLevels, float[] neuronAccumulators, uint simStep)
     {
-        foreach (var conn in _genome)
+        foreach (var connection in _genome)
         {
-            var value = conn.SourceType == Gene.GeneType.Sensor
-                ? sensorFactory[conn.SourceSensor]?.Output(this, simStep) ?? 0.0f
-                : _nnet[conn.SourceNum].Output;
+            var value = connection.SourceType == Gene.GeneType.Sensor
+                ? sensorFactory[connection.SourceSensor]?.Output(this, simStep) ?? 0.0f
+                : _nnet[connection.SourceNum].Output;
 
-            if (conn.SinkType == Gene.GeneType.Action)
-                actionLevels[conn.SinkNum] += conn.WeightAsFloat * (float)Math.Tanh(value);
+            if (connection.SinkType == Gene.GeneType.Action)
+                actionLevels[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
             else
-                neuronAccumulators[conn.SinkNum] += conn.WeightAsFloat * (float)Math.Tanh(value);
+                neuronAccumulators[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
         }
 
         for (var i = 0; i < _nnet.Length; i++)

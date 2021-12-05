@@ -89,17 +89,16 @@ public class Cell
 
         var (red, green, blue) = Player.Color;
         var color = Color.FromRgb(red, green, blue);
-        var brush = new SolidColorBrush(color);
-        _path.Fill = brush;
-        _path.Stroke = brush;
+        if (_path.Fill is SolidColorBrush b1)
+            b1.Color = color;
+        if (_path.Stroke is SolidColorBrush b2)
+            b2.Color = color;
     }
 
     public void SizeChanged(double scaleFactor)
     {
-        _path.Data = new EllipseGeometry
-        {
-            RadiusX = 0.5 * scaleFactor,
-            RadiusY = 0.5 * scaleFactor
-        };
+        if (_path.Data is not EllipseGeometry ellipseGeometry) return;
+        ellipseGeometry.RadiusX = 0.5 * scaleFactor;
+        ellipseGeometry.RadiusY = 0.5 * scaleFactor;
     }
 }

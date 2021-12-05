@@ -102,4 +102,12 @@ public class Genome : IEnumerable<Gene>
 
         return builder.ToString();
     }
+
+    public void AddPlayer()
+    {
+    }
+
+    public void RemovePlayer()
+    {
+    }
 }

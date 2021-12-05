@@ -50,6 +50,7 @@ public partial class MainWindow : Window
     };
 
     private readonly Board _board;
+    private readonly GeneBank _bank;
     private readonly SensorFactory _sensorFactory;
     private readonly ActionFactory _actionFactory;
     private readonly Rectangle _box1;
@@ -74,6 +75,7 @@ public partial class MainWindow : Window
         GenomeLen.Text = $"{_p.genomeMaxLength} genes";
         NeuronLen.Text = _p.maxNumberNeurons.ToString();
 
+        _bank = new GeneBank(_p);
         _board = new Board(_p);
         _sensorFactory = new SensorFactory(_p, _board);
         _actionFactory = new ActionFactory();
@@ -84,34 +86,28 @@ public partial class MainWindow : Window
         {
             Stroke = Brushes.LavenderBlush,
             Fill = Brushes.LavenderBlush,
-            Height = 100 * _scaleFactor,
-            Width = 100 * _scaleFactor / 2.0
+            Height = _p.sizeX * _scaleFactor,
+            Width = (_p.sizeY / 2.0 - 2.0) * _scaleFactor
         };
+        _box1.SetValue(Canvas.LeftProperty, 0.0);
         MyCanvas.Children.Add(_box1);
 
         _box2 = new Rectangle
         {
             Stroke = Brushes.LavenderBlush,
             Fill = Brushes.LavenderBlush,
-            Height = 100.0 * _scaleFactor,
+            Height = _p.sizeX * _scaleFactor,
             Width = 2.0 * _scaleFactor
         };
-        _box2.SetValue(Canvas.LeftProperty, 98.0 * _scaleFactor);
+        _box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2.0) * _scaleFactor);
         MyCanvas.Children.Add(_box2);
 
-        for (var i = 0; i < _p.population; i++)
+        var i = 0;
+        foreach (var player in _board.Startup())
         {
-            Genome genome;
-            do
-            {
-                var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
-                genome = builder.ToGenome();
-            } while (genome.Length == 0);
-
-            var loc = _board.Grid.FindEmptyLocation();
-            var player = _board.NewPlayer(genome, loc);
             _critters[i] = new Cell(player);
             MyCanvas.Children.Add(_critters[i].Element);
+            i++;
         }
 
         SizeChanged += MainWindow_SizeChanged;
@@ -132,9 +128,12 @@ public partial class MainWindow : Window
         {
             _generation++;
             _simStep = 0u;
-            var players = _board.NewGeneration();
-            for (var i = 0; i < _p.population; i++)
-                _critters[i].PlayerChanged(players[i]);
+            var i = 0;
+            foreach (var player in _board.NewGeneration())
+            {
+                _critters[i].PlayerChanged(player);
+                i++;
+            }
         }
 
         foreach (var critter in _critters)
@@ -163,11 +162,12 @@ public partial class MainWindow : Window
         _scaleFactor = Math.Min(w1, h1);
 
         _box1.Height = _p.sizeX * _scaleFactor;
-        _box1.Width = _p.sizeY * _scaleFactor / 2.0;
+        _box1.Width = (_p.sizeY / 2.0 - 2.0) * _scaleFactor;
+        _box1.SetValue(Canvas.LeftProperty, 0.0);
 
         _box2.Height = _p.sizeX * _scaleFactor;
         _box2.Width = 2.0 * _scaleFactor;
-        _box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2) * _scaleFactor);
+        _box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2.0) * _scaleFactor);
 
         foreach (var critter in _critters)
             critter.SizeChanged(_scaleFactor);

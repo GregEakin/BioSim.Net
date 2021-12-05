@@ -43,6 +43,24 @@ public class GeneBank
         }
     }
 
+    public IEnumerable<Genome> NewGeneration()
+    {
+        throw new NotImplementedException();
+
+        // if (survivors.Length <= 0)
+        // {
+        //      _bank.Clear();
+        //     return Startup();
+        // }
+        // else
+        // {
+        //     Remove dead genomes
+        //     // It there 500 survivors, return 499 of this gene, and one mutated one 
+        //     Mutate some of the survivors
+        //     yield return the collection
+        // }
+    }
+
     Genome AddGene(uint[] dna)
     {
         var found = _bank.TryGetValue(dna, out var genomeReference);

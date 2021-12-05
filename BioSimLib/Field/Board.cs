@@ -38,36 +38,52 @@ public readonly struct Board
 
     public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(Grid.BarrierType.A, loc);
 
-    public Player[] NewGeneration()
+    public IEnumerable<Player> Startup()
     {
-        var players = new Player[_p.population];
+        for (var i = 0; i < _p.population; i++)
+        {
+            var genome = RandomGenome();
+            var loc = Grid.FindEmptyLocation();
+            var player = NewPlayer(genome, loc);
+            yield return player;
+        }
+    }
 
+    public IEnumerable<Player> NewGeneration()
+    {
         var survivors = Peeps.Survivors().ToArray();
         Grid.ZeroFill();
         Signals.ZeroFill();
         Peeps.Clear();
-        if (survivors.Length <= 0)
-            for (var i = 0; i < _p.population; i++)
-            {
-                var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
-                var genome = builder.ToGenome();
-                var loc = Grid.FindEmptyLocation();
-                var player = NewPlayer(genome, loc);
-                players[i] = player;
-            }
-        else
-            for (var i = 0; i < _p.population; i++)
-            {
-                var index = i % survivors.Length;
-                var survivor = survivors[index];
-                var builder = new GenomeBuilder(_p.maxNumberNeurons, survivor);
-                builder.Mutate();
-                var genome = builder.ToGenome();
-                var loc = Grid.FindEmptyLocation();
-                var player = NewPlayer(genome, loc);
-                players[i] = player;
-            }
 
-        return players;
+        for (var i = 0; i < _p.population; i++)
+        {
+            var genome = survivors.Length <= 0
+                ? RandomGenome()
+                : ChildGenome(survivors[i % survivors.Length]);
+            var loc = Grid.FindEmptyLocation();
+            var player = NewPlayer(genome, loc);
+            yield return player;
+        }
+    }
+
+    public Genome RandomGenome()
+    {
+        Genome genome;
+        do
+        {
+            var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+            genome = builder.ToGenome();
+        } while (genome.Length == 0);
+
+        return genome;
+    }
+
+    public Genome ChildGenome(Genome survivor)
+    {
+        var builder = new GenomeBuilder(_p.maxNumberNeurons, survivor);
+        builder.Mutate();
+        var genome = builder.ToGenome();
+        return genome;
     }
 }
