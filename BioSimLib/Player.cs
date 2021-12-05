@@ -67,12 +67,12 @@ public class Player
         _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
     }
 
-    public void FeedForward(SensorFactory sensors, float[] actionLevels, float[] neuronAccumulators, uint simStep)
+    public void FeedForward(SensorFactory sensorFactory, float[] actionLevels, float[] neuronAccumulators, uint simStep)
     {
         foreach (var conn in _genome)
         {
             var value = conn.SourceType == Gene.GeneType.Sensor
-                ? sensors[conn.SourceSensor]?.Output(this, simStep) ?? 0.0f
+                ? sensorFactory[conn.SourceSensor]?.Output(this, simStep) ?? 0.0f
                 : _nnet[conn.SourceNum].Output;
 
             if (conn.SinkType == Gene.GeneType.Action)
@@ -105,7 +105,7 @@ public class Player
         foreach (var actionEnum in ActionEnums)
         {
             var action = factory[actionEnum];
-            if (action == null || !isEnabled(action) || !action.Enabled)
+            if (action == null || !isEnabled(action))
                 continue;
 
             action.Execute(_p, board, this, simStep, actionLevels);
@@ -135,7 +135,7 @@ public class Player
         foreach (var moveEnum in MoveEnums)
         {
             var action = factory[moveEnum];
-            if (action == null || !isEnabled(action) || !action.Enabled)
+            if (action == null || !isEnabled(action))
                 continue;
 
             var (x, y) = action.Move(actionLevels, LastMoveDir);

@@ -23,7 +23,6 @@ public class Procreate : IAction
     public override string ToString() => "procreate";
     public string ShortName => "Sex";
 
-    public bool Enabled => false;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

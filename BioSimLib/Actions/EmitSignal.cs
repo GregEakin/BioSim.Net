@@ -22,7 +22,6 @@ public class EmitSignal : IAction
     public Action Type => Action.EMIT_SIGNAL0;
     public override string ToString() => "emit signal 0";
     public string ShortName => "SG";
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var emitThreshold = 0.5f;

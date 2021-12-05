@@ -23,7 +23,6 @@ public class MoveLeft : IMovementAction
     public override string ToString() => "move left";
     public string ShortName => "MvL";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

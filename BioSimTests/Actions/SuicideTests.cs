@@ -14,36 +14,53 @@
 
 using System;
 using BioSimLib;
-using BioSimLib.Actions.Movements;
+using BioSimLib.Actions;
 using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Positions;
 using Xunit;
 using Action = BioSimLib.Actions.Action;
 
-namespace BioSimTests.Actions.Movements;
+namespace BioSimTests.Actions;
 
-public class MoveSouthTests
+public class SuicideTests
 {
     [Fact]
     public void TypeTest()
     {
-        var action = new MoveSouth();
-        Assert.Equal(Action.MOVE_SOUTH, action.Type);
+        var action = new Suicide();
+        Assert.Equal(Action.SUICIDE, action.Type);
     }
 
     [Fact]
     public void ToStringTest()
     {
-        var action = new MoveSouth();
-        Assert.Equal("move south", action.ToString());
+        var action = new Suicide();
+        Assert.Equal("suicide", action.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var action = new MoveSouth();
-        Assert.Equal("MvS", action.ShortName);
+        var action = new Suicide();
+        Assert.Equal("Die", action.ShortName);
+    }
+
+    [Fact]
+    public void ExecuteNotSetTest()
+    {
+        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(p);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        actionLevels[(int)Action.SUICIDE] = 0.0f;
+
+        var action = new Suicide();
+        action.Execute(p, board, player, 0, actionLevels);
+
+        Assert.Empty(board.Peeps.DeathQueue);
     }
 
     [Fact]
@@ -54,31 +71,21 @@ public class MoveSouthTests
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
 
-        var action = new MoveSouth();
-        action.Execute(p, board, player, 0, Array.Empty<float>());
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        actionLevels[(int)Action.SUICIDE] = 0.05f;
+
+        var action = new Suicide();
+        action.Execute(p, board, player, 0, actionLevels);
+
+        Assert.NotEmpty(board.Peeps.DeathQueue);
     }
 
     [Fact]
-    public void MoveDisabledTest()
+    public void MovementTest()
     {
-        var movement = new MoveSouth();
-        var actionLevels = new float[Enum.GetNames<Action>().Length];
-        actionLevels[(int)Action.MOVE_SOUTH] = 0.0f;
-        var lastMoveDir = new Dir(Dir.Compass.W);
-        var (x, y) = movement.Move(actionLevels, lastMoveDir);
-        Assert.Equal(0.0f, x);
-        Assert.Equal(0.0f, y);
-    }
-
-    [Fact]
-    public void MoveEnabledTest()
-    {
-        var movement = new MoveSouth();
-        var actionLevels = new float[Enum.GetNames<Action>().Length];
-        actionLevels[(int)Action.MOVE_SOUTH] = 1.0f;
-        var lastMoveDir = new Dir(Dir.Compass.W);
-        var (x, y) = movement.Move(actionLevels, lastMoveDir);
-        Assert.Equal(0.0f, x);
-        Assert.Equal(-1.0f, y);
+        var action = new Suicide();
+        var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
+        Assert.Equal(0.0, x);
+        Assert.Equal(0.0, y);
     }
 }

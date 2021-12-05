@@ -23,7 +23,6 @@ public class MoveRandom : IMovementAction
     public override string ToString() => "move random";
     public string ShortName => "Mrn";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

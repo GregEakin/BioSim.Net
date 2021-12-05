@@ -29,7 +29,7 @@ public class PlayerTests
     [Fact]
     public void FeedForwardTest()
     {
-        var factory = new SensorFactory(
+        var sensorFactory = new SensorFactory(
             new ISensor[]
             {
                 new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
@@ -60,17 +60,14 @@ public class PlayerTests
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         var neuronAccumulators = new float[p.maxNumberNeurons];
-        player.FeedForward(factory, actionLevels, neuronAccumulators, 0);
-        Assert.Equal(0.5773243f, player._nnet[0].Output);
-        Assert.Equal(0.916998565f, player._nnet[1].Output);
+        player.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
+        Assert.Equal(0.73442495f, player._nnet[0].Output);
+        Assert.Equal(1.07409918f, player._nnet[1].Output);
 
-        Assert.Equal(new[]
-        {
-            0.0f, 0.0f, 0.0f, 0.0f, 0.47961697f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.379948974f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-        }, actionLevels);
+        var expectedLevels = new float[Enum.GetNames<Action>().Length];
+        expectedLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
+        expectedLevels[(int)Action.MOVE_WEST] = 0.5370496f;
+        Assert.Equal(expectedLevels, actionLevels);
     }
 
     static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
@@ -100,13 +97,9 @@ public class PlayerTests
         player._nnet[1].Driven = true;
         player._nnet[1].Output = 0.4f;
 
-        var actionLevels = new[]
-        {
-            0.0f, 0.0f, 0.0f, 0.0f, 0.47961697f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.379948974f,
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-        };
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        actionLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
+        actionLevels[(int)Action.MOVE_WEST] = 0.5370496f;
 
         var factory = new ActionFactory();
         player.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);

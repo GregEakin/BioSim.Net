@@ -23,7 +23,6 @@ public class MoveX : IMovementAction
     public override string ToString() => "move X";
     public string ShortName => "MvX";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

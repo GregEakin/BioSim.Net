@@ -20,14 +20,22 @@ namespace BioSimLib.Genes;
 public class GeneBuilder
 {
     public Gene.GeneType SourceType { get; set; } = Gene.GeneType.Neuron;
-    public int SourceNum { get; set; }
+    public byte SourceNum { get; set; }
     public Gene.GeneType SinkType { get; set; } = Gene.GeneType.Neuron;
-    public int SinkNum { get; set; }
+    public byte SinkNum { get; set; }
     public short Weight { get; set; }
 
-    public Sensor SourceSensor => (Sensor)(SourceNum & 0x7F);
-    public Action SinkAction => (Action)(SinkNum & 0x7F);
+    public Sensor SourceSensor
+    {
+        get => (Sensor)(SourceNum & 0x7F);
+        set => SourceNum = (byte)value;
+    }
 
+    public Action SinkAction
+    {
+        get => (Action)(SinkNum & 0x7F);
+        set => SinkNum = (byte)value;
+    }
 
     public float WeightAsFloat
     {
@@ -68,4 +76,8 @@ public class GeneBuilder
                     | ((ushort)Weight);
         return (uint)dna;
     }
+
+    public byte Color => (byte)(((SourceNum & 0x03) << 6)
+                                | ((SinkNum & 0x03) << 4)
+                                | ((Weight & 0x7800) >> 11));
 }

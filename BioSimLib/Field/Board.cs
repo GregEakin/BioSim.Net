@@ -38,9 +38,9 @@ public readonly struct Board
 
     public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(Grid.BarrierType.A, loc);
 
-    public IEnumerable<Player> NewGeneration()
+    public Player[] NewGeneration()
     {
-        var players = new List<Player>();
+        var players = new Player[_p.population];
 
         Grid.ZeroFill();
         Signals.ZeroFill();
@@ -53,7 +53,7 @@ public readonly struct Board
                 var genome = builder.ToGenome();
                 var loc = Grid.FindEmptyLocation();
                 var player = NewPlayer(genome, loc);
-                players.Add(player);
+                players[i] = player;
             }
         else
             for (var i = 0; i < _p.population; i++)
@@ -64,7 +64,7 @@ public readonly struct Board
                 genome.Mutate();
                 var loc = Grid.FindEmptyLocation();
                 var player = NewPlayer(genome.ToGenome(), loc);
-                players.Add(player);
+                players[i] = player;
             }
 
         return players;

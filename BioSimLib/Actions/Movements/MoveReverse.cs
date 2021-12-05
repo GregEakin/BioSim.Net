@@ -23,7 +23,6 @@ public class MoveReverse : IMovementAction
     public override string ToString() => "move reverse";
     public string ShortName => "Mrv";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

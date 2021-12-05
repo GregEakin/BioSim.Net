@@ -23,7 +23,6 @@ public class MoveNorth : IMovementAction
     public override string ToString() => "move north";
     public string ShortName => "MvN";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

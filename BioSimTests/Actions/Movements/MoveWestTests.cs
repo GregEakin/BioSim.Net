@@ -13,7 +13,10 @@
 //    limitations under the License.
 
 using System;
+using BioSimLib;
 using BioSimLib.Actions.Movements;
+using BioSimLib.Field;
+using BioSimLib.Genes;
 using BioSimLib.Positions;
 using Xunit;
 using Action = BioSimLib.Actions.Action;
@@ -22,6 +25,39 @@ namespace BioSimTests.Actions.Movements;
 
 public class MoveWestTests
 {
+    [Fact]
+    public void TypeTest()
+    {
+        var action = new MoveWest();
+        Assert.Equal(Action.MOVE_WEST, action.Type);
+    }
+
+    [Fact]
+    public void ToStringTest()
+    {
+        var action = new MoveWest();
+        Assert.Equal("move west", action.ToString());
+    }
+
+    [Fact]
+    public void ShortNameTest()
+    {
+        var action = new MoveWest();
+        Assert.Equal("MvW", action.ShortName);
+    }
+
+    [Fact]
+    public void ExecuteTest()
+    {
+        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(p);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+
+        var action = new MoveWest();
+        action.Execute(p, board, player, 0, Array.Empty<float>());
+    }
+
     [Fact]
     public void MoveDisabledTest()
     {

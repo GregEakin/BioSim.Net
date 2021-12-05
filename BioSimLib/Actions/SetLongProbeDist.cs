@@ -23,7 +23,6 @@ public class SetLongProbeDist : IAction
     public override string ToString() => "set longprobe dist";
     public string ShortName => "LPD";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var maxLongProbeDistance = 32u;

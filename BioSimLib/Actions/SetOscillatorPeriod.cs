@@ -23,13 +23,20 @@ public class SetOscillatorPeriod : IAction
     public override string ToString() => "set osc1";
     public string ShortName => "Osc";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
-        var period = actionLevels[(int)Action.SET_OSCILLATOR_PERIOD];
-        var newPeriodF01 = (float)((Math.Tanh(period) + 1.0f) / 2.0f); 
+        foreach (var level1 in actionLevels)
+            if (float.IsNaN(level1))
+                break;
+
+        var level = actionLevels[(int)Action.SET_OSCILLATOR_PERIOD];
+        var newPeriodF01 = (float)((Math.Tanh(level) + 1.0f) / 2.0f); 
         var newPeriod = 1u + (uint)(1.5f + Math.Exp(7.0f * newPeriodF01));
         player._oscPeriod = newPeriod;
+
+        foreach (var level1 in actionLevels)
+            if (float.IsNaN(level1))
+                break;
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

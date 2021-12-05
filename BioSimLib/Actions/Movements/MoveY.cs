@@ -23,7 +23,6 @@ public class MoveY : IMovementAction
     public override string ToString() => "move Y";
     public string ShortName => "MvY";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
     }

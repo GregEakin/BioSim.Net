@@ -117,7 +117,6 @@ public class Grid
 
         _board[player._loc.X, player._loc.Y] = 0;
         _board[newLoc.X, newLoc.Y] = player._index;
-        player._loc = newLoc;
         return true;
     }
 
@@ -196,7 +195,7 @@ public class Grid
 
         var sum = 0.0f;
         var dirVec = dir.AsNormalizedCoord();
-        var len = (float)Math.Sqrt(dirVec.X * dirVec.X + dirVec.Y + dirVec.Y);
+        var len = (float)Math.Sqrt((double)dirVec.X * dirVec.X + (double)dirVec.Y * dirVec.Y);
         var dirVecX = dirVec.X / len;
         var dirVecY = dirVec.Y / len;
         void F(Coord tloc)

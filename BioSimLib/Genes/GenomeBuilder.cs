@@ -46,21 +46,9 @@ public class GenomeBuilder : IEnumerable<Gene>
             if (_genome.Count == 0)
                 return (0xFF, 0xFF, 0xFF);
 
-            var front = _genome.First();
-            var red = (byte)(((front.SourceNum & 0x03) << 6)
-                             | (front.SinkNum & 0x03 << 4)
-                             | ((front.Weight & 0x7800) >> 11));
-
-            var mid = _genome.Skip(_genome.Count / 2).First();
-            var blue = (byte)(((mid.SourceNum & 0x03) << 6)
-                              | (mid.SinkNum & 0x03 << 4)
-                              | ((mid.Weight & 0x7800) >> 11));
-
-            var back = _genome.Last();
-            var green = (byte)(((back.SourceNum & 0x03) << 6)
-                               | (back.SinkNum & 0x03 << 4)
-                               | ((back.Weight & 0x7800) >> 11));
-
+            var red = _genome.First().Color;
+            var blue = _genome.Skip(_genome.Count / 2).First().Color;
+            var green = _genome.Last().Color;
             return (red, green, blue);
         }
     }
@@ -107,19 +95,19 @@ public class GenomeBuilder : IEnumerable<Gene>
             switch (chance)
             {
                 case < 3:
-                {
-                    var builder = new GeneBuilder(dna);
-                    builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * (float)Rng.NextDouble() - 0.05f);
-                    _dna[i] = new Gene(builder).ToUint;
-                    break;
-                }
+                    {
+                        var builder = new GeneBuilder(dna);
+                        builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * (float)Rng.NextDouble() - 0.05f);
+                        _dna[i] = new Gene(builder).ToUint;
+                        break;
+                    }
                 case < 5:
-                {
-                    var bit = Rng.Next(16);
-                    var value = dna ^ (0x00010000 << bit);
-                    _dna[i] = (uint)value;
-                    break;
-                }
+                    {
+                        var bit = Rng.Next(16);
+                        var value = dna ^ (0x00010000 << bit);
+                        _dna[i] = (uint)value;
+                        break;
+                    }
             }
         }
     }
@@ -156,12 +144,12 @@ public class GenomeBuilder : IEnumerable<Gene>
         foreach (var builder in _genome)
         {
             builder.SourceNum %= builder.SourceType == Gene.GeneType.Sensor
-                ? Enum.GetNames<Sensor>().Length
-                : _maxNumberNeurons;
+                ? (byte)Enum.GetNames<Sensor>().Length
+                : (byte)_maxNumberNeurons;
 
             builder.SinkNum %= builder.SinkType == Gene.GeneType.Action
-                ? Enum.GetNames<Action>().Length
-                : _maxNumberNeurons;
+                ? (byte)Enum.GetNames<Action>().Length
+                : (byte)_maxNumberNeurons;
         }
     }
 
@@ -225,14 +213,14 @@ public class GenomeBuilder : IEnumerable<Gene>
     {
         foreach (var builder in _genome)
         {
-            var neurons = new Dictionary<int, int>();
+            var neurons = new Dictionary<byte, byte>();
             if (builder.SourceType == Gene.GeneType.Neuron)
             {
                 var num = builder.SourceNum;
                 var found = neurons.TryGetValue(num, out var next);
                 if (!found)
                 {
-                    next = neurons.Count;
+                    next = (byte)neurons.Count;
                     neurons.Add(num, next);
                 }
 
@@ -245,7 +233,7 @@ public class GenomeBuilder : IEnumerable<Gene>
                 var found = neurons.TryGetValue(num, out var next);
                 if (!found)
                 {
-                    next = neurons.Count;
+                    next = (byte)neurons.Count;
                     neurons.Add(num, next);
                 }
 

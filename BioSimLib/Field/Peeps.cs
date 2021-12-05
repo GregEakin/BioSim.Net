@@ -55,8 +55,7 @@ public class Peeps
             if (index < 2 || index > _count)
                 return null;
 
-            var player = _players[index - 2u];
-            return player is { Alive: true } ? player : null;
+            return _players[index - 2u];
         }
     }
 
@@ -79,6 +78,8 @@ public class Peeps
 
         _moveQueue.Clear();
     }
+
+    public IEnumerable<Player> DeathQueue => _deathQueue;
 
     public void QueueForDeath(Player player)
     {

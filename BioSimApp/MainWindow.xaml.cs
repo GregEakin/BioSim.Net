@@ -131,7 +131,7 @@ public partial class MainWindow : Window
         {
             _generation++;
             _simStep = 0u;
-            var players = _board.NewGeneration().ToArray();
+            var players = _board.NewGeneration();
             for (var i = 0; i < _p.population; i++)
                 _critters[i].PlayerChanged(players[i]);
         }

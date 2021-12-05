@@ -53,7 +53,7 @@ public class Signals
         {
             var x = loc.X + dx;
             var extentY = (int)Math.Sqrt(radius * radius - dx * dx);
-            for (int dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _p.sizeY - loc.Y - 1); ++dy)
+            for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _p.sizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
                 f(new Coord { X = (short)x, Y = (short)y} );

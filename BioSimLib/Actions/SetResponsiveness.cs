@@ -23,7 +23,6 @@ public class SetResponsiveness : IAction
     public override string ToString() => "set inv-responsiveness";
     public string ShortName => "Res";
 
-    public bool Enabled => true;
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var level = actionLevels[(int)Action.SET_RESPONSIVENESS];

@@ -23,27 +23,44 @@ using Action = BioSimLib.Actions.Action;
 
 namespace BioSimTests.Actions;
 
-public class EmitSignalTests
+public class SetOscillatorTests
 {
     [Fact]
     public void TypeTest()
     {
-        var action = new EmitSignal();
-        Assert.Equal(Action.EMIT_SIGNAL0, action.Type);
+        var action = new SetOscillatorPeriod();
+        Assert.Equal(Action.SET_OSCILLATOR_PERIOD, action.Type);
     }
 
     [Fact]
     public void ToStringTest()
     {
-        var action = new EmitSignal();
-        Assert.Equal("emit signal 0", action.ToString());
+        var action = new SetOscillatorPeriod();
+        Assert.Equal("set osc1", action.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var action = new EmitSignal();
-        Assert.Equal("SG", action.ShortName);
+        var action = new SetOscillatorPeriod();
+        Assert.Equal("Osc", action.ShortName);
+    }
+
+    [Fact]
+    public void ExecuteNotSetTest()
+    {
+        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(p);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        actionLevels[(int)Action.SET_OSCILLATOR_PERIOD] = 0.0f;
+
+        var action = new SetOscillatorPeriod();
+        action.Execute(p, board, player, 0, actionLevels);
+
+        Assert.Equal(35u, player._oscPeriod);
     }
 
     [Fact]
@@ -52,20 +69,21 @@ public class EmitSignalTests
         var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var loc = new Coord { X = 3, Y = 4 };
-        var player = board.NewPlayer(genome, loc);
+        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
-        actionLevels[(int)Action.EMIT_SIGNAL0] = 0.6f;
+        actionLevels[(int)Action.SET_OSCILLATOR_PERIOD] = 0.05f;
 
-        var action = new EmitSignal();
+        var action = new SetOscillatorPeriod();
         action.Execute(p, board, player, 0, actionLevels);
+
+        Assert.Equal(41u, player._oscPeriod);
     }
 
     [Fact]
     public void MovementTest()
     {
-        var action = new EmitSignal();
+        var action = new SetOscillatorPeriod();
         var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
         Assert.Equal(0.0, x);
         Assert.Equal(0.0, y);

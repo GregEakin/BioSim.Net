@@ -13,11 +13,10 @@
 //    limitations under the License.
 
 using System.Runtime.InteropServices;
-using BioSimLib;
 using BioSimLib.Genes;
 using Xunit;
 
-namespace BioSimTests;
+namespace BioSimTests.Genes;
 
 public class GeneTests
 {
