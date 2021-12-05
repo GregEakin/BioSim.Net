@@ -16,7 +16,7 @@ namespace BioSimLib;
 
 public class Config
 {
-    public uint population; // >= 0
+    public int population; // >= 0
     public uint stepsPerGeneration; // > 0
     public uint maxGenerations; // >= 0
     public uint numThreads; // > 0

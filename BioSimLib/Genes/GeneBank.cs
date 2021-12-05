@@ -19,7 +19,9 @@ namespace BioSimLib.Genes;
 public class GeneBank
 {
     private readonly Config _p;
-    private readonly Dictionary<uint[], WeakReference<Genome>> _bank = new();
+    // private readonly Dictionary<uint[], WeakReference<Genome>> _bank = new();
+    
+    private int _count;
 
     public GeneBank(Config p)
     {
@@ -43,46 +45,71 @@ public class GeneBank
         }
     }
 
-    public IEnumerable<Genome> NewGeneration()
+    public IEnumerable<Genome> FindSurvivors()
     {
         throw new NotImplementedException();
-
-        // if (survivors.Length <= 0)
-        // {
-        //      _bank.Clear();
-        //     return Startup();
-        // }
-        // else
-        // {
-        //     Remove dead genomes
-        //     // It there 500 survivors, return 499 of this gene, and one mutated one 
-        //     Mutate some of the survivors
-        //     yield return the collection
-        // }
     }
 
-    Genome AddGene(uint[] dna)
+    public IEnumerable<Genome> NewGeneration(IEnumerable<Genome> survivors)
     {
-        var found = _bank.TryGetValue(dna, out var genomeReference);
-        if (!found || genomeReference == null)
+        var data = survivors.ToArray();
+        if (data.Length <= 0)
         {
-            var builder1 = new GenomeBuilder(_p.maxNumberNeurons, dna);
-            // genome1.Optimize();
-            _bank.Add(dna, new WeakReference<Genome>(builder1.ToGenome()));
-            return builder1.ToGenome();
-        }
+            _count = _p.population;
 
-        var available = genomeReference.TryGetTarget(out var builder3);
-        if (!available || builder3 == null)
+            for (var i = 0u; i < _p.population; i++)
+            {
+                Genome genome;
+                do
+                {
+                    var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+                    genome = builder.ToGenome();
+                } while (genome.Length == 0);
+
+                // _bank.Add(i, new WeakReference<Genome>(genome));
+
+                yield return genome;
+            }
+        }
+        else
         {
-            builder3 = new GenomeBuilder(_p.maxNumberNeurons, dna).ToGenome();
-            // genome3.Optimize();
-            genomeReference.SetTarget(builder3);
-            return builder3;
-        }
+            _count = data.Length;
 
-        return builder3;
+            for (var i = 0u; i < _p.population; i++)
+            {
+                var index = i % data.Length;
+                var source = data[index];
+                var builder = new GenomeBuilder(_p.maxNumberNeurons, source);
+                var mutated = builder.Mutate();
+                yield return mutated 
+                    ? builder.ToGenome() 
+                    : source;
+            }
+        }
     }
+
+    // Genome AddGene(uint[] dna)
+    // {
+    //     var found = _bank.TryGetValue(dna, out var genomeReference);
+    //     if (!found || genomeReference == null)
+    //     {
+    //         var builder1 = new GenomeBuilder(_p.maxNumberNeurons, dna);
+    //         // genome1.Optimize();
+    //         _bank.Add(dna, new WeakReference<Genome>(builder1.ToGenome()));
+    //         return builder1.ToGenome();
+    //     }
+    //
+    //     var available = genomeReference.TryGetTarget(out var builder3);
+    //     if (!available || builder3 == null)
+    //     {
+    //         builder3 = new GenomeBuilder(_p.maxNumberNeurons, dna).ToGenome();
+    //         // genome3.Optimize();
+    //         genomeReference.SetTarget(builder3);
+    //         return builder3;
+    //     }
+    //
+    //     return builder3;
+    // }
 
     Genome Sex(string mother, string father)
     {
@@ -93,17 +120,17 @@ public class GeneBank
         return new GenomeBuilder(_p.maxNumberNeurons, new uint[] { }).ToGenome();
     }
 
-    public override string ToString()
-    {
-        var count = 0;
-        foreach (var pair in _bank)
-        {
-            if (pair.Value.TryGetTarget(out var genome))
-                count++;
-        }
-
-        return count.ToString();
-    }
+    // public override string ToString()
+    // {
+    //     var count = 0;
+    //     foreach (var pair in _bank)
+    //     {
+    //         if (pair.Value.TryGetTarget(out var genome))
+    //             count++;
+    //     }
+    //
+    //     return count.ToString();
+    // }
 
     public enum ComparisonMethods
     {

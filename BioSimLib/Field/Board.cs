@@ -38,52 +38,19 @@ public readonly struct Board
 
     public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(Grid.BarrierType.A, loc);
 
-    public IEnumerable<Player> Startup()
+    public Player CreatePlayer(Genome genome)
     {
-        for (var i = 0; i < _p.population; i++)
-        {
-            var genome = RandomGenome();
-            var loc = Grid.FindEmptyLocation();
-            var player = NewPlayer(genome, loc);
-            yield return player;
-        }
+        var loc = Grid.FindEmptyLocation();
+        var player = NewPlayer(genome, loc);
+        return player;
     }
 
-    public IEnumerable<Player> NewGeneration()
+    public IEnumerable<Genome> NewGeneration()
     {
-        var survivors = Peeps.Survivors().ToArray();
+        var survivors = Peeps.Survivors();
         Grid.ZeroFill();
         Signals.ZeroFill();
         Peeps.Clear();
-
-        for (var i = 0; i < _p.population; i++)
-        {
-            var genome = survivors.Length <= 0
-                ? RandomGenome()
-                : ChildGenome(survivors[i % survivors.Length]);
-            var loc = Grid.FindEmptyLocation();
-            var player = NewPlayer(genome, loc);
-            yield return player;
-        }
-    }
-
-    public Genome RandomGenome()
-    {
-        Genome genome;
-        do
-        {
-            var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
-            genome = builder.ToGenome();
-        } while (genome.Length == 0);
-
-        return genome;
-    }
-
-    public Genome ChildGenome(Genome survivor)
-    {
-        var builder = new GenomeBuilder(_p.maxNumberNeurons, survivor);
-        builder.Mutate();
-        var genome = builder.ToGenome();
-        return genome;
+        return survivors;
     }
 }

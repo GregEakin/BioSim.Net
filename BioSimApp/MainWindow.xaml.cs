@@ -103,8 +103,9 @@ public partial class MainWindow : Window
         MyCanvas.Children.Add(_box2);
 
         var i = 0;
-        foreach (var player in _board.Startup())
+        foreach (var genome in _bank.Startup())
         {
+            var player = _board.CreatePlayer(genome);
             _critters[i] = new Cell(player);
             MyCanvas.Children.Add(_critters[i].Element);
             i++;
@@ -129,8 +130,10 @@ public partial class MainWindow : Window
             _generation++;
             _simStep = 0u;
             var i = 0;
-            foreach (var player in _board.NewGeneration())
+            var survivors = _board.NewGeneration();
+            foreach (var genome in _bank.NewGeneration(survivors))
             {
+                var player = _board.CreatePlayer(genome);
                 _critters[i].PlayerChanged(player);
                 i++;
             }

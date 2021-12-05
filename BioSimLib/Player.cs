@@ -66,7 +66,7 @@ public class Player
         _birthLoc = loc;
         _index = index;
         _genome = genome;
-        _alive = _genome.Length > 0;
+        Alive = _genome.Length > 0;
         _nnet = new NeuralNet(_genome);
 
         _birth = 0u;

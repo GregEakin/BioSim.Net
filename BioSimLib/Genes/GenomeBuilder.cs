@@ -99,8 +99,9 @@ public class GenomeBuilder : IEnumerable<Gene>
 
     IEnumerator IEnumerable.GetEnumerator() => _genes.GetEnumerator();
 
-    public void Mutate()
+    public bool Mutate()
     {
+        var mutated = false;
         for (var i = 0; i < _dna.Length; i++)
         {
             var dna = _dna[i];
@@ -109,6 +110,8 @@ public class GenomeBuilder : IEnumerable<Gene>
             {
                 case < 3:
                 {
+                    mutated = true;
+
                     var builder = new GeneBuilder(dna);
                     builder.WeightAsFloat += builder.WeightAsFloat * (0.1f * Rng.NextSingle() - 0.05f);
                     _dna[i] = new Gene(builder).ToUint;
@@ -116,6 +119,8 @@ public class GenomeBuilder : IEnumerable<Gene>
                 }
                 case < 5:
                 {
+                    mutated = true;
+
                     var bit = Rng.Next(16);
                     var value = dna ^ (0x00010000 << bit);
                     _dna[i] = (uint)value;
@@ -123,6 +128,8 @@ public class GenomeBuilder : IEnumerable<Gene>
                 }
             }
         }
+
+        return mutated;
     }
 
     public Genome ToGenome()
