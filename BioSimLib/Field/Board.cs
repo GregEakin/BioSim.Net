@@ -20,7 +20,6 @@ namespace BioSimLib.Field;
 public readonly struct Board
 {
     private readonly Config _p;
-    public Barriers Barriers { get; }
     public Grid Grid { get; }
     public Peeps Peeps { get; }
     public Signals Signals { get; }
@@ -28,9 +27,8 @@ public readonly struct Board
     public Board(Config p)
     {
         _p = p;
-        Barriers = new Barriers();
         Peeps = new Peeps(p);
-        Grid = new Grid(p, Peeps, Barriers);
+        Grid = new Grid(p, Peeps);
         Signals = new Signals(p);
     }
 

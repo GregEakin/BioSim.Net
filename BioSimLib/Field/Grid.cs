@@ -32,15 +32,13 @@ public class Grid
 
     private readonly Config _p;
     private readonly Peeps _peeps;
-    private readonly Barriers _barriers;
     private readonly ushort[,] _board;
     private readonly Random _random = new();
 
-    public Grid(Config p, Peeps peeps, Barriers barriers)
+    public Grid(Config p, Peeps peeps)
     {
         _p = p;
         _peeps = peeps;
-        _barriers = barriers;
         _board = new ushort[p.sizeX, p.sizeY];
     }
 
@@ -106,7 +104,7 @@ public class Grid
 
     public Barrier CreateBarrier(BarrierType type, Coord loc)
     {
-        var barrier = _barriers.NewBarrier(type, loc);
+        var barrier = new Barrier(type, loc);
         _board[loc.X, loc.Y] = 1;
         return barrier;
     }
