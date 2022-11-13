@@ -16,6 +16,7 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class SignalLR : ISensor
 {
     private readonly Signals _signals;

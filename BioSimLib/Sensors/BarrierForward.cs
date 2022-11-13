@@ -16,6 +16,7 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class BarrierForward : ISensor
 {
     private readonly Config _p;

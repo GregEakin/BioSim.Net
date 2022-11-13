@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+[Action]
 public class Suicide : IAction
 {
     public Action Type => Action.SUICIDE;

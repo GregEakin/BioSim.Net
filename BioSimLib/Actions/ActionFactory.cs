@@ -12,7 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using BioSimLib.Actions.Movements;
+using System.Reflection;
 
 namespace BioSimLib.Actions;
 
@@ -22,34 +22,24 @@ public class ActionFactory
 
     public IAction? this[Action action] => _actions[(int)action];
 
-    private static readonly IAction[] Actions = new IAction[]
-    {
-        new EmitSignal(),
-        new KillForward(),
-        new MoveEast(),
-        new MoveForward(),
-        new MoveLeft(),
-        new MoveNorth(),
-        new MoveRandom(),
-        new MoveReverse(),
-        new MoveRight(),
-        new MoveRL(),
-        new MoveSouth(),
-        new MoveWest(),
-        new MoveX(),
-        new MoveY(),
-        new None(),
-        new Procreate(),
-        new SetLongProbeDist(),
-        new SetOscillatorPeriod(),
-        new SetResponsiveness(),
-        new Suicide(),
-    };
-
     public ActionFactory()
     {
-        foreach (var action in Actions)
-            _actions[(int)action.Type] = action;
+        var assembly = Assembly.GetExecutingAssembly();
+        var types = assembly.GetTypes();
+        foreach (var type in types)
+        {
+            if (!type.GetCustomAttributes(false).OfType<ActionAttribute>().Any()) continue;
+
+            var i1 = type.GetConstructor(Array.Empty<Type>());
+            if (i1 != null)
+            {
+                var action = (IAction)i1.Invoke(Array.Empty<object>());
+                _actions[(int)action.Type] = action;
+                continue;
+            }
+
+            throw new Exception("Ctor for Action not found.");
+        }
     }
 
     public ActionFactory(IEnumerable<IAction?> actions)

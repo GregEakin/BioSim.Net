@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class BoundaryDistY : ISensor
 {
     private readonly Config _p;

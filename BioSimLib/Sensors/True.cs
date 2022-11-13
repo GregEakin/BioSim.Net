@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class True : ISensor
 {
     public Sensor Type => Sensor.TRUE;

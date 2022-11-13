@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+[Action]
 public class SetResponsiveness : IAction
 {
     public Action Type => Action.SET_RESPONSIVENESS;

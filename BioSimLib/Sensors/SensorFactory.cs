@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Reflection;
 using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
@@ -24,35 +25,54 @@ public class SensorFactory
 
     public SensorFactory(Config p, Board board)
     {
-        var sensors = new ISensor[]
+        var assembly = Assembly.GetExecutingAssembly();
+        var types = assembly.GetTypes();
+        foreach (var type in types)
         {
-            new LocationX(p),
-            new LocationY(p),
-            new BoundaryDistX(p),
-            new BoundaryDist(p),
-            new BoundaryDistY(p),
-            new GeneticSimilarityForward(p, board.Grid),
-            new LastMoveDirX(),
-            new LastMoveDirY(),
-            new LongProbePopulationForward(board.Grid),
-            new LongProbeBarrierForward(board.Grid),
-            new Population(p, board.Grid),
-            new PopulationForward(board.Grid),
-            new PopulationLeftRight(board.Grid),
-            new Oscillator(),
-            new Age(p),
-            new BarrierForward(p, board.Grid),
-            new BarrierLeftRight(p, board.Grid),
-            new Random(),
-            new Signal(board.Signals),
-            new SignalFwd(board.Signals),
-            new SignalLR(board.Signals),
-            new True(),
-            new False(),
-        };
+            if (!type.GetCustomAttributes(false).OfType<SensorAttribute>().Any()) continue;
 
-        foreach (var sensor in sensors)
-            _sensors[(int)sensor.Type] = sensor;
+            var i1 = type.GetConstructor(Array.Empty<Type>());
+            if (i1 != null)
+            {
+                var sensor = (ISensor)i1.Invoke(Array.Empty<object>());
+                _sensors[(int)sensor.Type] = sensor;
+                continue;
+            }
+
+            var i2 = type.GetConstructor(new[] { typeof(Config) });
+            if (i2 != null)
+            {
+                var sensor = (ISensor)i2.Invoke(new object[] { p });
+                _sensors[(int)sensor.Type] = sensor;
+                continue;
+            }
+
+            var i3 = type.GetConstructor(new[] { typeof(Config), typeof(Grid) });
+            if (i3 != null)
+            {
+                var sensor = (ISensor)i3.Invoke(new object[] { p, board.Grid });
+                _sensors[(int)sensor.Type] = sensor;
+                continue;
+            }
+
+            var i4 = type.GetConstructor(new[] { typeof(Grid) });
+            if (i4 != null)
+            {
+                var sensor = (ISensor)i4.Invoke(new object[] { board.Grid });
+                _sensors[(int)sensor.Type] = sensor;
+                continue;
+            }
+
+            var i5 = type.GetConstructor(new[] { typeof(Signals) });
+            if (i5 != null)
+            {
+                var sensor = (ISensor)i5.Invoke(new object[] { board.Signals });
+                _sensors[(int)sensor.Type] = sensor;
+                continue;
+            }
+
+            throw new Exception("Ctor for Sensor not found.");
+        }
     }
 
     public SensorFactory(IEnumerable<ISensor?> sensors)

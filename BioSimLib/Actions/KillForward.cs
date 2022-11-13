@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+[Action]
 public class KillForward : IAction
 {
     public Action Type => Action.KILL_FORWARD;

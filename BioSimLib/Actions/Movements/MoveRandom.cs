@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions.Movements;
 
+[Action]
 public class MoveRandom : IMovementAction
 {
     public Action Type => Action.MOVE_RANDOM;

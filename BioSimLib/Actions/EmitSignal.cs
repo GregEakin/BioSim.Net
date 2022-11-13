@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+[Action]
 public class EmitSignal : IAction
 {
     public Action Type => Action.EMIT_SIGNAL0;

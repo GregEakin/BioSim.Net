@@ -4,6 +4,7 @@ using BioSimLib.Genes;
 using BioSimLib.Positions;
 using BioSimLib.Sensors;
 using Xunit;
+using Random = BioSimLib.Sensors.Random;
 
 namespace BioSimTests.Sensors;
 

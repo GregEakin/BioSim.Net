@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class Random : ISensor
 {
     private readonly System.Random _random = new();

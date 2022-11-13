@@ -40,3 +40,9 @@ public enum Sensor : byte
     TRUE,
     FALSE,
 }
+
+[AttributeUsage(AttributeTargets.All)]
+internal sealed class SensorAttribute : Attribute
+{
+}
+

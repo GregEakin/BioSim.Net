@@ -37,3 +37,8 @@ public enum Action : byte
     SUICIDE,
     PROCREATE,
 }
+
+[AttributeUsage(AttributeTargets.All)]
+internal sealed class ActionAttribute : Attribute
+{
+}

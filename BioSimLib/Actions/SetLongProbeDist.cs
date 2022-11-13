@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+[Action]
 public class SetLongProbeDist : IAction
 {
     public Action Type => Action.SET_LONGPROBE_DIST;

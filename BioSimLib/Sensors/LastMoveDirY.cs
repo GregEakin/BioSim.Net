@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class LastMoveDirY : ISensor
 {
     public Sensor Type => Sensor.LAST_MOVE_DIR_Y;

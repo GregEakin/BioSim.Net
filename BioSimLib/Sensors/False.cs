@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class False : ISensor
 {
     public Sensor Type => Sensor.FALSE;

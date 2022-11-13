@@ -16,6 +16,7 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class PopulationLeftRight : ISensor
 {
     private readonly Grid _grid;

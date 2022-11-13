@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions.Movements;
 
+[Action]
 public class MoveEast : IMovementAction
 {
     public Action Type => Action.MOVE_EAST;

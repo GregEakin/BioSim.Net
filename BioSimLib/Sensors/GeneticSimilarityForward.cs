@@ -17,6 +17,7 @@ using BioSimLib.Genes;
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class GeneticSimilarityForward : ISensor
 {
     private readonly Config _p;

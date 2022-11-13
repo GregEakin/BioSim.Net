@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class Population : ISensor
 {
     private readonly Config _p;

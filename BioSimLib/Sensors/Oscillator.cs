@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+[Sensor]
 public class Oscillator : ISensor
 {
     public Sensor Type => Sensor.OSC1;
