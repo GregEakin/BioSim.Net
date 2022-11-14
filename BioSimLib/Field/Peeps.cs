@@ -68,6 +68,7 @@ public class Peeps
     {
         foreach (var (player, newLoc) in _moveQueue)
         {
+            if (!player.Alive) continue;
             if (!grid.Move(player, newLoc))
                 continue;
 
@@ -101,6 +102,10 @@ public class Peeps
     public IEnumerable<Genome> Survivors() => from player in _players
         where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2
         select player._genome;
+
+    public IEnumerable<Player> Survivors2() => from player in _players
+        where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2
+        select player;
 
     public IDictionary<int, int> Census()
     {

@@ -22,6 +22,7 @@ using System.Windows.Threading;
 using BioSimLib;
 using BioSimLib.Actions;
 using BioSimLib.BarrierFactory;
+using BioSimLib.Challenges;
 using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Sensors;
@@ -45,14 +46,17 @@ public partial class MainWindow : Window
         genomeMaxLength = 24,
         maxNumberNeurons = 12,
         populationSensorRadius = 10,
+        signalSensorRadius = 10,
         shortProbeBarrierDistance = 4,
         longProbeDistance = 10,
         signalLayers = 1,
+        challenge = Challenge.CornerWeighted,
     };
 
     private readonly Board _board;
     private readonly GeneBank _bank;
     private readonly BarrierFactory _barrierFactory;
+    private readonly ChallengeFactory _challengeFactory;
     private readonly SensorFactory _sensorFactory;
     private readonly ActionFactory _actionFactory;
     private readonly Rectangle _box1;
@@ -80,6 +84,7 @@ public partial class MainWindow : Window
         _bank = new GeneBank(_p);
         _board = new Board(_p);
         _barrierFactory = new BarrierFactory(_board.Grid);
+        _challengeFactory = new ChallengeFactory(_p, _board.Grid);
         _sensorFactory = new SensorFactory(_p, _board);
         _actionFactory = new ActionFactory();
         _critters = new Cell[_p.population];
@@ -108,7 +113,7 @@ public partial class MainWindow : Window
         var i = 0;
         foreach (var genome in _bank.Startup())
         {
-            var player = _board.CreatePlayer(genome);
+            var player = _board.NewPlayer(genome);
             _critters[i] = new Cell(player);
             MyCanvas.Children.Add(_critters[i].Element);
             i++;
@@ -136,7 +141,7 @@ public partial class MainWindow : Window
             var survivors = _board.NewGeneration();
             foreach (var genome in _bank.NewGeneration(survivors))
             {
-                var player = _board.CreatePlayer(genome);
+                var player = _board.NewPlayer(genome);
                 _critters[i].PlayerChanged(player);
                 i++;
             }

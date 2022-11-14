@@ -62,16 +62,6 @@ public class Grid
         player._loc = new Coord(x, y);
     }
 
-    public void SetBarrier(Coord loc)
-    {
-        // barrierCenters.push_back(loc);
-    }
-
-    public void SetBarrier(short x, short y)
-    {
-        // barrierLocations.push_back( { x, y} );
-    }
-
     public void Remove(Player player)
     {
         var loc = player._loc;
@@ -85,10 +75,10 @@ public class Grid
     {
         while (true)
         {
-            var x = _random.Next(0, _p.sizeX - 1);
-            var y = _random.Next(0, _p.sizeY - 1);
+            var x = (short)_random.Next(0, _p.sizeX - 1);
+            var y = (short)_random.Next(0, _p.sizeY - 1);
             if (_board[x, y] == 0)
-                return new Coord { X = (short)x, Y = (short)y };
+                return new Coord { X = x, Y = y };
         }
     }
 
@@ -102,11 +92,31 @@ public class Grid
         return player;
     }
 
+    public void SetBarrier(Coord loc)
+    {
+        // barrierCenters.push_back(loc);
+    }
+
+    public void SetBarrier(short x, short y)
+    {
+        // barrierLocations.push_back( { x, y} );
+    }
+
     public Barrier CreateBarrier(Coord loc)
     {
         var barrier = new Barrier(loc);
         _board[loc.X, loc.Y] = 1;
         return barrier;
+    }
+
+    public IEnumerable<Coord> GetBarrierLocations()
+    {
+        return Array.Empty<Coord>();
+    }
+
+    public IEnumerable<Coord> GetBarrierCenters()
+    {
+        return Array.Empty<Coord>();
     }
 
     public bool Move(Player player, Coord newLoc)

@@ -13,7 +13,6 @@
 //    limitations under the License.
 
 using System.Reflection;
-using BioSimLib.BarrierFactory;
 using BioSimLib.Field;
 
 namespace BioSimLib.BarrierFactory;

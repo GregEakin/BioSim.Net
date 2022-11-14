@@ -12,22 +12,25 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System;
 using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
 
 public class Signals
 {
+    private const byte SIGNAL_MAX = byte.MaxValue;
+
     private readonly Config _p;
-    private readonly byte[,,] _board;
+    private readonly byte[,,] _data;
 
     public Signals(Config p)
     {
         _p = p;
-        _board = new byte[p.signalLayers, p.sizeX, p.sizeY];
+        _data = new byte[p.signalLayers, p.sizeX, p.sizeY];
     }
 
-    public byte GetMagnitude(uint layerNum, Coord loc) => _board[layerNum, loc.X, loc.Y];
+    public byte GetMagnitude(uint layerNum, Coord loc) => _data[layerNum, loc.X, loc.Y];
 
     public float GetSignalDensity(uint layerNum, Coord loc)
     {
@@ -65,14 +68,17 @@ public class Signals
     public float GetSignalDensityAlongAxis(uint layerNum, Coord loc, Dir dir)
     {
         var sum = 0.0;
+        var dirVec = dir.AsNormalizedCoord();
+        var len = Math.Sqrt(dirVec.X * dirVec.X + dirVec.Y * dirVec.Y);
+        var dirVecX = dirVec.X / len;
+        var dirVecY = dirVec.Y / len;
 
         void F(Coord tloc)
         {
             if (tloc == loc) return;
             var offset = tloc - loc;
-            var anglePosCos = offset.RaySameness(dir);
-            var dist = Math.Sqrt((double)offset.X * offset.X + (double)offset.Y * offset.Y);
-            var contrib = (1.0 / dist) * anglePosCos * GetMagnitude(layerNum, loc);
+            var proj = dirVecX * offset.X + dirVecY * offset.Y;
+            var contrib = proj * GetMagnitude(layerNum, tloc) / (offset.X * offset.X + offset.Y * offset.Y);
             sum += contrib;
         }
 
@@ -84,8 +90,37 @@ public class Signals
         return (float)sensorVal;
     }
 
-    public void Increment(int i, Coord loc)
+    public void Increment(int layerNum, Coord loc)
     {
+        var radius = 1.5f;
+        var centerIncreaseAmount = 2;
+        var neighborIncreaseAmount = 1;
+
+        VisitNeighborhood(loc, radius, loc2 =>
+        {
+            if (_data[layerNum, loc2.X, loc2.Y] < SIGNAL_MAX)
+            {
+                _data[layerNum, loc2.X, loc2.Y] = (byte)
+                    Math.Min(SIGNAL_MAX, _data[layerNum, loc2.X, loc2.Y] + neighborIncreaseAmount);
+            }
+        });
+
+        if (_data[layerNum, loc.X, loc.Y] < SIGNAL_MAX)
+        {
+            _data[layerNum, loc.X, loc.Y] = (byte)
+                Math.Min(SIGNAL_MAX, _data[layerNum, loc.X, loc.Y] + centerIncreaseAmount);
+        }
+    }
+
+    public void Fade(int layerNum)
+    {
+        var fadeAmount = (byte)1u;
+        for (var x = 0; x < _p.sizeX; ++x)
+        for (var y = 0; y < _p.sizeY; ++y)
+            if (_data[layerNum, x, y] >= fadeAmount)
+                _data[layerNum, x, y] -= fadeAmount; // fade center cell
+            else
+                _data[layerNum, x, y] = 0;
     }
 
     public void ZeroFill()

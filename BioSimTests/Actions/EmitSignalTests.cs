@@ -49,7 +49,7 @@ public class EmitSignalTests
     [Fact]
     public void ExecuteTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var p = new Config { maxNumberNeurons = 1, signalLayers = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var loc = new Coord { X = 3, Y = 4 };

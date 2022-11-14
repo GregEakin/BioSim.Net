@@ -12,6 +12,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using BioSimLib.Challenges;
+
 namespace BioSimLib;
 
 public class Config
@@ -46,10 +48,10 @@ public class Config
     public uint genomeComparisonMethod; // 0 = Jaro-Winkler; 1 = Hamming
     public bool updateGraphLog;
     public uint updateGraphLogStride; // > 0
-    public uint challenge;
+    public Challenge challenge;
     public uint barrierType; // >= 0
-    public uint replaceBarrierType; // >= 0
-    public uint replaceBarrierTypeGenerationNumber; // >= 0
+    public bool deterministic;
+    public uint rngSeed;
 
     // These must not change after initialization
     public short sizeX; // 2..0x10000
