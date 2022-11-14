@@ -19,10 +19,6 @@ public class LocationSequence : IChallenge
 {
     public Challenge Type => Challenge.LocationSequence;
 
-    public LocationSequence()
-    {
-    }
-
     public (bool, float) PassedSurvivalCriterion(Player player)
     {
         var count = 0u;

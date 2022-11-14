@@ -19,7 +19,7 @@ public struct Coord
     public short X { get; set; }
     public short Y { get; set; }
 
-    public Coord(short x0 = 0, short y0 = 0)
+    public Coord(short x0, short y0)
     {
         X = x0;
         Y = y0;

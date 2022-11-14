@@ -14,13 +14,11 @@
 
 using System.Collections;
 using System.Text;
-using Random = System.Random;
 
 namespace BioSimLib.Genes;
 
 public class Genome : IEnumerable<Gene>
 {
-    private static readonly Random Rng = new();
     private readonly uint[] _dna;
     private readonly Gene[] _genes;
 

@@ -1,4 +1,3 @@
-using System;
 using BioSimLib;
 using BioSimLib.Field;
 using BioSimLib.Genes;

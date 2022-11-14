@@ -12,7 +12,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using System;
 using BioSimLib;
 using BioSimLib.Actions.Movements;
 using BioSimLib.Field;
@@ -78,6 +77,6 @@ public class MoveRandomTests
         actionLevels[(int)Action.MOVE_RANDOM] = 1.0f;
         var lastMoveDir = new Dir(Dir.Compass.W);
         var (x, y) = movement.Move(actionLevels, lastMoveDir);
-        // Assert.True(x != 0.0f || y == 0.0f);
+        Assert.True(x != 0.0f || y == 0.0f);
     }
 }

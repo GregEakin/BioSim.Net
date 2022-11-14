@@ -12,7 +12,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using System;
 using BioSimLib;
 using BioSimLib.Actions;
 using BioSimLib.Field;
@@ -92,6 +91,7 @@ public class KillForwardTests
         action.Execute(p, board, player, 0, actionLevels);
 
         Assert.Empty(board.Peeps.DeathQueue);
+        // Assert.False(victim.Alive);
     }
 
     [Fact]

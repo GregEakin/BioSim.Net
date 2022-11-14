@@ -32,9 +32,7 @@ public class SignalFwd : ISensor
 
     public float Output(Player player, uint simStep)
     {
-        // var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player.LastMoveDir);
-        // return sensorVal;
-
-        return 0.0f;
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player.LastMoveDir);
+        return sensorVal;
     }
 }

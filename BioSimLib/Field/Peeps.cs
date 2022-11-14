@@ -116,7 +116,7 @@ public class Peeps
 
             var (red, green, blue) = player.Color;
             var key = (red << 16) | (green << 8) | blue;
-            var found = dict.TryGetValue(key, out var count);
+            var found = dict.ContainsKey(key);
             if (!found)
             {
                 dict.Add(key, 1);

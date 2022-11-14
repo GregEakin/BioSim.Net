@@ -13,14 +13,13 @@
 //    limitations under the License.
 
 using System.Collections;
-using System.Runtime.CompilerServices;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
 using Random = System.Random;
 
 namespace BioSimLib.Genes;
 
-public class GenomeBuilder : IEnumerable<Gene>
+public class GenomeBuilder : IEnumerable<GeneBuilder>
 {
     public class Node
     {
@@ -95,7 +94,7 @@ public class GenomeBuilder : IEnumerable<Gene>
 
     public Gene this[int index] => _genes[index].ToGene();
 
-    public IEnumerator<Gene> GetEnumerator() => _genes.Cast<Gene>().GetEnumerator();
+    public IEnumerator<GeneBuilder> GetEnumerator() => _genes.Cast<GeneBuilder>().GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _genes.GetEnumerator();
 

@@ -24,7 +24,7 @@ namespace BioSimLib;
 
 public class Player
 {
-    public readonly Config _p;
+    private readonly Config _p;
     public readonly Genome _genome;
     public readonly NeuralNet _nnet;
     public readonly ushort _index;
@@ -53,7 +53,7 @@ public class Player
 
     public Dir LastMoveDir { get; set; } = Dir.Random8();
 
-    public float ResponsivenessAdjusted { get; set; }
+    public float ResponsivenessAdjusted { get; }
 
     public override string ToString() => $"Index {_index}, Pos {_loc}, Neural Net {_nnet}";
 

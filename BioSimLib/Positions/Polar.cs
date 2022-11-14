@@ -36,8 +36,8 @@ public readonly struct Polar
         if (Dir == Dir.Compass.CENTER)
             return new Coord(0, 0);
 
-        var S = 2.0 * Math.PI / 8.0;
-        var compassToRadians = new[] { 5 * S, 6 * S, 7 * S, 4 * S, 0, 0 * S, 3 * S, 2 * S, 1 * S };
+        var s = 2.0 * Math.PI / 8.0;
+        var compassToRadians = new[] { 5 * s, 6 * s, 7 * s, 4 * s, 0, 0 * s, 3 * s, 2 * s, 1 * s };
         var x = (short)Math.Round(Mag * Math.Cos(compassToRadians[Dir.AsInt()]));
         var y = (short)Math.Round(Mag * Math.Sin(compassToRadians[Dir.AsInt()]));
         return new Coord(x, y);
