@@ -55,7 +55,7 @@ public class ThreeFloatingIslands : IBarrierFactory
         //     center2 = RandomLoc();
         // } while ((center0 - center2).Length() < margin || (center1 - center2).Length() < margin);
 
-        var f = (Coord loc) => { _grid.SetBarrier(loc); };
+        var f = (short x, short y) => { _grid.SetBarrier(new Coord(x, y)); };
 
         _grid.VisitNeighborhood(center0, radius, f);
         //visitNeighborhood(center1, radius, f);

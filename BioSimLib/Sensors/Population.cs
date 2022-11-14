@@ -13,7 +13,6 @@
 //    limitations under the License.
 
 using BioSimLib.Field;
-using BioSimLib.Positions;
 
 namespace BioSimLib.Sensors;
 
@@ -38,10 +37,10 @@ public class Population : ISensor
         var count = 0u;
         var occupied = 0u;
 
-        void F(Coord loc)
+        void F(short x, short y)
         {
             ++count;
-            if (!_grid.IsEmptyAt(loc))
+            if (!_grid.IsEmptyAt(x, y))
                 ++occupied;
         }
 

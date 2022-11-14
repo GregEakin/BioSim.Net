@@ -34,13 +34,10 @@ public class Spots : IBarrierFactory
         var numberOfLocations = 5u;
         var radius = 5.0f;
 
-        var f = (Coord loc) => { _grid.SetBarrier(loc); };
+        var f = (short x, short y) => { _grid.SetBarrier(new Coord(x,y)); };
 
         var verticalSliceSize = _grid.SizeY / (numberOfLocations + 1);
         for (var n = 1u; n <= numberOfLocations; ++n)
-        {
-            Coord loc = new((short)(_grid.SizeX / 2), (short)(n * verticalSliceSize));
-            _grid.VisitNeighborhood(loc, radius, f);
-        }
+            _grid.VisitNeighborhood((short)(_grid.SizeX / 2), (short)(n * verticalSliceSize), radius, f);
     }
 }

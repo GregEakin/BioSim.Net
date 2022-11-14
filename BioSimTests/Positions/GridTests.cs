@@ -72,10 +72,10 @@ public class GridTests
         var squares = 0;
         var critters = 0;
 
-        void F(Coord tloc)
+        void F(short x, short y)
         {
             squares++;
-            if (board.Grid.IsOccupiedAt(tloc))
+            if (board.Grid.IsOccupiedAt(x, y))
                 critters++;
         }
 

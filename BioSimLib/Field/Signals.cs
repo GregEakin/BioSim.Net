@@ -31,6 +31,7 @@ public class Signals
     }
 
     public byte GetMagnitude(uint layerNum, Coord loc) => _data[layerNum, loc.X, loc.Y];
+    public byte GetMagnitude(uint layerNum, short x, short y) => _data[layerNum, x, y];
 
     public float GetSignalDensity(uint layerNum, Coord loc)
     {
@@ -38,10 +39,10 @@ public class Signals
         var sum = 0uL;
         var center = loc;
 
-        void F(Coord tloc)
+        void F(short x, short y)
         {
             ++countLocs;
-            sum += GetMagnitude(layerNum, tloc);
+            sum += GetMagnitude(layerNum, x, y);
         }
 
         VisitNeighborhood(center, _p.signalSensorRadius, F);
@@ -51,7 +52,7 @@ public class Signals
         return sensorVal;
     }
 
-    public void VisitNeighborhood(Coord loc, float radius, Action<Coord> f)
+    public void VisitNeighborhood(Coord loc, float radius, Action<short, short> f)
     {
         for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, _p.sizeX - loc.X - 1); ++dx)
         {
@@ -60,7 +61,7 @@ public class Signals
             for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _p.sizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
-                f(new Coord { X = (short)x, Y = (short)y });
+                f((short)x, (short)y);
             }
         }
     }
@@ -73,8 +74,9 @@ public class Signals
         var dirVecX = dirVec.X / len;
         var dirVecY = dirVec.Y / len;
 
-        void F(Coord tloc)
+        void F(short x, short y)
         {
+            var tloc = new Coord(x, y);
             if (tloc == loc) return;
             var offset = tloc - loc;
             var proj = dirVecX * offset.X + dirVecY * offset.Y;
@@ -96,12 +98,12 @@ public class Signals
         var centerIncreaseAmount = 2;
         var neighborIncreaseAmount = 1;
 
-        VisitNeighborhood(loc, radius, loc2 =>
+        VisitNeighborhood(loc, radius, (loc2X, loc2Y) =>
         {
-            if (_data[layerNum, loc2.X, loc2.Y] < SIGNAL_MAX)
+            if (_data[layerNum, loc2X, loc2Y] < SIGNAL_MAX)
             {
-                _data[layerNum, loc2.X, loc2.Y] = (byte)
-                    Math.Min(SIGNAL_MAX, _data[layerNum, loc2.X, loc2.Y] + neighborIncreaseAmount);
+                _data[layerNum, loc2X, loc2Y] = (byte)
+                    Math.Min(SIGNAL_MAX, _data[layerNum, loc2X, loc2Y] + neighborIncreaseAmount);
             }
         });
 

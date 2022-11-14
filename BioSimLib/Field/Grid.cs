@@ -44,8 +44,11 @@ public class Grid
 
     public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
     public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
+    public bool IsEmptyAt(short x, short y) => _board[x, y] == 0;
     private bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
     public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
+    public bool IsOccupiedAt(short x, short y) => _board[x, y] > 1;
+
     public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 && loc.Y == 0 && loc.Y == SizeY - 1;
     public ushort At(Coord loc) => _board[loc.X, loc.Y];
     public ushort At(int x, int y) => _board[x, y];
@@ -153,7 +156,21 @@ public class Grid
         return builder.ToString();
     }
 
-    public void VisitNeighborhood(Coord loc, float radius, Action<Coord> f)
+    public void VisitNeighborhood(short locX, short locY, float radius, Action<short, short> f)
+    {
+        for (var dx = -Math.Min((int)radius, locX); dx <= Math.Min((int)radius, SizeX - locX - 1); ++dx)
+        {
+            var x = locX + dx;
+            var extentY = (int)Math.Sqrt(radius * radius - dx * dx);
+            for (var dy = -Math.Min(extentY, locY); dy <= Math.Min(extentY, SizeY - locY - 1); ++dy)
+            {
+                var y = locY + dy;
+                f((short)x, (short)y);
+            }
+        }
+    }
+
+    public void VisitNeighborhood(Coord loc, float radius, Action<short, short> f)
     {
         for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, SizeX - loc.X - 1); ++dx)
         {
@@ -162,7 +179,7 @@ public class Grid
             for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, SizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
-                f(new Coord { X = (short)x, Y = (short)y });
+                f((short)x, (short)y);
             }
         }
     }
@@ -208,8 +225,9 @@ public class Grid
         var dirVecX = dirVec.X / len;
         var dirVecY = dirVec.Y / len;
 
-        void F(Coord tloc)
+        void F(short x, short y)
         {
+            var tloc = new Coord(x, y);
             if (tloc == loc || !IsOccupiedAt(tloc)) return;
             var offset = tloc - loc;
             var proj = dirVecX * offset.X + dirVecY * offset.Y;
