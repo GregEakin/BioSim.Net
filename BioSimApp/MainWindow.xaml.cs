@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using BioSimLib;
 using BioSimLib.Actions;
+using BioSimLib.BarrierFactory;
 using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Sensors;
@@ -51,6 +52,7 @@ public partial class MainWindow : Window
 
     private readonly Board _board;
     private readonly GeneBank _bank;
+    private readonly BarrierFactory _barrierFactory;
     private readonly SensorFactory _sensorFactory;
     private readonly ActionFactory _actionFactory;
     private readonly Rectangle _box1;
@@ -77,6 +79,7 @@ public partial class MainWindow : Window
 
         _bank = new GeneBank(_p);
         _board = new Board(_p);
+        _barrierFactory = new BarrierFactory(_board.Grid);
         _sensorFactory = new SensorFactory(_p, _board);
         _actionFactory = new ActionFactory();
         _critters = new Cell[_p.population];

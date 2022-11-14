@@ -20,16 +20,6 @@ namespace BioSimLib.Field;
 
 public class Grid
 {
-    public enum BarrierType
-    {
-        A, // Vertical bar in constant location
-        B, // Vertical bar in random location
-        C, // five blocks staggered
-        D, // Horizontal bar in constant location
-        E, // Three floating islands -- different locations every generation
-        F, // Spots, specified number, radius, locations
-    }
-
     private readonly Config _p;
     private readonly Peeps _peeps;
     private readonly ushort[,] _board;
@@ -49,14 +39,14 @@ public class Grid
             _board[x, y] = 0;
     }
 
-    public short SizeX() => (short)_board.GetLength(0);
-    public short SizeY() => (short)_board.GetLength(1);
+    public short SizeX => (short)_board.GetLength(0);
+    public short SizeY => (short)_board.GetLength(1);
 
-    public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX() && loc.Y >= 0 && loc.Y < SizeY();
+    public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
     public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
     private bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
     public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
-    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX() - 1 && loc.Y == 0 && loc.Y == SizeY() - 1;
+    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 && loc.Y == 0 && loc.Y == SizeY - 1;
     public ushort At(Coord loc) => _board[loc.X, loc.Y];
     public ushort At(int x, int y) => _board[x, y];
 
@@ -70,6 +60,16 @@ public class Grid
     {
         _board[x, y] = player._index;
         player._loc = new Coord(x, y);
+    }
+
+    public void SetBarrier(Coord loc)
+    {
+        // barrierCenters.push_back(loc);
+    }
+
+    public void SetBarrier(short x, short y)
+    {
+        // barrierLocations.push_back( { x, y} );
     }
 
     public void Remove(Player player)
@@ -102,9 +102,9 @@ public class Grid
         return player;
     }
 
-    public Barrier CreateBarrier(BarrierType type, Coord loc)
+    public Barrier CreateBarrier(Coord loc)
     {
-        var barrier = new Barrier(type, loc);
+        var barrier = new Barrier(loc);
         _board[loc.X, loc.Y] = 1;
         return barrier;
     }
@@ -143,13 +143,13 @@ public class Grid
         return builder.ToString();
     }
 
-    public static void VisitNeighborhood(Config p, Coord loc, float radius, Action<Coord> f)
+    public void VisitNeighborhood(Coord loc, float radius, Action<Coord> f)
     {
-        for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, p.sizeX - loc.X - 1); ++dx)
+        for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, SizeX - loc.X - 1); ++dx)
         {
             var x = loc.X + dx;
             var extentY = (int)Math.Sqrt(radius * radius - dx * dx);
-            for (int dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, p.sizeY - loc.Y - 1); ++dy)
+            for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, SizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
                 f(new Coord { X = (short)x, Y = (short)y });
@@ -207,7 +207,7 @@ public class Grid
             sum += contrib;
         }
 
-        VisitNeighborhood(_p, loc, _p.populationSensorRadius, F);
+        VisitNeighborhood(loc, _p.populationSensorRadius, F);
         var maxSumMag = 6.0f * _p.populationSensorRadius;
         var sensorVal = (sum / maxSumMag + 1.0f) / 2.0f;
         return sensorVal;

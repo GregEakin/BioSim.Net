@@ -79,7 +79,7 @@ public class GridTests
                 critters++;
         }
 
-        Grid.VisitNeighborhood(p, loc, 2.0f, F);
+        board.Grid.VisitNeighborhood(loc, 2.0f, F);
         Assert.Equal(13, squares);
         Assert.Equal(3, critters);
     }

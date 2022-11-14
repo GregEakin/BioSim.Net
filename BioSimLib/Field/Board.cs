@@ -34,7 +34,7 @@ public readonly struct Board
 
     public Player NewPlayer(Genome genome, Coord loc) => Grid.CreatePlayer(genome, loc);
 
-    public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(Grid.BarrierType.A, loc);
+    public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(loc);
 
     public Player CreatePlayer(Genome genome)
     {

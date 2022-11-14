@@ -95,6 +95,26 @@ public class KillForwardTests
     }
 
     [Fact]
+    public void ExecuteVictimNotAliveTest()
+    {
+        var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
+        var board = new Board(p);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        player.LastMoveDir = new Dir(Dir.Compass.W);
+        var victim = board.NewPlayer(genome, new Coord { X = 2, Y = 4 });
+        victim.Alive = false;
+
+        var actionLevels = new float[Enum.GetNames<Action>().Length];
+        actionLevels[(int)Action.KILL_FORWARD] = 0.05f;
+
+        var action = new KillForward();
+        action.Execute(p, board, player, 0, actionLevels);
+
+        Assert.Empty(board.Peeps.DeathQueue);
+    }
+
+    [Fact]
     public void ExecuteTest()
     {
         var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
@@ -103,6 +123,7 @@ public class KillForwardTests
         var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
         player.LastMoveDir = new Dir(Dir.Compass.W);
         var victim = board.NewPlayer(genome, new Coord { X = 2, Y = 4 });
+        victim.Alive = true;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 0.05f;

@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -13,26 +13,34 @@
 //    limitations under the License.
 
 using BioSimLib.Field;
+using BioSimLib.Positions;
 
-namespace BioSimLib.Sensors;
+namespace BioSimLib.BarrierFactory;
 
-[Sensor]
-public class LongProbePopulationForward : ISensor
+[Barrier]
+public class Spots : IBarrierFactory
 {
     private readonly Grid _grid;
 
-    public LongProbePopulationForward(Grid grid)
+    public Spots(Grid grid)
     {
         _grid = grid;
     }
 
-    public Sensor Type => Sensor.LONGPROBE_POP_FWD;
-    public override string ToString() => "long probe population fwd";
-    public string ShortName => "LPf";
+    public int Type => 6;
 
-    public float Output(Player player, uint simStep)
+    public void CreateBarrier()
     {
-        var sensorVal = _grid.LongProbePopulationFwd(player._loc, player.LastMoveDir, player._longProbeDist) / player._longProbeDist;
-        return sensorVal;
+        var numberOfLocations = 5u;
+        var radius = 5.0f;
+
+        var f = (Coord loc) => { _grid.SetBarrier(loc); };
+
+        var verticalSliceSize = _grid.SizeY / (numberOfLocations + 1);
+        for (var n = 1u; n <= numberOfLocations; ++n)
+        {
+            Coord loc = new((short)(_grid.SizeX / 2), (short)(n * verticalSliceSize));
+            _grid.VisitNeighborhood(loc, radius, f);
+        }
     }
 }

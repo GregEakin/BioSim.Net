@@ -76,7 +76,7 @@ public class GeneBuilder
                   | ((SinkType == Gene.GeneType.Action) ? 0x00800000u : 0x00000000u)
                   | ((SinkNum & 0x7Fu) << 16)
                   | ((ushort)Weight);
-        return (uint)dna;
+        return dna;
     }
 
     public byte Color => (byte)(((SourceNum & 0x03) << 6)

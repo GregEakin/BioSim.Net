@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -14,25 +14,30 @@
 
 using BioSimLib.Field;
 
-namespace BioSimLib.Sensors;
+namespace BioSimLib.BarrierFactory;
 
-[Sensor]
-public class LongProbePopulationForward : ISensor
+[Barrier]
+public class VerticalBarRandomLocation : IBarrierFactory
 {
+    private readonly Random _random = new();
     private readonly Grid _grid;
 
-    public LongProbePopulationForward(Grid grid)
+    public VerticalBarRandomLocation(Grid grid)
     {
         _grid = grid;
     }
 
-    public Sensor Type => Sensor.LONGPROBE_POP_FWD;
-    public override string ToString() => "long probe population fwd";
-    public string ShortName => "LPf";
+    public int Type => 2;
 
-    public float Output(Player player, uint simStep)
+    public void CreateBarrier()
     {
-        var sensorVal = _grid.LongProbePopulationFwd(player._loc, player.LastMoveDir, player._longProbeDist) / player._longProbeDist;
-        return sensorVal;
+        var minX = (short)(_random.Next(20, _grid.SizeX - 20));
+        var maxX = (short)(minX + 1);
+        var minY = (short)(_random.Next(20, _grid.SizeY / 2 - 20));
+        var maxY = (short)(minY + _grid.SizeY / 2);
+
+        for (var x = minX; x <= maxX; ++x)
+        for (var y = minY; y <= maxY; ++y)
+            _grid.SetBarrier(x, y);
     }
 }
