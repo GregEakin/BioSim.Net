@@ -24,7 +24,7 @@ namespace BioSimLib;
 
 public class Player
 {
-    private readonly Config _p;
+    public readonly Config _p;
     public readonly Genome _genome;
     public readonly NeuralNet _nnet;
     public readonly ushort _index;
@@ -35,7 +35,6 @@ public class Player
     public Coord _loc;
     private bool _alive;
     private float _responsiveness;
-    private float _responsivenessAdjusted;
     public uint _oscPeriod;
     public uint _longProbeDist;
 
@@ -54,20 +53,16 @@ public class Player
 
     public Dir LastMoveDir { get; set; } = Dir.Random8();
 
-    public float Responsiveness
-    {
+    public float Responsiveness { 
         get => _responsiveness;
         set
         {
             _responsiveness = value;
-
-            var k = _p.responsivenessCurveKFactor;
-            var r = _responsiveness;
-            _responsivenessAdjusted = (float)(Math.Pow((r - 2.0), -2.0 * k) - Math.Pow(2.0, -2.0 * k) * (1.0 - r));
+            ResponsivenessAdjusted = ResponseCurve(value);
         }
     }
 
-    public float ResponsivenessAdjusted => _responsivenessAdjusted;
+    public float ResponsivenessAdjusted { get; private set; }
 
     public override string ToString() => $"Index {_index}, Pos {_loc}, Neural Net {_nnet}";
 
@@ -185,6 +180,7 @@ public class Player
 
     public static bool Prob2Bool(float factor)
     {
+        // return (randomUint() / (float)RANDOM_UINT_MAX) < factor;
         return true;
     }
 }

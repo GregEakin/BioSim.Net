@@ -51,23 +51,12 @@ public readonly struct Dir
         switch (n)
         {
             case < 0:
-                {
-                    while (n++ < 0)
-                    {
-                        n9 = rotateLeft[n9];
-                    }
+                while (n++ < 0) n9 = rotateLeft[n9];
+                break;
 
-                    break;
-                }
             case > 0:
-                {
-                    while (n-- > 0)
-                    {
-                        n9 = rotateRight[n9];
-                    }
-
-                    break;
-                }
+                while (n-- > 0) n9 = rotateRight[n9];
+                break;
         }
 
         return new Dir((Compass)n9);

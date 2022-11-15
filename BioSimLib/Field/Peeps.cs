@@ -48,16 +48,7 @@ public class Peeps
 
     public int Count => _count - 1;
 
-    public Player? this[int index]
-    {
-        get
-        {
-            if (index < 2 || index > _count)
-                return null;
-
-            return _players[index - 2u];
-        }
-    }
+    public Player? this[int index] => index < 2 || index > _count ? null : _players[index - 2u];
 
     public void QueueForMove(Player player, Coord newLoc)
     {
@@ -112,18 +103,15 @@ public class Peeps
         var dict = new Dictionary<int, int>();
         foreach (var player in _players)
         {
-            if (player is not { Alive: true }) continue;
+            if (!player?.Alive ?? true) continue;
 
             var (red, green, blue) = player.Color;
             var key = (red << 16) | (green << 8) | blue;
             var found = dict.ContainsKey(key);
             if (!found)
-            {
                 dict.Add(key, 1);
-                continue;
-            }
-
-            dict[key]++;
+            else
+                dict[key]++;
         }
 
         return dict;
