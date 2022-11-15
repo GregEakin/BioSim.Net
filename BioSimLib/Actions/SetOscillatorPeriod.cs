@@ -17,6 +17,9 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+// Oscillator period action - convert action level nonlinearly to
+// 2..4*p.stepsPerGeneration. If this action neuron is enabled but not driven,
+// will default to 1.5 + e^(3.5) = a period of 34 simSteps.
 [Action]
 public class SetOscillatorPeriod : IAction
 {

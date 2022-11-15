@@ -16,12 +16,13 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+// Sense signal0 density along axis of last movement direction
 [Sensor]
-public class SignalFwd : ISensor
+public class Signal0Forward : ISensor
 {
     private readonly Signals _signals;
 
-    public SignalFwd(Signals signals)
+    public Signal0Forward(Signals signals)
     {
         _signals = signals;
     }

@@ -59,7 +59,7 @@ public class SetResponsivenessTests
         var action = new SetResponsiveness();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Equal(0.5f, player._responsiveness);
+        Assert.Equal(0.5f, player.Responsiveness);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class SetResponsivenessTests
         var action = new SetResponsiveness();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Equal(0.5249792f, player._responsiveness);
+        Assert.Equal(0.5249792f, player.Responsiveness);
     }
 
     [Fact]

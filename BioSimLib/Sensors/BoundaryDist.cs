@@ -14,6 +14,9 @@
 
 namespace BioSimLib.Sensors;
 
+// Finds closest boundary, compares that to the max possible dist
+// to a boundary from the center, and converts that linearly to the
+// sensor range 0.0..1.0
 [Sensor]
 public class BoundaryDist : ISensor
 {

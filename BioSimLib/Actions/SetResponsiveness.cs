@@ -17,6 +17,9 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+// Responsiveness action - convert neuron action level from arbitrary float range
+// to the range 0.0..1.0. If this action neuron is enabled but not driven, will
+// default to mid-level 0.5.
 [Action]
 public class SetResponsiveness : IAction
 {
@@ -27,8 +30,8 @@ public class SetResponsiveness : IAction
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var level = actionLevels[(int)Action.SET_RESPONSIVENESS];
-        level = (float)((Math.Tanh(level) + 1.0) / 2.0); // convert to 0.0..1.0
-        player._responsiveness = level;
+        level = (float)((Math.Tanh(level) + 1.0) / 2.0);
+        player.Responsiveness = level;
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

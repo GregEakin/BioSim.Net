@@ -16,6 +16,8 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+// Sense the nearest barrier along axis of last movement direction, mapped
+// to sensor range 0.0..1.0
 [Sensor]
 public class BarrierForward : ISensor
 {

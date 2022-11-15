@@ -7,14 +7,14 @@ using Xunit;
 
 namespace BioSimTests.Sensors;
 
-public class SignalFwdTests
+public class Signal0ForwardTests
 {
     [Fact]
     public void TypeTest()
     {
         var p = new Config { signalSensorRadius = 3, sizeX = 5, sizeY = 5 };
         var signals = new Signals(p);
-        var sensor = new SignalFwd(signals);
+        var sensor = new Signal0Forward(signals);
         Assert.Equal(Sensor.SIGNAL0_FWD, sensor.Type);
     }
 
@@ -23,7 +23,7 @@ public class SignalFwdTests
     {
         var p = new Config { signalSensorRadius = 3, sizeX = 5, sizeY = 5 };
         var signals = new Signals(p);
-        var sensor = new SignalFwd(signals);
+        var sensor = new Signal0Forward(signals);
         Assert.Equal("signal 0", sensor.ToString());
     }
 
@@ -32,7 +32,7 @@ public class SignalFwdTests
     {
         var p = new Config { signalSensorRadius = 3, sizeX = 5, sizeY = 5 };
         var signals = new Signals(p);
-        var sensor = new SignalFwd(signals);
+        var sensor = new Signal0Forward(signals);
         Assert.Equal("Sfd", sensor.ShortName);
     }
 
@@ -45,7 +45,7 @@ public class SignalFwdTests
         var player = board.NewPlayer(genome, new Coord(1, 2));
 
         var signals = new Signals(p);
-        var sensor = new SignalFwd(signals);
+        var sensor = new Signal0Forward(signals);
         Assert.Equal(0.5f, sensor.Output(player, 0));
     }
 }

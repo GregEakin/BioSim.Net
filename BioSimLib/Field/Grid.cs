@@ -34,9 +34,7 @@ public class Grid
 
     public void ZeroFill()
     {
-        for (var x = 0; x < _board.GetLength(0); x++)
-        for (var y = 0; y < _board.GetLength(1); y++)
-            _board[x, y] = 0;
+        Array.Clear(_board);
     }
 
     public short SizeX => (short)_board.GetLength(0);
@@ -45,11 +43,11 @@ public class Grid
     public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
     public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
     public bool IsEmptyAt(short x, short y) => _board[x, y] == 0;
-    private bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
+    public bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
     public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
     public bool IsOccupiedAt(short x, short y) => _board[x, y] > 1;
 
-    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 && loc.Y == 0 && loc.Y == SizeY - 1;
+    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
     public ushort At(Coord loc) => _board[loc.X, loc.Y];
     public ushort At(int x, int y) => _board[x, y];
 
@@ -76,13 +74,16 @@ public class Grid
 
     public Coord FindEmptyLocation()
     {
-        while (true)
+        var count = 2 * _p.sizeX * _p.sizeY;
+        for (var i = 0; i < count; i++)
         {
-            var x = (short)_random.Next(0, _p.sizeX - 1);
-            var y = (short)_random.Next(0, _p.sizeY - 1);
+            var x = (short)_random.Next(0, _p.sizeX);
+            var y = (short)_random.Next(0, _p.sizeY);
             if (_board[x, y] == 0)
                 return new Coord { X = x, Y = y };
         }
+
+        throw new Exception("Can't find an empty square.");
     }
 
     public Player? this[int x, int y] => _peeps[_board[x, y]];
@@ -147,7 +148,7 @@ public class Grid
                 }
 
                 var player = _peeps[index];
-                builder.Append($" {(player != null ? player._index : ".")}");
+                builder.Append($" {(player != null ? player._index : "*")}");
             }
 
             builder.AppendLine();
@@ -184,12 +185,16 @@ public class Grid
         }
     }
 
+    // Returns the number of locations to the next agent in the specified
+    // direction, not including loc. If the probe encounters a boundary or a
+    // barrier before reaching the longProbeDist distance, returns longProbeDist.
+    // Returns 0..longProbeDist.
     public float LongProbePopulationFwd(Coord loc, Dir dir, uint longProbeDist)
     {
         var count = 0u;
         loc += dir;
         var numLocsToTest = longProbeDist;
-        while (numLocsToTest > 0u && IsInBounds(loc) && !IsEmptyAt(loc))
+        while (numLocsToTest > 0u && IsInBounds(loc) && IsEmptyAt(loc))
         {
             ++count;
             loc += dir;
@@ -199,12 +204,17 @@ public class Grid
         return numLocsToTest > 0u && (!IsInBounds(loc) || IsBarrierAt(loc)) ? longProbeDist : count;
     }
 
+    // Returns the number of locations to the next barrier in the
+    // specified direction, not including loc. Ignores agents in the way.
+    // If the distance to the border is less than the longProbeDist distance
+    // and no barriers are found, returns longProbeDist.
+    // Returns 0..longProbeDist.
     public float LongProbeBarrierFwd(Coord loc, Dir dir, uint longProbeDist)
     {
         var count = 0u;
         loc += dir;
         var numLocsToTest = longProbeDist;
-        while (numLocsToTest > 0u && IsInBounds(loc) && IsBarrierAt(loc))
+        while (numLocsToTest > 0u && IsInBounds(loc) && !IsBarrierAt(loc))
         {
             ++count;
             loc += dir;
@@ -214,14 +224,23 @@ public class Grid
         return numLocsToTest > 0u && !IsInBounds(loc) ? longProbeDist : count;
     }
 
+    // Converts the population along the specified axis to the sensor range. The
+    // locations of neighbors are scaled by the inverse of their distance times
+    // the positive absolute cosine of the difference of their angle and the
+    // specified axis. The maximum positive or negative magnitude of the sum is
+    // about 2*radius. We don't adjust for being close to a border, so populations
+    // along borders and in corners are commonly sparser than away from borders.
+    // An empty neighborhood results in a sensor value exactly midrange; below
+    // midrange if the population density is greatest in the reverse direction,
+    // above midrange if density is greatest in forward direction.
     public float GetPopulationDensityAlongAxis(Coord loc, Dir dir)
     {
-        if (dir == Dir.Compass.CENTER || _p.populationSensorRadius == 0.0f)
+        if (dir == Dir.Compass.CENTER || _p.populationSensorRadius <= 0.0f)
             return 0.0f;
 
-        var sum = 0.0f;
+        var sum = 0.0;
         var dirVec = dir.AsNormalizedCoord();
-        var len = (float)Math.Sqrt((double)dirVec.X * dirVec.X + (double)dirVec.Y * dirVec.Y);
+        var len = Math.Sqrt((double)dirVec.X * dirVec.X + (double)dirVec.Y * dirVec.Y);
         var dirVecX = dirVec.X / len;
         var dirVecY = dirVec.Y / len;
 
@@ -236,11 +255,14 @@ public class Grid
         }
 
         VisitNeighborhood(loc, _p.populationSensorRadius, F);
-        var maxSumMag = 6.0f * _p.populationSensorRadius;
-        var sensorVal = (sum / maxSumMag + 1.0f) / 2.0f;
-        return sensorVal;
+        var maxSumMag = 6.0 * _p.populationSensorRadius;
+        var sensorVal = (sum / maxSumMag + 1.0) / 2.0;
+        return (float)sensorVal;
     }
 
+    // Converts the number of locations (not including loc) to the next barrier location
+    // along opposite directions of the specified axis to the sensor range. If no barriers
+    // are found, the result is sensor mid-range. Ignores agents in the path.
     public float GetShortProbeBarrierDistance(Coord loc0, Dir dir, uint probeDistance)
     {
         var countFwd = 0u;
@@ -256,10 +278,8 @@ public class Grid
             --numLocsToTest;
         }
 
-        if (numLocsToTest > 0u && !IsInBounds(loc))
-        {
+        if (numLocsToTest > 0u && !IsInBounds(loc)) 
             countFwd = probeDistance;
-        }
 
         // Scan negative direction
         numLocsToTest = probeDistance;
@@ -271,13 +291,10 @@ public class Grid
             --numLocsToTest;
         }
 
-        if (numLocsToTest > 0u && !IsInBounds(loc))
-        {
+        if (numLocsToTest > 0u && !IsInBounds(loc)) 
             countRev = probeDistance;
-        }
 
-        float sensorVal = countFwd - countRev + probeDistance;
-        sensorVal = sensorVal / 2.0f / probeDistance;
-        return sensorVal;
+        var sensorVal = (countFwd - countRev + probeDistance) / 2.0 / probeDistance;
+        return (float)sensorVal;
     }
 }

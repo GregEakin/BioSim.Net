@@ -14,6 +14,8 @@
 
 namespace BioSimLib.Sensors;
 
+// Converts age (units of simSteps compared to life expectancy)
+// linearly to normalized sensor range 0.0..1.0
 [Sensor]
 public class Age : ISensor
 {

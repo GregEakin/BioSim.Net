@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+// Returns a random sensor value in the range 0.0..1.0.
 [Sensor]
 public class Random : ISensor
 {

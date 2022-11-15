@@ -14,6 +14,8 @@
 
 namespace BioSimLib.Sensors;
 
+// Maps the oscillator sine wave to sensor range 0.0..1.0;
+// cycles starts at simStep 0 for everbody.
 [Sensor]
 public class Oscillator : ISensor
 {

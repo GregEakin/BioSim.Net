@@ -17,6 +17,9 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+// Set longProbeDistance - convert action level to 1..maxLongProbeDistance.
+// If this action neuron is enabled but not driven, will default to
+// mid-level period of 17 simSteps.
 [Action]
 public class SetLongProbeDist : IAction
 {

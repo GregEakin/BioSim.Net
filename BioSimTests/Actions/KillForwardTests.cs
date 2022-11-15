@@ -122,6 +122,7 @@ public class KillForwardTests
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
         player.LastMoveDir = new Dir(Dir.Compass.W);
+        player.Responsiveness = 1.0f;
         var victim = board.NewPlayer(genome, new Coord { X = 2, Y = 4 });
         victim.Alive = true;
 

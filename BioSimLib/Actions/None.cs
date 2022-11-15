@@ -17,6 +17,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+// Do nothing
 [Action]
 public class None : IAction
 {

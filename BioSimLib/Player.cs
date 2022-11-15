@@ -34,7 +34,8 @@ public class Player
 
     public Coord _loc;
     private bool _alive;
-    public float _responsiveness;
+    private float _responsiveness;
+    private float _responsivenessAdjusted;
     public uint _oscPeriod;
     public uint _longProbeDist;
 
@@ -53,7 +54,20 @@ public class Player
 
     public Dir LastMoveDir { get; set; } = Dir.Random8();
 
-    public float ResponsivenessAdjusted { get; }
+    public float Responsiveness
+    {
+        get => _responsiveness;
+        set
+        {
+            _responsiveness = value;
+
+            var k = _p.responsivenessCurveKFactor;
+            var r = _responsiveness;
+            _responsivenessAdjusted = (float)(Math.Pow((r - 2.0), -2.0 * k) - Math.Pow(2.0, -2.0 * k) * (1.0 - r));
+        }
+    }
+
+    public float ResponsivenessAdjusted => _responsivenessAdjusted;
 
     public override string ToString() => $"Index {_index}, Pos {_loc}, Neural Net {_nnet}";
 
@@ -71,8 +85,7 @@ public class Player
 
         _birth = 0u;
         _oscPeriod = 34u; // ToDo !!! define a constant
-        _responsiveness = 0.5f; // range 0.0..1.0
-        ResponsivenessAdjusted = 1.0f;
+        Responsiveness = 0.5f; // range 0.0..1.0
         _longProbeDist = p.longProbeDistance;
         _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
     }

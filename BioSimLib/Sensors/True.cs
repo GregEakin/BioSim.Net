@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+// Always 1.0
 [Sensor]
 public class True : ISensor
 {

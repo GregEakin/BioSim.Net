@@ -17,6 +17,9 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+// Kill forward -- if this action value is > threshold, value is converted to probability
+// of an attempted murder. Probabilities under the threshold are considered 0.0.
+// If this action neuron is enabled but not driven, the neighbors are safe.
 [Action]
 public class KillForward : IAction
 {
@@ -27,9 +30,8 @@ public class KillForward : IAction
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
-        var level = actionLevels[(int)Action.KILL_FORWARD];
-        level = (float)((Math.Tanh(level) + 1.0) / 2.0);
-        level *= player.ResponsivenessAdjusted;
+        var actionLevel = actionLevels[(int)Action.KILL_FORWARD];
+        var level = (float)(((Math.Tanh(actionLevel) + 1.0) / 2.0) * player.ResponsivenessAdjusted);
         if (level <= killThreshold || !Player.Prob2Bool(level))
             return;
 

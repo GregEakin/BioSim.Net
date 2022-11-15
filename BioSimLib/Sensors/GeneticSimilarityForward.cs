@@ -17,6 +17,8 @@ using BioSimLib.Genes;
 
 namespace BioSimLib.Sensors;
 
+// Return minimum sensor value if nobody is alive in the forward adjacent location,
+// else returns a similarity match in the sensor range 0.0..1.0
 [Sensor]
 public class GeneticSimilarityForward : ISensor
 {

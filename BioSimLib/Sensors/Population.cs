@@ -16,6 +16,8 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+// Returns population density in neighborhood converted linearly from
+// 0..100% to sensor range
 [Sensor]
 public class Population : ISensor
 {

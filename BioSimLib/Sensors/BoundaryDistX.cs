@@ -14,6 +14,8 @@
 
 namespace BioSimLib.Sensors;
 
+// Measures the distance to nearest boundary in the east-west axis,
+// max distance is half the grid width; scaled to sensor range 0.0..1.0.
 [Sensor]
 public class BoundaryDistX : ISensor
 {

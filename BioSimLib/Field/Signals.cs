@@ -32,6 +32,8 @@ public class Signals
     public byte GetMagnitude(uint layerNum, Coord loc) => _data[layerNum, loc.X, loc.Y];
     public byte GetMagnitude(uint layerNum, short x, short y) => _data[layerNum, x, y];
 
+    // returns magnitude of the specified signal layer in a neighborhood, with
+    // 0.0..maxSignalSum converted to the sensor range.
     public float GetSignalDensity(uint layerNum, Coord loc)
     {
         var countLocs = 0u;
@@ -45,10 +47,9 @@ public class Signals
         }
 
         VisitNeighborhood(center, _p.signalSensorRadius, F);
-        var maxSum = (float)countLocs * byte.MaxValue;
+        var maxSum = (double)countLocs * byte.MaxValue;
         var sensorVal = sum / maxSum;
-
-        return sensorVal;
+        return (float)sensorVal;
     }
 
     public void VisitNeighborhood(Coord loc, float radius, Action<short, short> f)
@@ -65,6 +66,13 @@ public class Signals
         }
     }
 
+    // Converts the signal density along the specified axis to sensor range. The
+    // values of cell signal levels are scaled by the inverse of their distance times
+    // the positive absolute cosine of the difference of their angle and the
+    // specified axis. The maximum positive or negative magnitude of the sum is
+    // about 2*radius*SIGNAL_MAX (?). We don't adjust for being close to a border,
+    // so signal densities along borders and in corners are commonly sparser than
+    // away from borders.
     public float GetSignalDensityAlongAxis(uint layerNum, Coord loc, Dir dir)
     {
         var sum = 0.0;

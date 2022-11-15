@@ -55,7 +55,7 @@ public class LongProbeBarrierForwardTests
     {
         var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
-        board.NewBarrier(new Coord(1, 2));
+        board.NewBarrier(new Coord(0, 2));
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         var player = board.NewPlayer(genome, new Coord(2, 2));

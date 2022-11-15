@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,6 +21,7 @@ using BioSimLib;
 using BioSimLib.Actions;
 using BioSimLib.Field;
 using BioSimLib.Sensors;
+using Action = BioSimLib.Actions.Action;
 
 namespace BioSimApp;
 
@@ -60,8 +62,8 @@ public class Cell
         if (!Player.Alive)
             return;
 
-        for (var i = 0; i < actionLevels.Length; i++) actionLevels[i] = 0.0f;
-        for (var i = 0; i < neuronAccumlator.Length; i++) neuronAccumlator[i] = 0.0f;
+        Array.Clear(actionLevels);
+        Array.Clear(neuronAccumlator);
 
         Player.FeedForward(sensorFactory, actionLevels, neuronAccumlator, simStep);
         Player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);

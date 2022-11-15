@@ -16,23 +16,24 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+// Sense signal0 density along an axis perpendicular to last movement direction
 [Sensor]
-public class Signal : ISensor
+public class Signal0LeftRight : ISensor
 {
     private readonly Signals _signals;
 
-    public Signal(Signals signals)
+    public Signal0LeftRight(Signals signals)
     {
         _signals = signals;
     }
 
-    public Sensor Type => Sensor.SIGNAL0;
-    public override string ToString() => "signal 0";
-    public string ShortName => "Sg";
+    public Sensor Type => Sensor.SIGNAL0_LR;
+    public override string ToString() => "signal 0 LR";
+    public string ShortName => "Slr";
 
     public float Output(Player player, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensity(0u, player._loc);
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

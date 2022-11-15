@@ -69,6 +69,7 @@ public class SuicideTests
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        player.Responsiveness = 1.0f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SUICIDE] = 0.05f;

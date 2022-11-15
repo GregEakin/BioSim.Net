@@ -16,6 +16,7 @@ using BioSimLib.Field;
 
 namespace BioSimLib.Sensors;
 
+// Sense population density along an axis 90 degrees from last movement direction
 [Sensor]
 public class PopulationLeftRight : ISensor
 {

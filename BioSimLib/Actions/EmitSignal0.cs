@@ -17,8 +17,13 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
 
+// Emit signal0 - if this action value is below a threshold, nothing emitted.
+// Otherwise convert the action value to a probability of emitting one unit of
+// signal (pheromone).
+// Pheromones may be emitted immediately (see signals.cpp). If this action neuron
+// is enabled but not driven, nothing will be emitted.
 [Action]
-public class EmitSignal : IAction
+public class EmitSignal0 : IAction
 {
     public Action Type => Action.EMIT_SIGNAL0;
     public override string ToString() => "emit signal 0";
@@ -27,9 +32,8 @@ public class EmitSignal : IAction
     public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
     {
         var emitThreshold = 0.5f;
-        var level = actionLevels[(int)Action.EMIT_SIGNAL0];
-        level = (float)((Math.Tanh(level) + 1.0) / 2.0);
-        level *= player.ResponsivenessAdjusted;
+        var actionLevel = actionLevels[(int)Action.EMIT_SIGNAL0];
+        var level = (float)((Math.Tanh(actionLevel) + 1.0) / 2.0 * player.ResponsivenessAdjusted);
         if (level > emitThreshold && Player.Prob2Bool(level))
             board.Signals.Increment(0, player._loc);
     }

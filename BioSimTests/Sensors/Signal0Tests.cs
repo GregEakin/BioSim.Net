@@ -7,14 +7,14 @@ using Xunit;
 
 namespace BioSimTests.Sensors;
 
-public class SignalTests
+public class Signal0Tests
 {
     [Fact]
     public void TypeTest()
     {
         var p = new Config { signalSensorRadius = 3, sizeX = 5, sizeY = 5 };
         var signals = new Signals(p);
-        var sensor = new Signal(signals);
+        var sensor = new Signal0(signals);
         Assert.Equal(Sensor.SIGNAL0, sensor.Type);
     }
 
@@ -23,7 +23,7 @@ public class SignalTests
     {
         var p = new Config { signalSensorRadius = 3, sizeX = 5, sizeY = 5 };
         var signals = new Signals(p);
-        var sensor = new Signal(signals);
+        var sensor = new Signal0(signals);
         Assert.Equal("signal 0", sensor.ToString());
     }
 
@@ -32,7 +32,7 @@ public class SignalTests
     {
         var p = new Config { signalSensorRadius = 3, sizeX = 5, sizeY = 5 };
         var signals = new Signals(p);
-        var sensor = new Signal(signals);
+        var sensor = new Signal0(signals);
         Assert.Equal("Sg", sensor.ShortName);
     }
 
@@ -45,7 +45,7 @@ public class SignalTests
         var player = board.NewPlayer(genome, new Coord(1, 2));
 
         var signals = new Signals(p);
-        var sensor = new Signal(signals);
+        var sensor = new Signal0(signals);
         Assert.Equal(0.0f, sensor.Output(player, 0));
     }
 }

@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+// Y component -1,0,1 maps to sensor values 0.0, 0.5, 1.0
 [Sensor]
 public class LastMoveDirY : ISensor
 {

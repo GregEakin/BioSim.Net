@@ -14,6 +14,7 @@
 
 namespace BioSimLib.Sensors;
 
+// Maps current X location 0..p.sizeX-1 to sensor range 0.0..1.0
 [Sensor]
 public class LocationX : ISensor
 {
