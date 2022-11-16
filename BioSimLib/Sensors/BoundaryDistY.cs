@@ -30,9 +30,9 @@ public class BoundaryDistY : ISensor
     public override string ToString() => "boundary dist Y";
     public string ShortName => "EDy";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var minDistY = Math.Min(player._loc.Y, _p.sizeY - player._loc.Y - 1);
+        var minDistY = Math.Min(player.LocY, _p.sizeY - player.LocY - 1);
         var sensorVal = minDistY / (_p.sizeY / 2.0f);
         return sensorVal;
     }

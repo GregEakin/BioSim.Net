@@ -24,7 +24,7 @@ public class Random : ISensor
     public override string ToString() => "random";
     public string ShortName => "Rnd";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
         var sensorVal = _random.NextSingle();
         return sensorVal;

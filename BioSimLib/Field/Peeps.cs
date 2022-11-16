@@ -20,22 +20,22 @@ namespace BioSimLib.Field;
 public class Peeps
 {
     private readonly Config _p;
-    private readonly Player?[] _players;
+    private readonly Critter?[] _critters;
     private ushort _count = 1;
 
-    private readonly List<Tuple<Player, Coord>> _moveQueue = new();
-    private readonly List<Player> _deathQueue = new();
+    private readonly List<Tuple<Critter, Coord>> _moveQueue = new();
+    private readonly List<Critter> _deathQueue = new();
 
     public Peeps(Config p)
     {
         _p = p;
-        _players = new Player?[p.population];
+        _critters = new Critter?[p.population];
     }
 
-    public Player NewPlayer(Genome genome, Coord loc)
+    public Critter NewCritter(Genome genome, Coord loc)
     {
-        var player = new Player(_p, genome, loc, ++_count);
-        _players[player._index - 2u] = player;
+        var player = new Critter(_p, genome, loc, ++_count);
+        _critters[player.Index - 2u] = player;
         return player;
     }
 
@@ -48,11 +48,11 @@ public class Peeps
 
     public int Count => _count - 1;
 
-    public Player? this[int index] => index < 2 || index > _count ? null : _players[index - 2u];
+    public Critter? this[int index] => index < 2 || index > _count ? null : _critters[index - 2u];
 
-    public void QueueForMove(Player player, Coord newLoc)
+    public void QueueForMove(Critter player, Coord newLoc)
     {
-        _moveQueue.Add(new Tuple<Player, Coord>(player, newLoc));
+        _moveQueue.Add(new Tuple<Critter, Coord>(player, newLoc));
     }
 
     public void DrainMoveQueue(Grid grid)
@@ -63,17 +63,17 @@ public class Peeps
             if (!grid.Move(player, newLoc))
                 continue;
 
-            player._loc = newLoc;
-            var moveDir = (newLoc - player._loc).AsDir();
+            player.Loc = newLoc;
+            var moveDir = (newLoc - player.Loc).AsDir();
             player.LastMoveDir = moveDir;
         }
 
         _moveQueue.Clear();
     }
 
-    public IEnumerable<Player> DeathQueue => _deathQueue;
+    public IEnumerable<Critter> DeathQueue => _deathQueue;
 
-    public void QueueForDeath(Player player)
+    public void QueueForDeath(Critter player)
     {
         _deathQueue.Add(player);
     }
@@ -84,24 +84,24 @@ public class Peeps
         {
             player.Alive = false;
             grid.Remove(player);
-            _players[player._index] = null;
+            _critters[player.Index] = null;
         }
 
         _deathQueue.Clear();
     }
 
-    public IEnumerable<Genome> Survivors() => from player in _players
-        where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2
-        select player._genome;
+    public IEnumerable<Genome> Survivors() => from player in _critters
+        where player.Alive && player.LocX > _p.sizeX / 2 && player.LocX < _p.sizeX - 2
+        select player.Genome;
 
-    public IEnumerable<Player> Survivors2() => from player in _players
-        where player.Alive && player._loc.X > _p.sizeX / 2 && player._loc.X < _p.sizeX - 2
+    public IEnumerable<Critter> Survivors2() => from player in _critters
+        where player.Alive && player.LocX > _p.sizeX / 2 && player.LocX < _p.sizeX - 2
         select player;
 
     public IDictionary<int, int> Census()
     {
         var dict = new Dictionary<int, int>();
-        foreach (var player in _players)
+        foreach (var player in _critters)
         {
             if (!player?.Alive ?? true) continue;
 

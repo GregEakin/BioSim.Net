@@ -55,7 +55,7 @@ public class BoundaryDistTests
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         board.NewBarrier(new Coord(2, 0));
 
-        var player = board.NewPlayer(genome, new Coord(1, 2));
+        var player = board.NewCritter(genome, new Coord(1, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);
 
         var sensor = new BoundaryDist(p);

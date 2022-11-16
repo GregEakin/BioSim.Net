@@ -20,5 +20,5 @@ public interface ISensor
     public string ShortName { get; }
 
     // Returned sensor values range SENSOR_MIN..SENSOR_MAX
-    public float Output(Player player, uint simStep);
+    public float Output(Critter player, uint simStep);
 }

@@ -30,9 +30,9 @@ public class BoundaryDistX : ISensor
     public override string ToString() => "boundary dist X";
     public string ShortName => "EDx";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var minDistX = Math.Min(player._loc.X, _p.sizeX - player._loc.X - 1);
+        var minDistX = Math.Min(player.LocX, _p.sizeX - player.LocX - 1);
         var sensorVal = minDistX / (_p.sizeX / 2.0f);
         return sensorVal;
     }

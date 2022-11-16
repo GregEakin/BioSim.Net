@@ -32,7 +32,7 @@ public class SensorMock : ISensor
         _output = output;
     }
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
         return _output;
     }

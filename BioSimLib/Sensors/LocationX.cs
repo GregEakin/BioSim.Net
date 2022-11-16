@@ -29,8 +29,8 @@ public class LocationX : ISensor
     public override string ToString() => "location x";
     public string ShortName => "Lx";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        return (float)player._loc.X / (_p.sizeX - 1u);
+        return (float)player.LocX / (_p.sizeX - 1u);
     }
 }

@@ -24,7 +24,7 @@ public class Procreate : IAction
     public override string ToString() => "procreate";
     public string ShortName => "Sex";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

@@ -27,19 +27,19 @@ public class Text : IChallenge
         _grid = grid;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Player player)
+    public (bool, float) PassedSurvivalCriterion(Critter player)
     {
         var minNeighbors = 22u;
         var maxNeighbors = 2u;
         var radius = 1.5f;
 
-        if (_grid.IsBorder(player._loc))
+        if (_grid.IsBorder(player.Loc))
             return (false, 0.0f);
 
         var count = 0u;
         var f = (short x, short y) => { if (_grid.IsOccupiedAt(x, y)) ++count; };
 
-        _grid.VisitNeighborhood(player._loc, radius, f);
+        _grid.VisitNeighborhood(player.Loc, radius, f);
         return count >= minNeighbors && count <= maxNeighbors
             ? (true, 1.0f)
             : (false, 0.0f);

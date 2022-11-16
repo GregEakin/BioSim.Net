@@ -22,7 +22,7 @@ public class LastMoveDirY : ISensor
     public override string ToString() => "last move dir Y";
     public string ShortName => "LMy";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
         var lastY = player.LastMoveDir.AsNormalizedCoord().Y;
         var sensorVal = lastY == 0

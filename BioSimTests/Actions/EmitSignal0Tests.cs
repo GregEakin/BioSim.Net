@@ -52,7 +52,7 @@ public class EmitSignal0Tests
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var loc = new Coord { X = 3, Y = 4 };
-        var player = board.NewPlayer(genome, loc);
+        var player = board.NewCritter(genome, loc);
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.EMIT_SIGNAL0] = 0.6f;

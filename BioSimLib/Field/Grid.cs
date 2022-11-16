@@ -51,21 +51,21 @@ public class Grid
     public ushort At(Coord loc) => _board[loc.X, loc.Y];
     public ushort At(int x, int y) => _board[x, y];
 
-    public void Set(Coord loc, Player player)
+    public void Set(Coord loc, Critter player)
     {
-        _board[loc.X, loc.Y] = player._index;
-        player._loc = loc;
+        _board[loc.X, loc.Y] = player.Index;
+        player.Loc = loc;
     }
 
-    public void Set(short x, short y, Player player)
+    public void Set(short x, short y, Critter player)
     {
-        _board[x, y] = player._index;
-        player._loc = new Coord(x, y);
+        _board[x, y] = player.Index;
+        player.Loc = new Coord(x, y);
     }
 
-    public void Remove(Player player)
+    public void Remove(Critter player)
     {
-        var loc = player._loc;
+        var loc = player.Loc;
         if (_board[loc.X, loc.Y] < 2)
             return;
 
@@ -86,13 +86,13 @@ public class Grid
         throw new Exception("Can't find an empty square.");
     }
 
-    public Player? this[int x, int y] => _peeps[_board[x, y]];
-    public Player? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
+    public Critter? this[int x, int y] => _peeps[_board[x, y]];
+    public Critter? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
 
-    public Player CreatePlayer(Genome genome, Coord loc)
+    public Critter CreateCritter(Genome genome, Coord loc)
     {
-        var player = _peeps.NewPlayer(genome, loc);
-        _board[loc.X, loc.Y] = player._index;
+        var player = _peeps.NewCritter(genome, loc);
+        _board[loc.X, loc.Y] = player.Index;
         return player;
     }
 
@@ -123,13 +123,13 @@ public class Grid
         return Array.Empty<Coord>();
     }
 
-    public bool Move(Player player, Coord newLoc)
+    public bool Move(Critter player, Coord newLoc)
     {
         if (!IsEmptyAt(newLoc))
             return false;
 
-        _board[player._loc.X, player._loc.Y] = 0;
-        _board[newLoc.X, newLoc.Y] = player._index;
+        _board[player.LocX, player.LocY] = 0;
+        _board[newLoc.X, newLoc.Y] = player.Index;
         return true;
     }
 
@@ -148,7 +148,7 @@ public class Grid
                 }
 
                 var player = _peeps[index];
-                builder.Append($" {(player != null ? player._index : "*")}");
+                builder.Append($" {(player != null ? player.Index : "*")}");
             }
 
             builder.AppendLine();

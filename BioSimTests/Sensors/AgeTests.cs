@@ -54,7 +54,7 @@ public class AgeTests
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
-        var player = board.NewPlayer(genome, new Coord(2, 2));
+        var player = board.NewCritter(genome, new Coord(2, 2));
 
         var sensor = new Age(p);
         Assert.Equal(0.25f, sensor.Output(player, 25));

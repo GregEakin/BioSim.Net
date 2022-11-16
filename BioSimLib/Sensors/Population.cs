@@ -34,7 +34,7 @@ public class Population : ISensor
     public override string ToString() => "population";
     public string ShortName => "Pop";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
         var count = 0u;
         var occupied = 0u;
@@ -46,7 +46,7 @@ public class Population : ISensor
                 ++occupied;
         }
 
-        _grid.VisitNeighborhood(player._loc, _p.populationSensorRadius, F);
+        _grid.VisitNeighborhood(player.Loc, _p.populationSensorRadius, F);
         var sensorVal = (float)occupied / count;
         return sensorVal;
     }

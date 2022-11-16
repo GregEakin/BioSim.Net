@@ -27,11 +27,11 @@ public class Circle : IChallenge
         _p = p;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Player player)
+    public (bool, float) PassedSurvivalCriterion(Critter player)
     {
         var safeCenter = new Coord((short)(_p.sizeX / 4.0), (short)(_p.sizeY / 4.0));
         var radius = _p.sizeX / 4.0f;
-        var offset = safeCenter - player._loc;
+        var offset = safeCenter - player.Loc;
         var distance = offset.Length();
         return distance <= radius
             ? (true, (radius - distance) / radius)

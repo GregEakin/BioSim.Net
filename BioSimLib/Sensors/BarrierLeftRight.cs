@@ -34,9 +34,9 @@ public class BarrierLeftRight : ISensor
     public override string ToString() => "short probe barrier left-right";
     public string ShortName => "Blr";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player._loc, player.LastMoveDir.Rotate90DegCw(), _p.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir.Rotate90DegCw(), _p.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

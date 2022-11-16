@@ -51,7 +51,7 @@ public class SuicideTests
         var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SUICIDE] = 0.0f;
@@ -68,7 +68,7 @@ public class SuicideTests
         var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
         player.Responsiveness = 1.0f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];

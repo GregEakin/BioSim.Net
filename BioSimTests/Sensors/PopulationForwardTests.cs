@@ -60,11 +60,11 @@ public class PopulationForwardTests
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         for (var i = 0; i < 5; i++)
-            board.NewPlayer(genome, new Coord(1, (short)i));
+            board.NewCritter(genome, new Coord(1, (short)i));
 
-        var player = board.NewPlayer(genome, new Coord(2, 2));
+        var player = board.NewCritter(genome, new Coord(2, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);
-        player._loc = new Coord(2, 2);
+        player.Loc = new Coord(2, 2);
 
         var sensor = new PopulationForward(board.Grid);
         Assert.Equal(0.5833333f, sensor.Output(player, 0));

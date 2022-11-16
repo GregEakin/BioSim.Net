@@ -58,9 +58,9 @@ public class LongProbeBarrierForwardTests
         board.NewBarrier(new Coord(0, 2));
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
-        var player = board.NewPlayer(genome, new Coord(2, 2));
+        var player = board.NewCritter(genome, new Coord(2, 2));
         player.LastMoveDir = new Dir(Dir.Compass.W);
-        player._longProbeDist = 2;
+        player.LongProbeDist = 2;
 
         var sensor = new LongProbeBarrierForward(board.Grid);
         Assert.Equal(0.5f, sensor.Output(player, 25));

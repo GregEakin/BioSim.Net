@@ -32,9 +32,9 @@ public class PopulationForward : ISensor
     public override string ToString() => "population forward";
     public string ShortName => "Pfd";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(player._loc, player.LastMoveDir);
+        var sensorVal = _grid.GetPopulationDensityAlongAxis(player.Loc, player.LastMoveDir);
         return sensorVal;
     }
 }

@@ -31,9 +31,9 @@ public class Signal0LeftRight : ISensor
     public override string ToString() => "signal 0 LR";
     public string ShortName => "Slr";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player.LastMoveDir.Rotate90DegCw());
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player.Loc, player.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

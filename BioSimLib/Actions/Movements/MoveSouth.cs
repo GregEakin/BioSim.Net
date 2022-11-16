@@ -24,7 +24,7 @@ public class MoveSouth : IMovementAction
     public override string ToString() => "move south";
     public string ShortName => "MvS";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

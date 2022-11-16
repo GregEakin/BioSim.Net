@@ -24,13 +24,13 @@ public class Suicide : IAction
     public override string ToString() => "suicide";
     public string ShortName => "Die";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var dieThreshold = 0.5f;
         var level = actionLevels[(int)Action.SUICIDE];
         level = (float)((Math.Tanh(level) + 1.0) / 2.0);
         level *= player.ResponsivenessAdjusted;
-        if (level <= dieThreshold || !Player.Prob2Bool(level))
+        if (level <= dieThreshold || !Critter.Prob2Bool(level))
             return;
 
         board.Peeps.QueueForDeath(player);

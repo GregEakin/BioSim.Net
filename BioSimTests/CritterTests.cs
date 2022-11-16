@@ -23,7 +23,7 @@ using Action = BioSimLib.Actions.Action;
 
 namespace BioSimTests;
 
-public class PlayerTests
+public class CritterTests
 {
     [Fact]
     public void FeedForwardTest()
@@ -51,17 +51,17 @@ public class PlayerTests
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 4, Y = 4 };
-        var player = board.NewPlayer(genome, loc);
-        player._nnet[0].Driven = true;
-        player._nnet[0].Output = 0.6f;
-        player._nnet[1].Driven = true;
-        player._nnet[1].Output = 0.4f;
+        var player = board.NewCritter(genome, loc);
+        player.NeuralNet[0].Driven = true;
+        player.NeuralNet[0].Output = 0.6f;
+        player.NeuralNet[1].Driven = true;
+        player.NeuralNet[1].Output = 0.4f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         var neuronAccumulators = new float[p.maxNumberNeurons];
         player.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
-        Assert.Equal(0.73442495f, player._nnet[0].Output);
-        Assert.Equal(1.07409918f, player._nnet[1].Output);
+        Assert.Equal(0.73442495f, player.NeuralNet[0].Output);
+        Assert.Equal(1.07409918f, player.NeuralNet[1].Output);
 
         var expectedLevels = new float[Enum.GetNames<Action>().Length];
         expectedLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
@@ -90,11 +90,11 @@ public class PlayerTests
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 1, Y = 2 };
-        var player = board.NewPlayer(genome, loc);
-        player._nnet[0].Driven = true;
-        player._nnet[0].Output = 0.6f;
-        player._nnet[1].Driven = true;
-        player._nnet[1].Output = 0.4f;
+        var player = board.NewCritter(genome, loc);
+        player.NeuralNet[0].Driven = true;
+        player.NeuralNet[0].Output = 0.6f;
+        player.NeuralNet[1].Driven = true;
+        player.NeuralNet[1].Output = 0.4f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;

@@ -28,9 +28,9 @@ public class PeepsTests
         var p = new Config { population = 5, sizeX = 5, sizeY = 5 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var players = new Player[2];
+        var players = new Critter[2];
         for (var i = 0; i < 2; i++)
-            players[i] = board.NewPlayer(genome, new Coord(1, (short)i));
+            players[i] = board.NewCritter(genome, new Coord(1, (short)i));
 
         Assert.Null(board.Peeps[0]);
         Assert.Null(board.Peeps[1]);
@@ -47,9 +47,9 @@ public class PeepsTests
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
         Assert.Equal(0, board.Peeps.Count);
-        board.NewPlayer(genome, new Coord(1, 0));
+        board.NewCritter(genome, new Coord(1, 0));
         Assert.Equal(1, board.Peeps.Count);
-        board.NewPlayer(genome, new Coord(1, 0));
+        board.NewCritter(genome, new Coord(1, 0));
         Assert.Equal(2, board.Peeps.Count);
     }
 }

@@ -24,7 +24,7 @@ public class MoveRL : IMovementAction
     public override string ToString() => "move R-L";
     public string ShortName => "MRL";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

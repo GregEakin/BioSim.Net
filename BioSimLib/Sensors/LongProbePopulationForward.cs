@@ -33,9 +33,9 @@ public class LongProbePopulationForward : ISensor
     public override string ToString() => "long probe population fwd";
     public string ShortName => "LPf";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.LongProbePopulationFwd(player._loc, player.LastMoveDir, player._longProbeDist) / player._longProbeDist;
+        var sensorVal = _grid.LongProbePopulationFwd(player.Loc, player.LastMoveDir, player.LongProbeDist) / player.LongProbeDist;
         return sensorVal;
     }
 }

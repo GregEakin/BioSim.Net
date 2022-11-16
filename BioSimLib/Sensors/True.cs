@@ -22,7 +22,7 @@ public class True : ISensor
     public override string ToString() => "true";
     public string ShortName => "T";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
         return 1.0f;
     }

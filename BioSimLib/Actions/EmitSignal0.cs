@@ -29,13 +29,13 @@ public class EmitSignal0 : IAction
     public override string ToString() => "emit signal 0";
     public string ShortName => "SG";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var emitThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.EMIT_SIGNAL0];
         var level = (float)((Math.Tanh(actionLevel) + 1.0) / 2.0 * player.ResponsivenessAdjusted);
-        if (level > emitThreshold && Player.Prob2Bool(level))
-            board.Signals.Increment(0, player._loc);
+        if (level > emitThreshold && Critter.Prob2Bool(level))
+            board.Signals.Increment(0, player.Loc);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

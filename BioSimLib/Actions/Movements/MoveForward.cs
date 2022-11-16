@@ -24,7 +24,7 @@ public class MoveForward : IMovementAction
     public override string ToString() => "move fwd";
     public string ShortName => "Mfd";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

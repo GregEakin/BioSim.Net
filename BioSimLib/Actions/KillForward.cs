@@ -27,15 +27,15 @@ public class KillForward : IAction
     public override string ToString() => "kill fwd";
     public string ShortName => "KlF";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.KILL_FORWARD];
         var level = (float)(((Math.Tanh(actionLevel) + 1.0) / 2.0) * player.ResponsivenessAdjusted);
-        if (level <= killThreshold || !Player.Prob2Bool(level))
+        if (level <= killThreshold || !Critter.Prob2Bool(level))
             return;
 
-        var otherLoc = player._loc + player.LastMoveDir;
+        var otherLoc = player.Loc + player.LastMoveDir;
         if (!board.Grid.IsInBounds(otherLoc) || !board.Grid.IsOccupiedAt(otherLoc))
             return;
 

@@ -51,7 +51,7 @@ public class MoveRightTests
         var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var action = new MoveRight();
         action.Execute(p, board, player, 0, Array.Empty<float>());

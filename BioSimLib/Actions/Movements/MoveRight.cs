@@ -24,7 +24,7 @@ public class MoveRight : IMovementAction
     public override string ToString() => "move right";
     public string ShortName => "MvR";
 
-    public void Execute(Config p, Board board, Player player, uint simStep, float[] actionLevels)
+    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

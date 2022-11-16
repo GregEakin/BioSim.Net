@@ -22,7 +22,7 @@ public class False : ISensor
     public override string ToString() => "false";
     public string ShortName => "F";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
         return 0.0f;
     }

@@ -34,12 +34,12 @@ public readonly struct Board
 
     public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(loc);
 
-    public Player NewPlayer(Genome genome, Coord loc) => Grid.CreatePlayer(genome, loc);
+    public Critter NewCritter(Genome genome, Coord loc) => Grid.CreateCritter(genome, loc);
 
-    public Player NewPlayer(Genome genome)
+    public Critter NewCritter(Genome genome)
     {
         var loc = Grid.FindEmptyLocation();
-        var player = NewPlayer(genome, loc);
+        var player = NewCritter(genome, loc);
         return player;
     }
 

@@ -25,9 +25,9 @@ public class EastWestEighths : IChallenge
         _p = p;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Player player)
+    public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        return player._loc.X < _p.sizeX / 8 || player._loc.X >= _p.sizeX - _p.sizeX / 8
+        return player.LocX < _p.sizeX / 8 || player.LocX >= _p.sizeX - _p.sizeX / 8
             ? (true, 1.0f)
             : (false, 0.0f);
     }

@@ -33,10 +33,10 @@ public class LongProbeBarrierForward : ISensor
     public override string ToString() => "long probe barrier fwd";
     public string ShortName => "LPb";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var longProbeBarrierFwd = _grid.LongProbeBarrierFwd(player._loc, player.LastMoveDir, player._longProbeDist);
-        var sensorVal = longProbeBarrierFwd / player._longProbeDist;
+        var longProbeBarrierFwd = _grid.LongProbeBarrierFwd(player.Loc, player.LastMoveDir, player.LongProbeDist);
+        var sensorVal = longProbeBarrierFwd / player.LongProbeDist;
         return sensorVal;
     }
 }

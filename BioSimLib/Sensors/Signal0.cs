@@ -32,9 +32,9 @@ public class Signal0 : ISensor
     public override string ToString() => "signal 0";
     public string ShortName => "Sg";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensity(0u, player._loc);
+        var sensorVal = _signals.GetSignalDensity(0u, player.Loc);
         return sensorVal;
     }
 }

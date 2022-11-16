@@ -23,9 +23,9 @@ public class Oscillator : ISensor
     public override string ToString() => "oscillator";
     public string ShortName => "Osc";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var phase = simStep % player._oscPeriod / (double)player._oscPeriod;
+        var phase = simStep % player.OscPeriod / (double)player.OscPeriod;
         var factor = (float)((-Math.Cos(phase * 2.0 * Math.PI) + 1.0) / 2.0);
         var sensorVal = Math.Min(1.0f, Math.Max(0.0f, factor));
         return sensorVal;

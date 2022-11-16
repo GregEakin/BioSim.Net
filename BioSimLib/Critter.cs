@@ -1,16 +1,10 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿// Log File Viewer - Player.cs
 // 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+// Copyright © 2022 Greg Eakin.
 // 
-//        http://www.apache.org/licenses/LICENSE-2.0
+// Greg Eakin <greg@eakin.dev>
 // 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+// All Rights Reserved.
 
 using System.Collections.Specialized;
 using BioSimLib.Actions;
@@ -22,94 +16,8 @@ using Action = BioSimLib.Actions.Action;
 
 namespace BioSimLib;
 
-public class Player
+public sealed class Critter
 {
-    public readonly Config _p;
-    public readonly Genome _genome;
-    public readonly NeuralNet _nnet;
-    public readonly ushort _index;
-    public readonly Coord _birthLoc;
-    public readonly BitVector32 _challengeBits;
-    public readonly uint _birth;
-
-    public Coord _loc;
-    private bool _alive;
-    private float _responsiveness;
-    public uint _oscPeriod;
-    public uint _longProbeDist;
-
-    public bool Alive
-    {
-        get => _alive;
-        set
-        {
-            _alive = value;
-            if (value)
-                _genome.AddPlayer();
-            else
-                _genome.RemovePlayer();
-        }
-    }
-
-    public Dir LastMoveDir { get; set; } = Dir.Random8();
-
-    public float Responsiveness { 
-        get => _responsiveness;
-        set
-        {
-            _responsiveness = value;
-            ResponsivenessAdjusted = ResponseCurve(value);
-        }
-    }
-
-    public float ResponsivenessAdjusted { get; private set; }
-
-    public override string ToString() => $"Index {_index}, Pos {_loc}, Neural Net {_nnet}";
-
-    public (byte, byte, byte) Color => _genome.Color;
-
-    public Player(Config p, Genome genome, Coord loc, ushort index)
-    {
-        _p = p;
-        _loc = loc;
-        _birthLoc = loc;
-        _index = index;
-        _genome = genome;
-        Alive = _genome.Length > 0;
-        _nnet = new NeuralNet(_genome);
-
-        _birth = 0u;
-        _oscPeriod = 34u; // ToDo !!! define a constant
-        Responsiveness = 0.5f; // range 0.0..1.0
-        _longProbeDist = p.longProbeDistance;
-        _challengeBits = new BitVector32(0); // will be set true when some task gets accomplished
-    }
-
-    public void FeedForward(SensorFactory sensorFactory, float[] actionLevels, float[] neuronAccumulators, uint simStep)
-    {
-        foreach (var connection in _genome)
-        {
-            var value = connection.SourceType == Gene.GeneType.Sensor
-                ? sensorFactory[connection.SourceSensor]?.Output(this, simStep) ?? 0.0f
-                : _nnet[connection.SourceNum].Output;
-
-            if (connection.SinkType == Gene.GeneType.Action)
-                actionLevels[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
-            else
-                neuronAccumulators[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
-        }
-
-        for (var i = 0; i < _nnet.Length; i++)
-            _nnet[i].Output = neuronAccumulators[i];
-    }
-
-    public float ResponseCurve(float r)
-    {
-        var k = _p.responsivenessCurveKFactor;
-        var value = Math.Pow(r - 2.0f, -2.0f * k) - Math.Pow(2.0f, -2.0f * k) * (1.0f - r);
-        return (float)value;
-    }
-
     private static readonly Action[] ActionEnums =
     {
         Action.SET_RESPONSIVENESS,
@@ -118,19 +26,6 @@ public class Player
         Action.EMIT_SIGNAL0,
         Action.KILL_FORWARD,
     };
-
-    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction, bool> isEnabled, float[] actionLevels,
-        uint simStep)
-    {
-        foreach (var actionEnum in ActionEnums)
-        {
-            var action = factory[actionEnum];
-            if (action == null || !isEnabled(action))
-                continue;
-
-            action.Execute(_p, board, this, simStep, actionLevels);
-        }
-    }
 
     private static readonly Action[] MoveEnums =
     {
@@ -147,6 +42,122 @@ public class Player
         Action.MOVE_RL,
         Action.MOVE_RANDOM,
     };
+
+    private readonly Config _p;
+    private bool _alive;
+    private Coord _loc;
+    private float _responsiveness;
+
+    public Critter(Config p, Genome genome, Coord loc, ushort index)
+    {
+        _p = p;
+        _loc = loc;
+        BirthLocation = loc;
+        Index = index;
+        Genome = genome;
+        Alive = genome.Length > 0;
+        NeuralNet = new NeuralNet(Genome);
+
+        BirthDate = 0u;
+        OscPeriod = 34u; // ToDo !!! define a constant
+        Responsiveness = 0.5f; // range 0.0..1.0
+        LongProbeDist = p.longProbeDistance;
+    }
+
+    public bool Alive
+    {
+        get => _alive;
+        set
+        {
+            _alive = value;
+            if (value)
+                Genome.AddCritter();
+            else
+                Genome.RemoveCritter();
+        }
+    }
+
+    public uint BirthDate { get; }
+
+    public Coord BirthLocation { get; }
+
+    public BitVector32 ChallengeBits { get; } = new(0);
+
+    public (byte, byte, byte) Color => Genome.Color;
+
+    public Genome Genome { get; }
+
+    public ushort Index { get; }
+
+    public Dir LastMoveDir { get; set; } = Dir.Random8();
+
+    public Coord Loc
+    {
+        get => _loc;
+        set => _loc = value;
+    }
+
+    public short LocX => _loc.X;
+    
+    public short LocY => _loc.Y;
+
+    public uint LongProbeDist { get; set; }
+
+    public NeuralNet NeuralNet { get; }
+
+    public uint OscPeriod { get; set; }
+
+    public float Responsiveness
+    {
+        get => _responsiveness;
+        set
+        {
+            _responsiveness = value;
+            ResponsivenessAdjusted = ResponseCurve(value);
+        }
+    }
+
+    public float ResponsivenessAdjusted { get; private set; }
+
+    public override string ToString() => $"Index {Index}, Pos {Loc}, Neural Net {NeuralNet}";
+
+    public void FeedForward(SensorFactory sensorFactory, float[] actionLevels, float[] neuronAccumulators, uint simStep)
+    {
+        foreach (var connection in Genome)
+        {
+            var value = connection.SourceType == Gene.GeneType.Sensor
+                ? sensorFactory[connection.SourceSensor]?.Output(this, simStep) ?? 0.0f
+                : NeuralNet[connection.SourceNum].Output;
+
+            if (connection.SinkType == Gene.GeneType.Action)
+                actionLevels[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
+            else
+                neuronAccumulators[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
+        }
+
+        for (var i = 0; i < NeuralNet.Length; i++)
+            NeuralNet[i].Output = neuronAccumulators[i];
+    }
+
+    public float ResponseCurve(float r)
+    {
+        var k = _p.responsivenessCurveKFactor;
+        var value = Math.Pow(r - 2.0f, -2.0f * k) - Math.Pow(2.0f, -2.0f * k) * (1.0f - r);
+        return (float)value;
+    }
+
+    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction, bool> isEnabled, float[] actionLevels,
+        uint simStep)
+    {
+        foreach (var actionEnum in ActionEnums)
+        {
+            var action = factory[actionEnum];
+            if (action == null || !isEnabled(action))
+                continue;
+
+            action.Execute(_p, board, this, simStep, actionLevels);
+        }
+    }
 
     public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
     {
@@ -174,7 +185,7 @@ public class Player
         var sigNumY = moveY < 0.0f ? -1 : 1;
 
         var movementOffset = new Coord { X = (short)(probX * sigNumX), Y = (short)(probY * sigNumY) };
-        var newLoc = _loc + movementOffset;
+        var newLoc = Loc + movementOffset;
         return newLoc;
     }
 

@@ -34,9 +34,9 @@ public class BarrierForward : ISensor
     public override string ToString() => "short probe barrier fwd-rev";
     public string ShortName => "Bfd";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player._loc, player.LastMoveDir, _p.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir, _p.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

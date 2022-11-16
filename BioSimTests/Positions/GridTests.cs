@@ -34,7 +34,7 @@ public class GridTests
 
         var loc2 = new Coord { X = 1, Y = 2 };
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
 
         board.Grid.ZeroFill();
@@ -137,7 +137,7 @@ public class GridTests
         Assert.False(board.Grid.IsOccupiedAt(loc2));
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
     }
 
@@ -157,7 +157,7 @@ public class GridTests
         Assert.False(board.Grid.IsOccupiedAt(1, 2));
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(1, 2));
     }
 
@@ -199,7 +199,7 @@ public class GridTests
         Assert.Equal(0, board.Grid.At(loc2));
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
         Assert.Equal(2, board.Grid.At(loc2));
     }
 
@@ -219,7 +219,7 @@ public class GridTests
         Assert.Equal(0, board.Grid.At(1, 2));
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
         Assert.Equal(2, board.Grid.At(1, 2));
     }
 
@@ -232,7 +232,7 @@ public class GridTests
         var loc2 = new Coord { X = 1, Y = 2 };
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        var player = board.NewPlayer(genome, loc2);
+        var player = board.NewCritter(genome, loc2);
         Assert.Equal(2, board.Grid.At(loc2));
 
         board.Grid.Remove(player);
@@ -252,7 +252,7 @@ public class GridTests
 
         var loc2 = new Coord { X = 1, Y = 2 };
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
 
         var loc = board.Grid.FindEmptyLocation();
@@ -272,7 +272,7 @@ public class GridTests
 
         var loc2 = new Coord { X = 1, Y = 2 };
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        var player = board.NewPlayer(genome, loc2);
+        var player = board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
 
         var peep1 = board.Grid[0, 0];
@@ -297,7 +297,7 @@ public class GridTests
 
         var loc2 = new Coord { X = 1, Y = 2 };
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        var player = board.NewPlayer(genome, loc2);
+        var player = board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
 
         var peep1 = board.Grid[new Coord(0, 0)];
@@ -321,7 +321,7 @@ public class GridTests
 
         var loc2 = new Coord { X = 1, Y = 2 };
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
-        board.NewPlayer(genome, loc2);
+        board.NewCritter(genome, loc2);
 
         Assert.Equal(" . . .\r\n . * 2\r\n . . .\r\n", board.Grid.ToString());
     }
@@ -363,7 +363,7 @@ public class GridTests
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         for (var i = 0; i < 5; i++)
-            board.NewPlayer(genome, new Coord(1, (short)i));
+            board.NewCritter(genome, new Coord(1, (short)i));
 
         var loc = new Coord { X = 2, Y = 2 };
 
@@ -383,7 +383,7 @@ public class GridTests
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         for (var i = 0; i < 5; i++)
-            board.NewPlayer(genome, new Coord(1, (short)i));
+            board.NewCritter(genome, new Coord(1, (short)i));
 
         var loc = new Coord { X = 2, Y = 2 };
 
@@ -399,7 +399,7 @@ public class GridTests
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         for (var i = 0; i < 5; i++)
-            board.NewPlayer(genome, new Coord(1, (short)i));
+            board.NewCritter(genome, new Coord(1, (short)i));
 
         var loc = new Coord { X = 2, Y = 2 };
 

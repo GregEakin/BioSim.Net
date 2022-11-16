@@ -31,10 +31,10 @@ public class BoundaryDist : ISensor
     public override string ToString() => "boundary dist";
     public string ShortName => "ED";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var distX = Math.Min(player._loc.X, (_p.sizeX - player._loc.X) - 1);
-        var distY = Math.Min(player._loc.Y, (_p.sizeY - player._loc.Y) - 1);
+        var distX = Math.Min(player.LocX, (_p.sizeX - player.LocX) - 1);
+        var distY = Math.Min(player.LocY, (_p.sizeY - player.LocY) - 1);
         var closest = Math.Min(distX, distY);
         var maxPossible = Math.Max(_p.sizeX / 2 - 1, _p.sizeY / 2 - 1);
         var sensorVal = (float)closest / maxPossible;

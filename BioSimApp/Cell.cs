@@ -27,16 +27,16 @@ namespace BioSimApp;
 
 public class Cell
 {
-    public Player Player { get; private set; }
+    public Critter Critter { get; private set; }
     private readonly Path _path;
 
     public UIElement Element => _path;
 
-    public Cell(Player player)
+    public Cell(Critter critter)
     {
-        Player = player;
+        Critter = critter;
 
-        var (red, green, blue) = Player.Color;
+        var (red, green, blue) = Critter.Color;
         var color = Color.FromRgb(red, green, blue);
         var brush = new SolidColorBrush(color);
         _path = new Path
@@ -51,45 +51,45 @@ public class Cell
             StrokeThickness = 0.1,
         };
 
-        _path.SetValue(Canvas.LeftProperty, 0.5 + Player._loc.X);
-        _path.SetValue(Canvas.TopProperty, 0.5 + Player._loc.Y);
+        _path.SetValue(Canvas.LeftProperty, 0.5 + Critter.LocX);
+        _path.SetValue(Canvas.TopProperty, 0.5 + Critter.LocY);
     }
     
     static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
 
     public void Update(Board board, SensorFactory sensorFactory, ActionFactory actionFactory, float[] actionLevels, float[] neuronAccumlator, uint simStep)
     {
-        if (!Player.Alive)
+        if (!Critter.Alive)
             return;
 
         Array.Clear(actionLevels);
         Array.Clear(neuronAccumlator);
 
-        Player.FeedForward(sensorFactory, actionLevels, neuronAccumlator, simStep);
-        Player.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
-        var newLoc = Player.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
+        Critter.FeedForward(sensorFactory, actionLevels, neuronAccumlator, simStep);
+        Critter.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
+        var newLoc = Critter.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
         if (board.Grid.IsInBounds(newLoc))
-            board.Peeps.QueueForMove(Player, newLoc);
+            board.Peeps.QueueForMove(Critter, newLoc);
     }
 
     public void Draw(Canvas myCanvas, double scaleFactor)
     {
-        if (!Player.Alive)
+        if (!Critter.Alive)
         {
             _path.SetValue(Canvas.LeftProperty, -100.0);
             _path.SetValue(Canvas.TopProperty, -100.0);
             return;
         }
 
-        _path.SetValue(Canvas.LeftProperty, (0.5 + Player._loc.X) * scaleFactor);
-        _path.SetValue(Canvas.TopProperty, (0.5 + Player._loc.Y) * scaleFactor);
+        _path.SetValue(Canvas.LeftProperty, (0.5 + Critter.LocX) * scaleFactor);
+        _path.SetValue(Canvas.TopProperty, (0.5 + Critter.LocY) * scaleFactor);
     }
 
-    public void PlayerChanged(Player player)
+    public void CritterChanged(Critter player)
     {
-        Player = player;
+        Critter = player;
 
-        var (red, green, blue) = Player.Color;
+        var (red, green, blue) = Critter.Color;
         var color = Color.FromRgb(red, green, blue);
         if (_path.Fill is SolidColorBrush b1)
             b1.Color = color;

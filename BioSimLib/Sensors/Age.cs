@@ -30,9 +30,9 @@ public class Age : ISensor
     public override string ToString() => "age";
     public string ShortName => "Age";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = (float)(simStep - player._birth) / _p.stepsPerGeneration;
+        var sensorVal = (float)(simStep - player.BirthDate) / _p.stepsPerGeneration;
         return sensorVal;
     }
 }

@@ -51,7 +51,7 @@ public class SetLongProbeDistanceTests
         var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_LONGPROBE_DIST] = 0.05f;
@@ -59,7 +59,7 @@ public class SetLongProbeDistanceTests
         var action = new SetLongProbeDist();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Equal(17u, player._longProbeDist);
+        Assert.Equal(17u, player.LongProbeDist);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class SetLongProbeDistanceTests
         var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_LONGPROBE_DIST] = 0.1f;
@@ -76,7 +76,7 @@ public class SetLongProbeDistanceTests
         var action = new SetLongProbeDist();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Equal(18u, player._longProbeDist);
+        Assert.Equal(18u, player.LongProbeDist);
     }
 
     [Fact]

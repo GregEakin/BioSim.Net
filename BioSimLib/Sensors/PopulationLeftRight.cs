@@ -31,9 +31,9 @@ public class PopulationLeftRight : ISensor
     public override string ToString() => "population LR";
     public string ShortName => "Plr";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(player._loc, player.LastMoveDir.Rotate90DegCw());
+        var sensorVal = _grid.GetPopulationDensityAlongAxis(player.Loc, player.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

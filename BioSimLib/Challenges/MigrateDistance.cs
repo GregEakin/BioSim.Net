@@ -25,9 +25,9 @@ public class MigrateDistance : IChallenge
         _p = p;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Player player)
+    public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        var distance = (player._loc - player._birthLoc).Length()
+        var distance = (player.Loc - player.BirthLocation).Length()
                        / (float)Math.Max(_p.sizeX, _p.sizeY);
         return (true, distance);
     }

@@ -307,7 +307,7 @@ public class GenomeBuilderTests
         };
 
         var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
-        var player = board.NewPlayer(builder.ToGenome(), new Coord(3, 3));
+        var player = board.NewCritter(builder.ToGenome(), new Coord(3, 3));
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         var neuronAccumulators = new float[p.maxNumberNeurons];
@@ -363,7 +363,7 @@ public class GenomeBuilderTests
             }.ToUint()
         };
         var builder = new GenomeBuilder(p.maxNumberNeurons, dna);
-        var player = board.NewPlayer(builder.ToGenome(), new Coord(3, 3));
+        var player = board.NewCritter(builder.ToGenome(), new Coord(3, 3));
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         var neuronAccumulators = new float[p.maxNumberNeurons];

@@ -63,7 +63,7 @@ public class KillForwardTests
 
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { geneBuilder.ToUint() }).ToGenome();
         var loc = new Coord { X = 3, Y = 4 };
-        var player = board.NewPlayer(genome, loc);
+        var player = board.NewCritter(genome, loc);
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 1.0f;
@@ -80,9 +80,9 @@ public class KillForwardTests
         var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
         player.LastMoveDir = new Dir(Dir.Compass.W);
-        var victim = board.NewPlayer(genome, new Coord { X = 2, Y = 4 });
+        var victim = board.NewCritter(genome, new Coord { X = 2, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 0.0f;
@@ -100,9 +100,9 @@ public class KillForwardTests
         var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
         player.LastMoveDir = new Dir(Dir.Compass.W);
-        var victim = board.NewPlayer(genome, new Coord { X = 2, Y = 4 });
+        var victim = board.NewCritter(genome, new Coord { X = 2, Y = 4 });
         victim.Alive = false;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
@@ -120,10 +120,10 @@ public class KillForwardTests
         var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
         var board = new Board(p);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewPlayer(genome, new Coord { X = 3, Y = 4 });
+        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
         player.LastMoveDir = new Dir(Dir.Compass.W);
         player.Responsiveness = 1.0f;
-        var victim = board.NewPlayer(genome, new Coord { X = 2, Y = 4 });
+        var victim = board.NewCritter(genome, new Coord { X = 2, Y = 4 });
         victim.Alive = true;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];

@@ -103,12 +103,12 @@ public class Genome : IEnumerable<Gene>
         return builder.ToString();
     }
 
-    public void AddPlayer()
+    public void AddCritter()
     {
         LiveCount++;
     }
 
-    public void RemovePlayer()
+    public void RemoveCritter()
     {
         LiveCount--;
     }

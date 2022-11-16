@@ -31,9 +31,9 @@ public class Signal0Forward : ISensor
     public override string ToString() => "signal 0";
     public string ShortName => "Sfd";
 
-    public float Output(Player player, uint simStep)
+    public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player._loc, player.LastMoveDir);
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player.Loc, player.LastMoveDir);
         return sensorVal;
     }
 }
