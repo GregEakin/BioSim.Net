@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -24,16 +24,16 @@ public class Suicide : IAction
     public override string ToString() => "suicide";
     public string ShortName => "Die";
 
-    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
     {
         var dieThreshold = 0.5f;
         var level = actionLevels[(int)Action.SUICIDE];
         level = (float)((Math.Tanh(level) + 1.0) / 2.0);
-        level *= player.ResponsivenessAdjusted;
-        if (level <= dieThreshold || !Critter.Prob2Bool(level))
+        level *= critter.ResponsivenessAdjusted;
+        if (level <= dieThreshold || !critter.Prob2Bool(level))
             return;
 
-        board.Critters.QueueForDeath(player);
+        board.Critters.QueueForDeath(critter);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

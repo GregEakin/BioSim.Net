@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -26,39 +26,39 @@ public class BoundaryDistYTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config { sizeX = 5, sizeY = 5 };
-        var sensor = new BoundaryDistY(p);
+        var config = new Config { sizeX = 5, sizeY = 5 };
+        var sensor = new BoundaryDistY(config);
         Assert.Equal(Sensor.BOUNDARY_DIST_Y, sensor.Type);
     }
 
     [Fact]
     public void StringTest()
     {
-        var p = new Config { sizeX = 5, sizeY = 5 };
-        var sensor = new BoundaryDistY(p);
+        var config = new Config { sizeX = 5, sizeY = 5 };
+        var sensor = new BoundaryDistY(config);
         Assert.Equal("boundary dist Y", sensor.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config { sizeX = 5, sizeY = 5 };
-        var sensor = new BoundaryDistY(p);
+        var config = new Config { sizeX = 5, sizeY = 5 };
+        var sensor = new BoundaryDistY(config);
         Assert.Equal("EDy", sensor.ShortName);
     }
 
     [Fact]
     public void OutputTest()
     {
-        var p = new Config { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
+        var config = new Config { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         board.NewBarrier(new Coord(2, 0));
 
-        var player = board.NewCritter(genome, new Coord(1, 2));
-        player.LastMoveDir = new Dir(Dir.Compass.W);
+        var critter = board.NewCritter(genome, new Coord(1, 2));
+        critter.LastMoveDir = new Dir(Dir.Compass.W);
 
-        var sensor = new BoundaryDistY(p);
-        Assert.Equal(0.8f, sensor.Output(player, 0));
+        var sensor = new BoundaryDistY(config);
+        Assert.Equal(0.8f, sensor.Output(critter, 0));
     }
 }

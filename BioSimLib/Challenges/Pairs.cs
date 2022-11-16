@@ -31,22 +31,22 @@ public class Pairs : IChallenge
         _grid = grid;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
-        var onEdge = player.LocX == 0
-                     || player.LocX == _config.sizeX - 1
-                     || player.LocY == 0
-                     || player.LocY == _config.sizeY - 1;
+        var onEdge = critter.LocX == 0
+                     || critter.LocX == _config.sizeX - 1
+                     || critter.LocY == 0
+                     || critter.LocY == _config.sizeY - 1;
 
         if (onEdge)
             return (false, 0.0f);
 
         var count = 0u;
-        for (var x = (short)(player.LocX - 1); x <= player.LocX + 1; ++x)
-        for (var y = (short)(player.LocY - 1); y <= player.LocY + 1; ++y)
+        for (var x = (short)(critter.LocX - 1); x <= critter.LocX + 1; ++x)
+        for (var y = (short)(critter.LocY - 1); y <= critter.LocY + 1; ++y)
         {
             var tloc = new Coord(x, y);
-            if (tloc == player.Loc || !_grid.IsInBounds(tloc) || !_grid.IsOccupiedAt(tloc)) continue;
+            if (tloc == critter.Loc || !_grid.IsInBounds(tloc) || !_grid.IsOccupiedAt(tloc)) continue;
 
             ++count;
             if (count != 1)
@@ -57,7 +57,7 @@ public class Pairs : IChallenge
             {
                 var tloc1 = new Coord(x1, y1);
                 if (tloc1 != tloc
-                    && tloc1 != player.Loc
+                    && tloc1 != critter.Loc
                     && _grid.IsInBounds(tloc1)
                     && _grid.IsOccupiedAt(tloc1))
                     return (false, 0.0f);

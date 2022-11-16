@@ -25,12 +25,12 @@ public class AgainstAnyWall : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
-        var onEdge = player.LocX == 0
-                     || player.LocX == _config.sizeX - 1
-                     || player.LocY == 0
-                     || player.LocY == _config.sizeY - 1;
+        var onEdge = critter.LocX == 0
+                     || critter.LocX == _config.sizeX - 1
+                     || critter.LocY == 0
+                     || critter.LocY == _config.sizeY - 1;
 
         return onEdge
             ? (true, 1.0f)

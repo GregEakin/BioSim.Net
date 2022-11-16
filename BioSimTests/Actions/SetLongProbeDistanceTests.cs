@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -48,35 +48,35 @@ public class SetLongProbeDistanceTests
     [Fact]
     public void ExecuteNotSetTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_LONGPROBE_DIST] = 0.05f;
 
         var action = new SetLongProbeDist();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
-        Assert.Equal(17u, player.LongProbeDist);
+        Assert.Equal(17u, critter.LongProbeDist);
     }
 
     [Fact]
     public void ExecuteTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_LONGPROBE_DIST] = 0.1f;
 
         var action = new SetLongProbeDist();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
-        Assert.Equal(18u, player.LongProbeDist);
+        Assert.Equal(18u, critter.LongProbeDist);
     }
 
     [Fact]

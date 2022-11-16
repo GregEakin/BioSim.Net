@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ public class Signal0 : ISensor
     public override string ToString() => "signal 0";
     public string ShortName => "Sg";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensity(0u, player.Loc);
+        var sensorVal = _signals.GetSignalDensity(0u, critter.Loc);
         return sensorVal;
     }
 }

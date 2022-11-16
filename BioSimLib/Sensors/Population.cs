@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class Population : ISensor
     public override string ToString() => "population";
     public string ShortName => "Pop";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
         var count = 0u;
         var occupied = 0u;
@@ -46,7 +46,7 @@ public class Population : ISensor
                 ++occupied;
         }
 
-        _grid.VisitNeighborhood(player.Loc, _config.populationSensorRadius, F);
+        _grid.VisitNeighborhood(critter.Loc, _config.populationSensorRadius, F);
         var sensorVal = (float)occupied / count;
         return sensorVal;
     }

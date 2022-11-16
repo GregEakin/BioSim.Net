@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -27,24 +27,24 @@ public class KillForward : IAction
     public override string ToString() => "kill fwd";
     public string ShortName => "KlF";
 
-    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.KILL_FORWARD];
-        var level = (float)(((Math.Tanh(actionLevel) + 1.0) / 2.0) * player.ResponsivenessAdjusted);
-        if (level <= killThreshold || !Critter.Prob2Bool(level))
+        var level = (float)(((Math.Tanh(actionLevel) + 1.0) / 2.0) * critter.ResponsivenessAdjusted);
+        if (level <= killThreshold || !critter.Prob2Bool(level))
             return;
 
-        var otherLoc = player.Loc + player.LastMoveDir;
+        var otherLoc = critter.Loc + critter.LastMoveDir;
         if (!board.Grid.IsInBounds(otherLoc) || !board.Grid.IsOccupiedAt(otherLoc))
             return;
 
-        var player2 = board.Grid[otherLoc];
-        if (player2 == null)
+        var critter2 = board.Grid[otherLoc];
+        if (critter2 == null)
             return;
 
-        if (player2.Alive)
-            board.Critters.QueueForDeath(player2);
+        if (critter2.Alive)
+            board.Critters.QueueForDeath(critter2);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

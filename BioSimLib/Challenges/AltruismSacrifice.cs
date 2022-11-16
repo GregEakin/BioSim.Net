@@ -27,11 +27,11 @@ public class AltruismSacrifice : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 4.0f;
         var pos = new Coord((short)(_config.sizeX - _config.sizeX / 4), (short)(_config.sizeY - _config.sizeY / 4));
-        var distance = (pos - player.Loc).Length();
+        var distance = (pos - critter.Loc).Length();
         return distance <= radius
             ? (true, (radius - distance) / radius)
             : (false, 0.0f);

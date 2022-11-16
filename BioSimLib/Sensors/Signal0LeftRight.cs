@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public class Signal0LeftRight : ISensor
     public override string ToString() => "signal 0 LR";
     public string ShortName => "Slr";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player.Loc, player.LastMoveDir.Rotate90DegCw());
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, critter.Loc, critter.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

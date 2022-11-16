@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public class Signal0Forward : ISensor
     public override string ToString() => "signal 0";
     public string ShortName => "Sfd";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, player.Loc, player.LastMoveDir);
+        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, critter.Loc, critter.LastMoveDir);
         return sensorVal;
     }
 }

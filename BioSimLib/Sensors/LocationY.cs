@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ public class LocationY : ISensor
     public override string ToString() => "location y";
     public string ShortName => "Ly";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        return (float)player.LocY / (_config.sizeX - 1u);
+        return (float)critter.LocY / (_config.sizeX - 1u);
     }
 }

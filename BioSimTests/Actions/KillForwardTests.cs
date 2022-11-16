@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -49,8 +49,8 @@ public class KillForwardTests
     [Fact]
     public void NoNeighborTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
 
         var geneBuilder = new GeneBuilder
         {
@@ -61,15 +61,15 @@ public class KillForwardTests
             WeightAsFloat = 1.0f
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { geneBuilder.ToUint() }).ToGenome();
+        var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { geneBuilder.ToUint() }).ToGenome();
         var loc = new Coord { X = 3, Y = 4 };
-        var player = board.NewCritter(genome, loc);
+        var critter = board.NewCritter(genome, loc);
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 1.0f;
 
         var action = new KillForward();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
     }
@@ -77,18 +77,18 @@ public class KillForwardTests
     [Fact]
     public void ExecuteNotTest()
     {
-        var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
-        player.LastMoveDir = new Dir(Dir.Compass.W);
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        critter.LastMoveDir = new Dir(Dir.Compass.W);
         var victim = board.NewCritter(genome, new Coord { X = 2, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 0.0f;
 
         var action = new KillForward();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
         // Assert.False(victim.Alive);
@@ -97,11 +97,11 @@ public class KillForwardTests
     [Fact]
     public void ExecuteVictimNotAliveTest()
     {
-        var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
-        player.LastMoveDir = new Dir(Dir.Compass.W);
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        critter.LastMoveDir = new Dir(Dir.Compass.W);
         var victim = board.NewCritter(genome, new Coord { X = 2, Y = 4 });
         victim.Alive = false;
 
@@ -109,7 +109,7 @@ public class KillForwardTests
         actionLevels[(int)Action.KILL_FORWARD] = 0.05f;
 
         var action = new KillForward();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
     }
@@ -117,12 +117,12 @@ public class KillForwardTests
     [Fact]
     public void ExecuteTest()
     {
-        var p = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
-        player.LastMoveDir = new Dir(Dir.Compass.W);
-        player.Responsiveness = 1.0f;
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        critter.LastMoveDir = new Dir(Dir.Compass.W);
+        critter.Responsiveness = 1.0f;
         var victim = board.NewCritter(genome, new Coord { X = 2, Y = 4 });
         victim.Alive = true;
 
@@ -130,7 +130,7 @@ public class KillForwardTests
         actionLevels[(int)Action.KILL_FORWARD] = 0.05f;
 
         var action = new KillForward();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
         Assert.NotEmpty(board.Critters.DeathQueue);
     }

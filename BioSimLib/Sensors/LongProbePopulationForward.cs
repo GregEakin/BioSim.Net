@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ public class LongProbePopulationForward : ISensor
     public override string ToString() => "long probe population fwd";
     public string ShortName => "LPf";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.LongProbePopulationFwd(player.Loc, player.LastMoveDir, player.LongProbeDist) / player.LongProbeDist;
+        var sensorVal = _grid.LongProbePopulationFwd(critter.Loc, critter.LastMoveDir, critter.LongProbeDist) / critter.LongProbeDist;
         return sensorVal;
     }
 }

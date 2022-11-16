@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ public class Age : ISensor
     public override string ToString() => "age";
     public string ShortName => "Age";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = (float)(simStep - player.BirthDate) / _config.stepsPerGeneration;
+        var sensorVal = (float)(simStep - critter.BirthDate) / _config.stepsPerGeneration;
         return sensorVal;
     }
 }

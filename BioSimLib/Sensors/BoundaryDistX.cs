@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ public class BoundaryDistX : ISensor
     public override string ToString() => "boundary dist X";
     public string ShortName => "EDx";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var minDistX = Math.Min(player.LocX, _config.sizeX - player.LocX - 1);
+        var minDistX = Math.Min(critter.LocX, _config.sizeX - critter.LocX - 1);
         var sensorVal = minDistX / (_config.sizeX / 2.0f);
         return sensorVal;
     }

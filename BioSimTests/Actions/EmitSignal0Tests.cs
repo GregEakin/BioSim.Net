@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -48,17 +48,17 @@ public class EmitSignal0Tests
     [Fact]
     public void ExecuteTest()
     {
-        var p = new Config { maxNumberNeurons = 1, signalLayers = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, signalLayers = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
         var loc = new Coord { X = 3, Y = 4 };
-        var player = board.NewCritter(genome, loc);
+        var critter = board.NewCritter(genome, loc);
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.EMIT_SIGNAL0] = 0.6f;
 
         var action = new EmitSignal0();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
     }
 
     [Fact]

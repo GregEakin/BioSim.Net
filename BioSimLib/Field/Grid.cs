@@ -16,87 +16,60 @@ public class Grid
 {
     private readonly ushort[,] _board;
     private readonly Config _config;
-    private readonly Critters _peeps;
+    private readonly Critters _critters;
     private readonly Random _random = new();
 
-    public Grid(Config config, Critters peeps)
+    public Grid(Config config, Critters critters)
     {
         _config = config;
-        _peeps = peeps;
+        _critters = critters;
         _board = new ushort[config.sizeX, config.sizeY];
     }
 
     public short SizeX => (short)_board.GetLength(0);
     public short SizeY => (short)_board.GetLength(1);
 
-    public Critter? this[int x, int y] => _peeps[_board[x, y]];
-    public Critter? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
+    public Critter? this[int x, int y] => _critters[_board[x, y]];
+    public Critter? this[Coord loc] => _critters[_board[loc.X, loc.Y]];
 
     public void ZeroFill()
     {
         Array.Clear(_board);
     }
 
-    public bool IsInBounds(Coord loc)
+    public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
+
+    public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
+
+    public bool IsEmptyAt(short x, short y) => _board[x, y] == 0;
+
+    public bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
+
+    public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
+
+    public bool IsOccupiedAt(short x, short y) => _board[x, y] > 1;
+
+    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
+
+    public ushort At(Coord loc) => _board[loc.X, loc.Y];
+
+    public ushort At(int x, int y) => _board[x, y];
+
+    public void Set(Coord loc, Critter critter)
     {
-        return loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
+        _board[loc.X, loc.Y] = critter.Index;
+        critter.Loc = loc;
     }
 
-    public bool IsEmptyAt(Coord loc)
+    public void Set(short x, short y, Critter critter)
     {
-        return _board[loc.X, loc.Y] == 0;
+        _board[x, y] = critter.Index;
+        critter.Loc = new Coord(x, y);
     }
 
-    public bool IsEmptyAt(short x, short y)
+    public void Remove(Critter critter)
     {
-        return _board[x, y] == 0;
-    }
-
-    public bool IsBarrierAt(Coord loc)
-    {
-        return _board[loc.X, loc.Y] == 1;
-    }
-
-    public bool IsOccupiedAt(Coord loc)
-    {
-        return _board[loc.X, loc.Y] > 1;
-    }
-
-    public bool IsOccupiedAt(short x, short y)
-    {
-        return _board[x, y] > 1;
-    }
-
-    public bool IsBorder(Coord loc)
-    {
-        return loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
-    }
-
-    public ushort At(Coord loc)
-    {
-        return _board[loc.X, loc.Y];
-    }
-
-    public ushort At(int x, int y)
-    {
-        return _board[x, y];
-    }
-
-    public void Set(Coord loc, Critter player)
-    {
-        _board[loc.X, loc.Y] = player.Index;
-        player.Loc = loc;
-    }
-
-    public void Set(short x, short y, Critter player)
-    {
-        _board[x, y] = player.Index;
-        player.Loc = new Coord(x, y);
-    }
-
-    public void Remove(Critter player)
-    {
-        var loc = player.Loc;
+        var loc = critter.Loc;
         if (_board[loc.X, loc.Y] < 2)
             return;
 
@@ -119,9 +92,9 @@ public class Grid
 
     public Critter CreateCritter(Genome genome, Coord loc)
     {
-        var player = _peeps.NewCritter(genome, loc);
-        _board[loc.X, loc.Y] = player.Index;
-        return player;
+        var critter = _critters.NewCritter(genome, loc);
+        _board[loc.X, loc.Y] = critter.Index;
+        return critter;
     }
 
     public void SetBarrier(Coord loc)
@@ -151,13 +124,13 @@ public class Grid
         return Array.Empty<Coord>();
     }
 
-    public bool Move(Critter player, Coord newLoc)
+    public bool Move(Critter critter, Coord newLoc)
     {
         if (!IsEmptyAt(newLoc))
             return false;
 
-        _board[player.LocX, player.LocY] = 0;
-        _board[newLoc.X, newLoc.Y] = player.Index;
+        _board[critter.LocX, critter.LocY] = 0;
+        _board[newLoc.X, newLoc.Y] = critter.Index;
         return true;
     }
 
@@ -175,8 +148,8 @@ public class Grid
                     continue;
                 }
 
-                var player = _peeps[index];
-                builder.Append($" {(player != null ? player.Index : "*")}");
+                var critter = _critters[index];
+                builder.Append($" {(critter != null ? critter.Index : "*")}");
             }
 
             builder.AppendLine();

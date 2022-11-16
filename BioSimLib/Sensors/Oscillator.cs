@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ public class Oscillator : ISensor
     public override string ToString() => "oscillator";
     public string ShortName => "Osc";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var phase = simStep % player.OscPeriod / (double)player.OscPeriod;
+        var phase = simStep % critter.OscPeriod / (double)critter.OscPeriod;
         var factor = (float)((-Math.Cos(phase * 2.0 * Math.PI) + 1.0) / 2.0);
         var sensorVal = Math.Min(1.0f, Math.Max(0.0f, factor));
         return sensorVal;

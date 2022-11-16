@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -31,10 +31,10 @@ public class BoundaryDist : ISensor
     public override string ToString() => "boundary dist";
     public string ShortName => "ED";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var distX = Math.Min(player.LocX, (_config.sizeX - player.LocX) - 1);
-        var distY = Math.Min(player.LocY, (_config.sizeY - player.LocY) - 1);
+        var distX = Math.Min(critter.LocX, (_config.sizeX - critter.LocX) - 1);
+        var distY = Math.Min(critter.LocY, (_config.sizeY - critter.LocY) - 1);
         var closest = Math.Min(distX, distY);
         var maxPossible = Math.Max(_config.sizeX / 2 - 1, _config.sizeY / 2 - 1);
         var sensorVal = (float)closest / maxPossible;

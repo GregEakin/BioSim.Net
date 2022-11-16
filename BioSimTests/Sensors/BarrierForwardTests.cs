@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -26,42 +26,42 @@ public class BarrierForwardTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config { sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var sensor = new BarrierForward(p, board.Grid);
+        var config = new Config { sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var sensor = new BarrierForward(config, board.Grid);
         Assert.Equal(Sensor.BARRIER_FWD, sensor.Type);
     }
 
     [Fact]
     public void StringTest()
     {
-        var p = new Config { sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var sensor = new BarrierForward(p, board.Grid);
+        var config = new Config { sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var sensor = new BarrierForward(config, board.Grid);
         Assert.Equal("short probe barrier fwd-rev", sensor.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config { sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var sensor = new BarrierForward(p, board.Grid);
+        var config = new Config { sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var sensor = new BarrierForward(config, board.Grid);
         Assert.Equal("Bfd", sensor.ShortName);
     }
 
     [Fact]
     public void OutputTest()
     {
-        var p = new Config { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
+        var config = new Config { population = 10, shortProbeBarrierDistance = 2, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         board.NewBarrier(new Coord(0, 2));
 
-        var player = board.NewCritter(genome, new Coord(2, 2));
-        player.LastMoveDir = new Dir(Dir.Compass.W);
+        var critter = board.NewCritter(genome, new Coord(2, 2));
+        critter.LastMoveDir = new Dir(Dir.Compass.W);
 
-        var sensor = new BarrierForward(p, board.Grid);
-        Assert.Equal(0.25f, sensor.Output(player, 0));
+        var sensor = new BarrierForward(config, board.Grid);
+        Assert.Equal(0.25f, sensor.Output(critter, 0));
     }
 }

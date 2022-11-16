@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ public class AnalysisTests
     [Fact]
     public void Test1()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 5
         };
-        var genome = new GenomeBuilder(p.maxNumberNeurons, new []{ 0x840B7FFFu }).ToGenome();
+        var genome = new GenomeBuilder(config.maxNumberNeurons, new []{ 0x840B7FFFu }).ToGenome();
         var net = new NeuralNet(genome);
         Assert.Equal("840B7FFF", net.ToString());
     }

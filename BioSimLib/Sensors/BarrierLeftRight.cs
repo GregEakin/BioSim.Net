@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -34,9 +34,9 @@ public class BarrierLeftRight : ISensor
     public override string ToString() => "short probe barrier left-right";
     public string ShortName => "Blr";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir.Rotate90DegCw(), _config.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(critter.Loc, critter.LastMoveDir.Rotate90DegCw(), _config.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

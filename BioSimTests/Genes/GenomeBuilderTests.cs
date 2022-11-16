@@ -13,7 +13,7 @@ public class GenomeBuilderTests
     [Fact]
     public void ColorTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -39,7 +39,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.5f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint(), gene2.ToUint(), gene3.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint(), gene2.ToUint(), gene3.ToUint() });
         builder.SetupGenome();
         var (red, green, blue) = builder.Color;
         Assert.Equal(0x64, red);
@@ -50,7 +50,7 @@ public class GenomeBuilderTests
     [Fact]
     public void LengthTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -76,14 +76,14 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.5f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint(), gene2.ToUint(), gene3.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint(), gene2.ToUint(), gene3.ToUint() });
         Assert.Equal(3, builder.Length);
     }
 
     [Fact]
     public void SetupGenomeTest()
     {
-        var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -93,7 +93,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         Assert.Equal(1, builder.Length);
     }
@@ -101,7 +101,7 @@ public class GenomeBuilderTests
     [Fact]
     public void MakeRenumberedConnectionListTest()
     {
-        var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Neuron,
@@ -111,7 +111,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         builder.MakeRenumberedConnectionList();
         Assert.Equal(1, builder.Neurons);
@@ -123,7 +123,7 @@ public class GenomeBuilderTests
     [Fact]
     public void MakeNodeList_SensorToAction_Test()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -133,7 +133,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         var nodeList = builder.MakeNodeList();
         Assert.Empty(nodeList);
@@ -142,7 +142,7 @@ public class GenomeBuilderTests
     [Fact]
     public void MakeNodeList_NeuronToActionTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Neuron,
@@ -152,7 +152,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         var nodeList = builder.MakeNodeList();
         Assert.Equal(1, nodeList[0].NumOutputs);
@@ -163,7 +163,7 @@ public class GenomeBuilderTests
     [Fact]
     public void MakeNodeList_NeuronToSameNeuronTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Neuron,
@@ -173,7 +173,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         var nodeList = builder.MakeNodeList();
         Assert.Equal(1, nodeList[0].NumOutputs);
@@ -184,7 +184,7 @@ public class GenomeBuilderTests
     [Fact]
     public void MakeNodeList_SensorToNeuronTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -194,7 +194,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         var nodeList = builder.MakeNodeList();
         Assert.Equal(0, nodeList[0].NumOutputs);
@@ -205,7 +205,7 @@ public class GenomeBuilderTests
     [Fact]
     public void RemoveUnusedNeurons_SensorToActionTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -215,7 +215,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         builder.RemoveUnusedNeurons();
         Assert.Equal(0, builder.Neurons);
@@ -225,7 +225,7 @@ public class GenomeBuilderTests
     [Fact]
     public void RemoveUnusedNeurons_NeuronToActionTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Neuron,
@@ -235,7 +235,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         builder.RemoveUnusedNeurons();
         Assert.Equal(1, builder.Neurons);
@@ -245,7 +245,7 @@ public class GenomeBuilderTests
     [Fact]
     public void RemoveUnusedNeurons_NeuronToSameNeuronTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Neuron,
@@ -255,7 +255,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         builder.RemoveUnusedNeurons();
         Assert.Equal(0, builder.Neurons);
@@ -265,7 +265,7 @@ public class GenomeBuilderTests
     [Fact]
     public void RemoveUnusedNeurons_SensorToNeuronTest()
     {
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Sensor,
@@ -275,7 +275,7 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
         builder.SetupGenome();
         builder.RemoveUnusedNeurons();
         Assert.Equal(0, builder.Neurons);
@@ -295,8 +295,8 @@ public class GenomeBuilderTests
             }
         );
 
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var gene1 = new GeneBuilder
         {
             SourceType = Gene.GeneType.Neuron,
@@ -306,12 +306,12 @@ public class GenomeBuilderTests
             WeightAsFloat = 1.0f
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, new[] { gene1.ToUint() });
-        var player = board.NewCritter(builder.ToGenome(), new Coord(3, 3));
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint() });
+        var critter = board.NewCritter(builder.ToGenome(), new Coord(3, 3));
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
-        var neuronAccumulators = new float[p.maxNumberNeurons];
-        player.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
+        var neuronAccumulators = new float[config.maxNumberNeurons];
+        critter.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
 
         var newGene0 = new GeneBuilder
         {
@@ -333,8 +333,8 @@ public class GenomeBuilderTests
             }
         );
 
-        var p = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var dna = new[]
         {
             new GeneBuilder
@@ -362,12 +362,12 @@ public class GenomeBuilderTests
                 WeightAsFloat = 1.0f
             }.ToUint()
         };
-        var builder = new GenomeBuilder(p.maxNumberNeurons, dna);
-        var player = board.NewCritter(builder.ToGenome(), new Coord(3, 3));
+        var builder = new GenomeBuilder(config.maxNumberNeurons, dna);
+        var critter = board.NewCritter(builder.ToGenome(), new Coord(3, 3));
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
-        var neuronAccumulators = new float[p.maxNumberNeurons];
-        player.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
+        var neuronAccumulators = new float[config.maxNumberNeurons];
+        critter.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
 
         var newGene0 = new GeneBuilder
         {
@@ -392,7 +392,7 @@ public class GenomeBuilderTests
     [Fact]
     public void Test1()
     {
-        var p = new Config
+        var config = new Config
         {
             genomeMaxLength = 24,
             maxNumberNeurons = 12,
@@ -425,7 +425,7 @@ public class GenomeBuilderTests
             0x87F32F07,
         };
 
-        var builder = new GenomeBuilder(p.maxNumberNeurons, dna);
+        var builder = new GenomeBuilder(config.maxNumberNeurons, dna);
         var genome = builder.ToGenome();
         // var connectionList = genome.MakeRenumberedConnectionList();
     }
@@ -433,7 +433,7 @@ public class GenomeBuilderTests
     [Fact]
     public void Test2()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -445,14 +445,14 @@ public class GenomeBuilderTests
             0x61596307u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna);
         // ar connectionList = genome.MakeRenumberedConnectionList();
     }
 
     [Fact]
     public void Test3()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -464,14 +464,14 @@ public class GenomeBuilderTests
             0xb19a8864u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna);
         // var connectionList = genome.MakeRenumberedConnectionList();
     }
 
     [Fact]
     public void MakeNodeTest()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -483,7 +483,7 @@ public class GenomeBuilderTests
             0x83868864u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna);
         // var data = genome.MakeNodeList();
         // Assert.Single(data);
     }
@@ -491,7 +491,7 @@ public class GenomeBuilderTests
     [Fact]
     public void GeneticColorTest()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -503,7 +503,7 @@ public class GenomeBuilderTests
             0xb19a8864u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna);
         var color = genome.Color;
         Assert.Equal(0xFF, color.Item1);
         Assert.Equal(0xFF, color.Item2);

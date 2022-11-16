@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ public class PopulationForward : ISensor
     public override string ToString() => "population forward";
     public string ShortName => "Pfd";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(player.Loc, player.LastMoveDir);
+        var sensorVal = _grid.GetPopulationDensityAlongAxis(critter.Loc, critter.LastMoveDir);
         return sensorVal;
     }
 }

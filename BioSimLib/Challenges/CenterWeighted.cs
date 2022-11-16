@@ -27,12 +27,12 @@ public class CenterWeighted : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         var safeCenter = new Coord((short)(_config.sizeX / 2.0), (short)(_config.sizeY / 2.0));
         var radius = _config.sizeX / 3.0f;
 
-        var offset = safeCenter - player.Loc;
+        var offset = safeCenter - critter.Loc;
         float distance = offset.Length();
         return distance <= radius
             ? (true, (radius - distance) / radius)

@@ -81,9 +81,9 @@ public class Cell
         _path.SetValue(Canvas.TopProperty, (0.5 + Critter.LocY) * scaleFactor);
     }
 
-    public void CritterChanged(Critter player)
+    public void CritterChanged(Critter critter)
     {
-        Critter = player;
+        Critter = critter;
 
         var (red, green, blue) = Critter.Color;
         var color = Color.FromRgb(red, green, blue);

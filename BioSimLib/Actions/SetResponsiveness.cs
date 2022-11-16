@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ public class SetResponsiveness : IAction
     public override string ToString() => "set inv-responsiveness";
     public string ShortName => "Res";
 
-    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
     {
         var level = actionLevels[(int)Action.SET_RESPONSIVENESS];
         level = (float)((Math.Tanh(level) + 1.0) / 2.0);
-        player.Responsiveness = level;
+        critter.Responsiveness = level;
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

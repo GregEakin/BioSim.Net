@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -47,14 +47,14 @@ public class LastMoveDirXTests
     [Fact]
     public void OutputTest()
     {
-        var p = new Config { population = 10, sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
+        var config = new Config { population = 10, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
-        var player = board.NewCritter(genome, new Coord(2, 2));
-        player.LastMoveDir = new Dir(Dir.Compass.W);
+        var critter = board.NewCritter(genome, new Coord(2, 2));
+        critter.LastMoveDir = new Dir(Dir.Compass.W);
 
         var sensor = new LastMoveDirX();
-        Assert.Equal(0.0f, sensor.Output(player, 25));
+        Assert.Equal(0.0f, sensor.Output(critter, 25));
     }
 }

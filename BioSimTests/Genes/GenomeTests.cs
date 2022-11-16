@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ public class GenomeTests
     [Fact]
     public void ToGraphInfoTest()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -35,7 +35,7 @@ public class GenomeTests
             0x83868864u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna).ToGenome();
         var data = genome.ToGraphInfo();
         var expected = "N0 N0 357\r\n\r\nN0 MOVE_RL 13588\r\n\r\nN0 SET_OSCILLATOR_PERIOD 3974\r\n\r\nBOUNDARY_DIST SET_LONGPROBE_DIST -30620\r\n\r\n";
         Assert.Equal(expected, data);
@@ -44,7 +44,7 @@ public class GenomeTests
     [Fact]
     public void ToDnaTest()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -56,7 +56,7 @@ public class GenomeTests
             0x83868864u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna).ToGenome();
         var data = genome.ToDna();
         Assert.Equal("00850F86 00833514 00000165 83868864", data);
     }
@@ -64,7 +64,7 @@ public class GenomeTests
     [Fact]
     public void ToStringTest()
     {
-        var p = new Config
+        var config = new Config
         {
             maxNumberNeurons = 1
         };
@@ -76,7 +76,7 @@ public class GenomeTests
             0x83868864u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna);
         var data = genome.ToGenome().ToString();
         var expected = "N0 * 0.0435791 => N0, N0 * 1.6586914 => MOVE_RL, N0 * 0.48510742 => SET_OSCILLATOR_PERIOD, BOUNDARY_DIST * -3.737793 => SET_LONGPROBE_DIST";
         Assert.Equal(expected, data);

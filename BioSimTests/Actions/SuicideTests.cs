@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -48,16 +48,16 @@ public class SuicideTests
     [Fact]
     public void ExecuteNotSetTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SUICIDE] = 0.0f;
 
         var action = new Suicide();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
     }
@@ -65,17 +65,17 @@ public class SuicideTests
     [Fact]
     public void ExecuteTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
-        player.Responsiveness = 1.0f;
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        critter.Responsiveness = 1.0f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SUICIDE] = 0.05f;
 
         var action = new Suicide();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
         Assert.NotEmpty(board.Critters.DeathQueue);
     }

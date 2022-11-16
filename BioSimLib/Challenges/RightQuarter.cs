@@ -25,9 +25,9 @@ public class RightQuarter : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
-        return player.LocX > _config.sizeX / 2 + _config.sizeX / 4
+        return critter.LocX > _config.sizeX / 2 + _config.sizeX / 4
             ? (true, 1.0f)
             : (false, 0.0f);
     }

@@ -30,7 +30,7 @@ public class NearBarrier : IChallenge
         _grid = grid;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 2.0f;
 
@@ -38,7 +38,7 @@ public class NearBarrier : IChallenge
         var minDistance = 1e8f;
         foreach (var center in barrierCenters)
         {
-            float distance = (player.Loc - center).Length();
+            float distance = (critter.Loc - center).Length();
             if (distance < minDistance)
                 minDistance = distance;
         }

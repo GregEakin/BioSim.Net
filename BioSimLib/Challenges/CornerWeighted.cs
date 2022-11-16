@@ -27,23 +27,23 @@ public class CornerWeighted : IChallenge
     private readonly Config _config;
     public Challenge Type => Challenge.CornerWeighted;
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 4.0f;
 
-        var distance = (new Coord(0, 0) - player.Loc).Length();
+        var distance = (new Coord(0, 0) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 
-        distance = (new Coord(0, (short)(_config.sizeY - 1)) - player.Loc).Length();
+        distance = (new Coord(0, (short)(_config.sizeY - 1)) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 
-        distance = (new Coord((short)(_config.sizeX - 1), 0) - player.Loc).Length();
+        distance = (new Coord((short)(_config.sizeX - 1), 0) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 
-        distance = (new Coord((short)(_config.sizeX - 1), (short)(_config.sizeY - 1)) - player.Loc).Length();
+        distance = (new Coord((short)(_config.sizeX - 1), (short)(_config.sizeY - 1)) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 

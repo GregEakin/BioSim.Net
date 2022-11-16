@@ -39,8 +39,8 @@ public readonly struct Board
     public Critter NewCritter(Genome genome)
     {
         var loc = Grid.FindEmptyLocation();
-        var player = NewCritter(genome, loc);
-        return player;
+        var critter = NewCritter(genome, loc);
+        return critter;
     }
 
     public IEnumerable<Genome> NewGeneration()
@@ -55,7 +55,7 @@ public readonly struct Board
     // public int SpawnNewGeneration(uint generation, uint deathCount)
     // {
     //     var sacrificedCount = 0u;
-    //     var parents = new List<(Player, float)>();
+    //     var parents = new List<(Critter, float)>();
     //     var parentGenome = new List<Genome>();
     //
     //     if (_config.challenge == Challenge.Altruism)
@@ -70,7 +70,7 @@ public readonly struct Board
     //     else
     //     {
     //         var considerKinship = true;
-    //         var sacrifices = new List<Player>();
+    //         var sacrifices = new List<Critter>();
     //         foreach (var survivor in Critters.Survivors2())
     //         {
     //             var (alive, value) = PassedSurvivalCriterion(survivor);
@@ -93,7 +93,7 @@ public readonly struct Board
     //             if (generation > generationToApplyKinship)
     //             {
     //                 var threshold = 0.7f;
-    //                 var survivingKin = new List<(Player, float)>();
+    //                 var survivingKin = new List<(Critter, float)>();
     //
     //                 for (var passes = 0u; passes < altruismFactor; ++passes)
     //                 {
@@ -127,8 +127,8 @@ public readonly struct Board
     //     parents.Sort((p1, p2) => p1.Item2.CompareTo(p2.Item2));
     //
     //     parentGenome.Capacity = parents.Count;
-    //     foreach (var (player, _) in parents) 
-    //         parentGenome.Add(player._genome);
+    //     foreach (var (critter, _) in parents) 
+    //         parentGenome.Add(critter._genome);
     //
     //     // appendEpochLog(generation, parentGenomes.size(), murderCount);
     //

@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ public class SetLongProbeDist : IAction
     public override string ToString() => "set longprobe dist";
     public string ShortName => "LPD";
 
-    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
     {
         var maxLongProbeDistance = 32u;
         var level = actionLevels[(int)Action.SET_LONGPROBE_DIST];
         level = (float)((Math.Tanh(level) + 1.0) / 2.0);
         level = 1.0f + level * maxLongProbeDistance;
-        player.LongProbeDist = (uint)level;
+        critter.LongProbeDist = (uint)level;
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

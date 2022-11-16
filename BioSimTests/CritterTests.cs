@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ public class CritterTests
             }
         );
 
-        var p = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 2, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var dna = new[]
         {
             0x00012000u,
@@ -49,19 +49,19 @@ public class CritterTests
             0x91842000u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 4, Y = 4 };
-        var player = board.NewCritter(genome, loc);
-        player.NeuralNet[0].Driven = true;
-        player.NeuralNet[0].Output = 0.6f;
-        player.NeuralNet[1].Driven = true;
-        player.NeuralNet[1].Output = 0.4f;
+        var critter = board.NewCritter(genome, loc);
+        critter.NeuralNet[0].Driven = true;
+        critter.NeuralNet[0].Output = 0.6f;
+        critter.NeuralNet[1].Driven = true;
+        critter.NeuralNet[1].Output = 0.4f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
-        var neuronAccumulators = new float[p.maxNumberNeurons];
-        player.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
-        Assert.Equal(0.73442495f, player.NeuralNet[0].Output);
-        Assert.Equal(1.07409918f, player.NeuralNet[1].Output);
+        var neuronAccumulators = new float[config.maxNumberNeurons];
+        critter.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
+        Assert.Equal(0.73442495f, critter.NeuralNet[0].Output);
+        Assert.Equal(1.07409918f, critter.NeuralNet[1].Output);
 
         var expectedLevels = new float[Enum.GetNames<Action>().Length];
         expectedLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
@@ -74,8 +74,8 @@ public class CritterTests
     [Fact]
     public void MovementTest()
     {
-        var p = new Config { maxNumberNeurons = 2, sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 2, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
 
         var dna = new[]
         {
@@ -88,21 +88,21 @@ public class CritterTests
             0x81822000u,
         };
 
-        var genome = new GenomeBuilder(p.maxNumberNeurons, dna).ToGenome();
+        var genome = new GenomeBuilder(config.maxNumberNeurons, dna).ToGenome();
         var loc = new Coord { X = 1, Y = 2 };
-        var player = board.NewCritter(genome, loc);
-        player.NeuralNet[0].Driven = true;
-        player.NeuralNet[0].Output = 0.6f;
-        player.NeuralNet[1].Driven = true;
-        player.NeuralNet[1].Output = 0.4f;
+        var critter = board.NewCritter(genome, loc);
+        critter.NeuralNet[0].Driven = true;
+        critter.NeuralNet[0].Output = 0.6f;
+        critter.NeuralNet[1].Driven = true;
+        critter.NeuralNet[1].Output = 0.4f;
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
         actionLevels[(int)Action.MOVE_WEST] = 0.5370496f;
 
         var factory = new ActionFactory();
-        player.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);
-        var newLoc = player.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
+        critter.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);
+        var newLoc = critter.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
 
         // Assert.Equal(2, newLoc.X);
         // Assert.Equal(3, newLoc.Y);
@@ -112,5 +112,24 @@ public class CritterTests
     public void GetSignalDensityAlongAxisTest()
     {
         // GetSignalDensityAlongAxis
+    }
+
+    [Fact]
+    public void ResponseCurveTest()
+    {
+        // responsivenessCurveKFactor = 1, 2, 3 or 4
+        var config = new Config { responsivenessCurveKFactor = 1 };
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var loc = new Coord { X = 1, Y = 1 };
+        var critter = new Critter(config, genome, loc, 1);
+
+        var factor0 = critter.ResponseCurve(0.0f);
+        Assert.Equal(0.0f, factor0);
+
+        var factor1 = critter.ResponseCurve(0.5f);
+        Assert.Equal(0.319444448f, factor1);
+
+        var factor2 = critter.ResponseCurve(1.0f);
+        Assert.Equal(1.0f, factor2);
     }
 }

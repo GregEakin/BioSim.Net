@@ -33,9 +33,9 @@ public class Critters
 
     public Critter NewCritter(Genome genome, Coord loc)
     {
-        var player = new Critter(_config, genome, loc, ++_count);
-        _critters[player.Index - 2u] = player;
-        return player;
+        var critter = new Critter(_config, genome, loc, ++_count);
+        _critters[critter.Index - 2u] = critter;
+        return critter;
     }
 
     public void Clear()
@@ -45,39 +45,39 @@ public class Critters
         _deathQueue.Clear();
     }
 
-    public void QueueForMove(Critter player, Coord newLoc)
+    public void QueueForMove(Critter critter, Coord newLoc)
     {
-        _moveQueue.Add(new Tuple<Critter, Coord>(player, newLoc));
+        _moveQueue.Add(new Tuple<Critter, Coord>(critter, newLoc));
     }
 
     public void DrainMoveQueue(Grid grid)
     {
-        foreach (var (player, newLoc) in _moveQueue)
+        foreach (var (critter, newLoc) in _moveQueue)
         {
-            if (!player.Alive) continue;
-            if (!grid.Move(player, newLoc))
+            if (!critter.Alive) continue;
+            if (!grid.Move(critter, newLoc))
                 continue;
 
-            player.Loc = newLoc;
-            var moveDir = (newLoc - player.Loc).AsDir();
-            player.LastMoveDir = moveDir;
+            critter.Loc = newLoc;
+            var moveDir = (newLoc - critter.Loc).AsDir();
+            critter.LastMoveDir = moveDir;
         }
 
         _moveQueue.Clear();
     }
 
-    public void QueueForDeath(Critter player)
+    public void QueueForDeath(Critter critter)
     {
-        _deathQueue.Add(player);
+        _deathQueue.Add(critter);
     }
 
     public void DrainDeathQueue(Grid grid)
     {
-        foreach (var player in _deathQueue)
+        foreach (var critter in _deathQueue)
         {
-            player.Alive = false;
-            grid.Remove(player);
-            _critters[player.Index] = null;
+            critter.Alive = false;
+            grid.Remove(critter);
+            _critters[critter.Index] = null;
         }
 
         _deathQueue.Clear();
@@ -85,26 +85,26 @@ public class Critters
 
     public IEnumerable<Genome> Survivors()
     {
-        return from player in _critters
-            where player.Alive && player.LocX > _config.sizeX / 2 && player.LocX < _config.sizeX - 2
-            select player.Genome;
+        return from critter in _critters
+            where critter.Alive && critter.LocX > _config.sizeX / 2 && critter.LocX < _config.sizeX - 2
+            select critter.Genome;
     }
 
     public IEnumerable<Critter> Survivors2()
     {
-        return from player in _critters
-            where player.Alive && player.LocX > _config.sizeX / 2 && player.LocX < _config.sizeX - 2
-            select player;
+        return from critter in _critters
+            where critter.Alive && critter.LocX > _config.sizeX / 2 && critter.LocX < _config.sizeX - 2
+            select critter;
     }
 
     public IDictionary<int, int> Census()
     {
         var dict = new Dictionary<int, int>();
-        foreach (var player in _critters)
+        foreach (var critter in _critters)
         {
-            if (!player?.Alive ?? true) continue;
+            if (!critter?.Alive ?? true) continue;
 
-            var (red, green, blue) = player.Color;
+            var (red, green, blue) = critter.Color;
             var key = (red << 16) | (green << 8) | blue;
             var found = dict.ContainsKey(key);
             if (!found)

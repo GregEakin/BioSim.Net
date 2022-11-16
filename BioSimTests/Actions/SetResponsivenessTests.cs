@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -48,35 +48,35 @@ public class SetResponsivenessTests
     [Fact]
     public void ExecuteNotSetTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_RESPONSIVENESS] = 0.0f;
 
         var action = new SetResponsiveness();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
-        Assert.Equal(0.5f, player.Responsiveness);
+        Assert.Equal(0.5f, critter.Responsiveness);
     }
 
     [Fact]
     public void ExecuteTest()
     {
-        var p = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
-        var board = new Board(p);
+        var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
+        var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var player = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_RESPONSIVENESS] = 0.05f;
 
         var action = new SetResponsiveness();
-        action.Execute(p, board, player, 0, actionLevels);
+        action.Execute(config, board, critter, 0, actionLevels);
 
-        Assert.Equal(0.5249792f, player.Responsiveness);
+        Assert.Equal(0.5249792f, critter.Responsiveness);
     }
 
     [Fact]

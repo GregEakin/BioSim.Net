@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class SetOscillatorPeriod : IAction
     public override string ToString() => "set osc1";
     public string ShortName => "Osc";
 
-    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
     {
         foreach (var level1 in actionLevels)
             if (float.IsNaN(level1))
@@ -36,7 +36,7 @@ public class SetOscillatorPeriod : IAction
         var level = actionLevels[(int)Action.SET_OSCILLATOR_PERIOD];
         var newPeriodF01 = (float)((Math.Tanh(level) + 1.0f) / 2.0f);
         var newPeriod = 1u + (uint)(1.5f + Math.Exp(7.0f * newPeriodF01));
-        player.OscPeriod = newPeriod;
+        critter.OscPeriod = newPeriod;
 
         foreach (var level1 in actionLevels)
             if (float.IsNaN(level1))

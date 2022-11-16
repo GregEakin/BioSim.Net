@@ -19,7 +19,7 @@ public class RadioactiveWalls : IChallenge
 {
     public Challenge Type => Challenge.RadioactiveWalls;
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         return (true, 1.0f);
     }

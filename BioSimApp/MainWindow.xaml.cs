@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -113,8 +113,8 @@ public partial class MainWindow : Window
         var i = 0;
         foreach (var genome in _bank.Startup())
         {
-            var player = _board.NewCritter(genome);
-            _cells[i] = new Cell(player);
+            var critter = _board.NewCritter(genome);
+            _cells[i] = new Cell(critter);
             MyCanvas.Children.Add(_cells[i].Element);
             i++;
         }
@@ -141,8 +141,8 @@ public partial class MainWindow : Window
             var survivors = _board.NewGeneration();
             foreach (var genome in _bank.NewGeneration(survivors))
             {
-                var player = _board.NewCritter(genome);
-                _cells[i].CritterChanged(player);
+                var critter = _board.NewCritter(genome);
+                _cells[i].CritterChanged(critter);
                 i++;
             }
 

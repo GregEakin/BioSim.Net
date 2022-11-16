@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -35,14 +35,14 @@ public class GeneticSimilarityForward : ISensor
     public override string ToString() => "genetic similarity forward";
     public string ShortName => "Gen";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var forward = player.Loc + player.LastMoveDir;
+        var forward = critter.Loc + critter.LastMoveDir;
         if (!_grid.IsInBounds(forward)) return 0.0f;
         var partner = _grid[forward];
         if (partner is not { Alive: true }) return 0.0f;
         var method = (GeneBank.ComparisonMethods)_config.genomeComparisonMethod;
-        var sensorVal = GeneBank.GenomeSimilarity(method, player.Genome, partner.Genome);
+        var sensorVal = GeneBank.GenomeSimilarity(method, critter.Genome, partner.Genome);
         return sensorVal;
     }
 }

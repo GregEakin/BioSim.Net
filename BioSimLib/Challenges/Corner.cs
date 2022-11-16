@@ -27,23 +27,23 @@ public class Corner : IChallenge
     private readonly Config _config;
     public Challenge Type => Challenge.Corner;
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 8.0f;
 
-        var distance1 = (new Coord(0, 0) - player.Loc).Length();
+        var distance1 = (new Coord(0, 0) - critter.Loc).Length();
         if (distance1 <= radius)
             return (true, 1.0f);
 
-        var distance2 = (new Coord(0, (short)(_config.sizeY - 1)) - player.Loc).Length();
+        var distance2 = (new Coord(0, (short)(_config.sizeY - 1)) - critter.Loc).Length();
         if (distance2 <= radius)
             return (true, 1.0f);
 
-        var distance3 = (new Coord((short)(_config.sizeX - 1), 0) - player.Loc).Length();
+        var distance3 = (new Coord((short)(_config.sizeX - 1), 0) - critter.Loc).Length();
         if (distance3 <= radius)
             return (true, 1.0f);
 
-        var distance4 = (new Coord((short)(_config.sizeX - 1), (short)(_config.sizeY - 1)) - player.Loc).Length();
+        var distance4 = (new Coord((short)(_config.sizeX - 1), (short)(_config.sizeY - 1)) - critter.Loc).Length();
         if (distance4 <= radius)
             return (true, 1.0f);
 

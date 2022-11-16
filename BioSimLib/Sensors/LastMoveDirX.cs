@@ -1,4 +1,4 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ public class LastMoveDirX : ISensor
     public override string ToString() => "last move dir X";
     public string ShortName => "LMx";
 
-    public float Output(Critter player, uint simStep)
+    public float Output(Critter critter, uint simStep)
     {
-        var lastX = player.LastMoveDir.AsNormalizedCoord().X;
+        var lastX = critter.LastMoveDir.AsNormalizedCoord().X;
         var sensorVal = lastX == 0
             ? 0.5f
             : lastX == -1

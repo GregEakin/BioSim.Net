@@ -1,4 +1,4 @@
-//    Copyright 2021 Gregory Eakin
+//    Copyright 2022 Gregory Eakin
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
@@ -26,37 +26,37 @@ public class AgeTests
     [Fact]
     public void TypeTest()
     {
-        var p = new Config { stepsPerGeneration = 100 };
-        var sensor = new Age(p);
+        var config = new Config { stepsPerGeneration = 100 };
+        var sensor = new Age(config);
         Assert.Equal(Sensor.AGE, sensor.Type);
     }
 
     [Fact]
     public void StringTest()
     {
-        var p = new Config { stepsPerGeneration = 100 };
-        var sensor = new Age(p);
+        var config = new Config { stepsPerGeneration = 100 };
+        var sensor = new Age(config);
         Assert.Equal("age", sensor.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var p = new Config { stepsPerGeneration = 100 };
-        var sensor = new Age(p);
+        var config = new Config { stepsPerGeneration = 100 };
+        var sensor = new Age(config);
         Assert.Equal("Age", sensor.ShortName);
     }
 
     [Fact]
     public void OutputTest()
     {
-        var p = new Config { population = 10, stepsPerGeneration = 100, sizeX = 5, sizeY = 5 };
-        var board = new Board(p);
-        var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
+        var config = new Config { population = 10, stepsPerGeneration = 100, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
-        var player = board.NewCritter(genome, new Coord(2, 2));
+        var critter = board.NewCritter(genome, new Coord(2, 2));
 
-        var sensor = new Age(p);
-        Assert.Equal(0.25f, sensor.Output(player, 25));
+        var sensor = new Age(config);
+        Assert.Equal(0.25f, sensor.Output(critter, 25));
     }
 }

@@ -27,11 +27,11 @@ public class Circle : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter player)
+    public (bool, float) PassedSurvivalCriterion(Critter critter)
     {
         var safeCenter = new Coord((short)(_config.sizeX / 4.0), (short)(_config.sizeY / 4.0));
         var radius = _config.sizeX / 4.0f;
-        var offset = safeCenter - player.Loc;
+        var offset = safeCenter - critter.Loc;
         var distance = offset.Length();
         return distance <= radius
             ? (true, (radius - distance) / radius)
