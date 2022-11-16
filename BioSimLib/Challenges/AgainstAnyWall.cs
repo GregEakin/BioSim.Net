@@ -17,20 +17,20 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class AgainstAnyWall : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     public Challenge Type => Challenge.AgainstAnyWall;
 
-    public AgainstAnyWall(Config p)
+    public AgainstAnyWall(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
         var onEdge = player.LocX == 0
-                     || player.LocX == _p.sizeX - 1
+                     || player.LocX == _config.sizeX - 1
                      || player.LocY == 0
-                     || player.LocY == _p.sizeY - 1;
+                     || player.LocY == _config.sizeY - 1;
 
         return onEdge
             ? (true, 1.0f)

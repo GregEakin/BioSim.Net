@@ -27,7 +27,7 @@ public class SetLongProbeDist : IAction
     public override string ToString() => "set longprobe dist";
     public string ShortName => "LPD";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var maxLongProbeDistance = 32u;
         var level = actionLevels[(int)Action.SET_LONGPROBE_DIST];

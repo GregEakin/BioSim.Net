@@ -20,23 +20,23 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class Pairs : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
 
     public Challenge Type => Challenge.Pairs;
 
-    public Pairs(Config p, Grid grid)
+    public Pairs(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
         var onEdge = player.LocX == 0
-                     || player.LocX == _p.sizeX - 1
+                     || player.LocX == _config.sizeX - 1
                      || player.LocY == 0
-                     || player.LocY == _p.sizeY - 1;
+                     || player.LocY == _config.sizeY - 1;
 
         if (onEdge)
             return (false, 0.0f);

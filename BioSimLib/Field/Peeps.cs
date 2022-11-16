@@ -1,16 +1,10 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿// Log File Viewer - Peeps.cs
 // 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+// Copyright © 2021 Greg Eakin.
 // 
-//        http://www.apache.org/licenses/LICENSE-2.0
+// Greg Eakin <greg@gdbtech.info>
 // 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+// All Rights Reserved.
 
 using BioSimLib.Genes;
 using BioSimLib.Positions;
@@ -19,22 +13,27 @@ namespace BioSimLib.Field;
 
 public class Peeps
 {
-    private readonly Config _p;
     private readonly Critter?[] _critters;
+    private readonly List<Critter> _deathQueue = new();
+    private readonly List<Tuple<Critter, Coord>> _moveQueue = new();
+    private readonly Config _config;
     private ushort _count = 1;
 
-    private readonly List<Tuple<Critter, Coord>> _moveQueue = new();
-    private readonly List<Critter> _deathQueue = new();
-
-    public Peeps(Config p)
+    public Peeps(Config config)
     {
-        _p = p;
-        _critters = new Critter?[p.population];
+        _config = config;
+        _critters = new Critter?[config.population];
     }
+
+    public int Count => _count - 1;
+
+    public Critter? this[int index] => index < 2 || index > _count ? null : _critters[index - 2u];
+
+    public IEnumerable<Critter> DeathQueue => _deathQueue;
 
     public Critter NewCritter(Genome genome, Coord loc)
     {
-        var player = new Critter(_p, genome, loc, ++_count);
+        var player = new Critter(_config, genome, loc, ++_count);
         _critters[player.Index - 2u] = player;
         return player;
     }
@@ -45,10 +44,6 @@ public class Peeps
         _moveQueue.Clear();
         _deathQueue.Clear();
     }
-
-    public int Count => _count - 1;
-
-    public Critter? this[int index] => index < 2 || index > _count ? null : _critters[index - 2u];
 
     public void QueueForMove(Critter player, Coord newLoc)
     {
@@ -71,8 +66,6 @@ public class Peeps
         _moveQueue.Clear();
     }
 
-    public IEnumerable<Critter> DeathQueue => _deathQueue;
-
     public void QueueForDeath(Critter player)
     {
         _deathQueue.Add(player);
@@ -90,13 +83,19 @@ public class Peeps
         _deathQueue.Clear();
     }
 
-    public IEnumerable<Genome> Survivors() => from player in _critters
-        where player.Alive && player.LocX > _p.sizeX / 2 && player.LocX < _p.sizeX - 2
-        select player.Genome;
+    public IEnumerable<Genome> Survivors()
+    {
+        return from player in _critters
+            where player.Alive && player.LocX > _config.sizeX / 2 && player.LocX < _config.sizeX - 2
+            select player.Genome;
+    }
 
-    public IEnumerable<Critter> Survivors2() => from player in _critters
-        where player.Alive && player.LocX > _p.sizeX / 2 && player.LocX < _p.sizeX - 2
-        select player;
+    public IEnumerable<Critter> Survivors2()
+    {
+        return from player in _critters
+            where player.Alive && player.LocX > _config.sizeX / 2 && player.LocX < _config.sizeX - 2
+            select player;
+    }
 
     public IDictionary<int, int> Census()
     {

@@ -43,14 +43,14 @@ public sealed class Critter
         Action.MOVE_RANDOM,
     };
 
-    private readonly Config _p;
+    private readonly Config _config;
     private bool _alive;
     private Coord _loc;
     private float _responsiveness;
 
-    public Critter(Config p, Genome genome, Coord loc, ushort index)
+    public Critter(Config config, Genome genome, Coord loc, ushort index)
     {
-        _p = p;
+        _config = config;
         _loc = loc;
         BirthLocation = loc;
         Index = index;
@@ -61,7 +61,7 @@ public sealed class Critter
         BirthDate = 0u;
         OscPeriod = 34u; // ToDo !!! define a constant
         Responsiveness = 0.5f; // range 0.0..1.0
-        LongProbeDist = p.longProbeDistance;
+        LongProbeDist = config.longProbeDistance;
     }
 
     public bool Alive
@@ -141,7 +141,7 @@ public sealed class Critter
 
     public float ResponseCurve(float r)
     {
-        var k = _p.responsivenessCurveKFactor;
+        var k = _config.responsivenessCurveKFactor;
         var value = Math.Pow(r - 2.0f, -2.0f * k) - Math.Pow(2.0f, -2.0f * k) * (1.0f - r);
         return (float)value;
     }
@@ -155,7 +155,7 @@ public sealed class Critter
             if (action == null || !isEnabled(action))
                 continue;
 
-            action.Execute(_p, board, this, simStep, actionLevels);
+            action.Execute(_config, board, this, simStep, actionLevels);
         }
     }
 

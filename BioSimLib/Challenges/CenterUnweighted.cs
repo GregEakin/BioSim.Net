@@ -19,18 +19,18 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class CenterUnweighted : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     public Challenge Type => Challenge.CenterUnweighted;
 
-    public CenterUnweighted(Config p)
+    public CenterUnweighted(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        var safeCenter = new Coord((short)(_p.sizeX / 2.0), (short)(_p.sizeY / 2.0));
-        var radius = _p.sizeX / 3.0f;
+        var safeCenter = new Coord((short)(_config.sizeX / 2.0), (short)(_config.sizeY / 2.0));
+        var radius = _config.sizeX / 3.0f;
 
         var offset = safeCenter - player.Loc;
         var distance = offset.Length();

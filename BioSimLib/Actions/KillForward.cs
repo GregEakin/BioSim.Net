@@ -27,7 +27,7 @@ public class KillForward : IAction
     public override string ToString() => "kill fwd";
     public string ShortName => "KlF";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.KILL_FORWARD];

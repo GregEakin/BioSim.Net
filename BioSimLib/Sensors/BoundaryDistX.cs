@@ -19,11 +19,11 @@ namespace BioSimLib.Sensors;
 [Sensor]
 public class BoundaryDistX : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
 
-    public BoundaryDistX(Config p)
+    public BoundaryDistX(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public Sensor Type => Sensor.BOUNDARY_DIST_X;
@@ -32,8 +32,8 @@ public class BoundaryDistX : ISensor
 
     public float Output(Critter player, uint simStep)
     {
-        var minDistX = Math.Min(player.LocX, _p.sizeX - player.LocX - 1);
-        var sensorVal = minDistX / (_p.sizeX / 2.0f);
+        var minDistX = Math.Min(player.LocX, _config.sizeX - player.LocX - 1);
+        var sensorVal = minDistX / (_config.sizeX / 2.0f);
         return sensorVal;
     }
 }

@@ -19,20 +19,20 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class NearBarrier : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
 
     public Challenge Type => Challenge.NearBarrier;
 
-    public NearBarrier(Config p, Grid grid)
+    public NearBarrier(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        var radius = _p.sizeX / 2.0f;
+        var radius = _config.sizeX / 2.0f;
 
         var barrierCenters = _grid.GetBarrierCenters();
         var minDistance = 1e8f;

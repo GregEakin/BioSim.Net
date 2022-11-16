@@ -21,12 +21,12 @@ namespace BioSimLib.Sensors;
 [Sensor]
 public class BarrierLeftRight : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
 
-    public BarrierLeftRight(Config p, Grid grid)
+    public BarrierLeftRight(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
@@ -36,7 +36,7 @@ public class BarrierLeftRight : ISensor
 
     public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir.Rotate90DegCw(), _p.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir.Rotate90DegCw(), _config.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

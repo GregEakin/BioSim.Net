@@ -18,7 +18,7 @@ using BioSimLib.Positions;
 namespace BioSimLib.Actions;
 
 // Oscillator period action - convert action level nonlinearly to
-// 2..4*p.stepsPerGeneration. If this action neuron is enabled but not driven,
+// 2..4*config.stepsPerGeneration. If this action neuron is enabled but not driven,
 // will default to 1.5 + e^(3.5) = a period of 34 simSteps.
 [Action]
 public class SetOscillatorPeriod : IAction
@@ -27,7 +27,7 @@ public class SetOscillatorPeriod : IAction
     public override string ToString() => "set osc1";
     public string ShortName => "Osc";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         foreach (var level1 in actionLevels)
             if (float.IsNaN(level1))

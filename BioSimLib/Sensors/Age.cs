@@ -19,11 +19,11 @@ namespace BioSimLib.Sensors;
 [Sensor]
 public class Age : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
 
-    public Age(Config p)
+    public Age(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public Sensor Type => Sensor.AGE;
@@ -32,7 +32,7 @@ public class Age : ISensor
 
     public float Output(Critter player, uint simStep)
     {
-        var sensorVal = (float)(simStep - player.BirthDate) / _p.stepsPerGeneration;
+        var sensorVal = (float)(simStep - player.BirthDate) / _config.stepsPerGeneration;
         return sensorVal;
     }
 }

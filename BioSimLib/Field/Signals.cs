@@ -20,13 +20,13 @@ public class Signals
 {
     private const byte SIGNAL_MAX = byte.MaxValue;
 
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly byte[,,] _data;
 
-    public Signals(Config p)
+    public Signals(Config config)
     {
-        _p = p;
-        _data = new byte[p.signalLayers, p.sizeX, p.sizeY];
+        _config = config;
+        _data = new byte[config.signalLayers, config.sizeX, config.sizeY];
     }
 
     public byte GetMagnitude(uint layerNum, Coord loc) => _data[layerNum, loc.X, loc.Y];
@@ -46,7 +46,7 @@ public class Signals
             sum += GetMagnitude(layerNum, x, y);
         }
 
-        VisitNeighborhood(center, _p.signalSensorRadius, F);
+        VisitNeighborhood(center, _config.signalSensorRadius, F);
         var maxSum = (double)countLocs * byte.MaxValue;
         var sensorVal = sum / maxSum;
         return (float)sensorVal;
@@ -54,11 +54,11 @@ public class Signals
 
     public void VisitNeighborhood(Coord loc, float radius, Action<short, short> f)
     {
-        for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, _p.sizeX - loc.X - 1); ++dx)
+        for (var dx = -Math.Min((int)radius, loc.X); dx <= Math.Min((int)radius, _config.sizeX - loc.X - 1); ++dx)
         {
             var x = loc.X + dx;
             var extentY = (int)Math.Sqrt(radius * radius - dx * dx);
-            for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _p.sizeY - loc.Y - 1); ++dy)
+            for (var dy = -Math.Min(extentY, loc.Y); dy <= Math.Min(extentY, _config.sizeY - loc.Y - 1); ++dy)
             {
                 var y = loc.Y + dy;
                 f((short)x, (short)y);
@@ -91,8 +91,8 @@ public class Signals
             sum += contrib;
         }
 
-        VisitNeighborhood(loc, _p.signalSensorRadius, F);
-        var maxSumMag = 6.0 * _p.signalSensorRadius * byte.MaxValue;
+        VisitNeighborhood(loc, _config.signalSensorRadius, F);
+        var maxSumMag = 6.0 * _config.signalSensorRadius * byte.MaxValue;
         var sensorVal = sum / maxSumMag;
         sensorVal = (sensorVal + 1.0) / 2.0;
 
@@ -124,8 +124,8 @@ public class Signals
     public void Fade(int layerNum)
     {
         var fadeAmount = (byte)1u;
-        for (var x = 0; x < _p.sizeX; ++x)
-        for (var y = 0; y < _p.sizeY; ++y)
+        for (var x = 0; x < _config.sizeX; ++x)
+        for (var y = 0; y < _config.sizeY; ++y)
             if (_data[layerNum, x, y] >= fadeAmount)
                 _data[layerNum, x, y] -= fadeAmount; // fade center cell
             else

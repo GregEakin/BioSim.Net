@@ -18,24 +18,24 @@ namespace BioSimLib.Genes;
 
 public class GeneBank
 {
-    private readonly Config _p;
+    private readonly Config _config;
     // private readonly Dictionary<uint[], WeakReference<Genome>> _bank = new();
     
     private int _count;
 
-    public GeneBank(Config p)
+    public GeneBank(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public IEnumerable<Genome> Startup()
     {
-        for (var i = 0u; i < _p.population; i++)
+        for (var i = 0u; i < _config.population; i++)
         {
             Genome genome;
             do
             {
-                var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+                var builder = new GenomeBuilder(_config.genomeMaxLength, _config.maxNumberNeurons);
                 genome = builder.ToGenome();
             } while (genome.Length == 0);
 
@@ -53,14 +53,14 @@ public class GeneBank
         var data = survivors.ToArray();
         if (data.Length <= 0)
         {
-            _count = _p.population;
+            _count = _config.population;
 
-            for (var i = 0u; i < _p.population; i++)
+            for (var i = 0u; i < _config.population; i++)
             {
                 Genome genome;
                 do
                 {
-                    var builder = new GenomeBuilder(_p.genomeMaxLength, _p.maxNumberNeurons);
+                    var builder = new GenomeBuilder(_config.genomeMaxLength, _config.maxNumberNeurons);
                     genome = builder.ToGenome();
                 } while (genome.Length == 0);
 
@@ -79,11 +79,11 @@ public class GeneBank
 
             _count = data.Length;
 
-            for (var i = 0u; i < _p.population; i++)
+            for (var i = 0u; i < _config.population; i++)
             {
                 var index = i % data.Length;
                 var source = data[index];
-                var builder = new GenomeBuilder(_p.maxNumberNeurons, source);
+                var builder = new GenomeBuilder(_config.maxNumberNeurons, source);
                 var mutated = builder.Mutate();
                 yield return mutated 
                     ? builder.ToGenome() 
@@ -97,7 +97,7 @@ public class GeneBank
     //     var found = _bank.TryGetValue(dna, out var genomeReference);
     //     if (!found || genomeReference == null)
     //     {
-    //         var builder1 = new GenomeBuilder(_p.maxNumberNeurons, dna);
+    //         var builder1 = new GenomeBuilder(_config.maxNumberNeurons, dna);
     //         // genome1.Optimize();
     //         _bank.Add(dna, new WeakReference<Genome>(builder1.ToGenome()));
     //         return builder1.ToGenome();
@@ -106,7 +106,7 @@ public class GeneBank
     //     var available = genomeReference.TryGetTarget(out var builder3);
     //     if (!available || builder3 == null)
     //     {
-    //         builder3 = new GenomeBuilder(_p.maxNumberNeurons, dna).ToGenome();
+    //         builder3 = new GenomeBuilder(_config.maxNumberNeurons, dna).ToGenome();
     //         // genome3.Optimize();
     //         genomeReference.SetTarget(builder3);
     //         return builder3;
@@ -121,7 +121,7 @@ public class GeneBank
         // Perform mutations
         //    Swap genes between the two
         //    Adjust the weights by +- %
-        return new GenomeBuilder(_p.maxNumberNeurons, new uint[] { }).ToGenome();
+        return new GenomeBuilder(_config.maxNumberNeurons, new uint[] { }).ToGenome();
     }
 
     // public override string ToString()

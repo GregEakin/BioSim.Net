@@ -24,7 +24,7 @@ public class Suicide : IAction
     public override string ToString() => "suicide";
     public string ShortName => "Die";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var dieThreshold = 0.5f;
         var level = actionLevels[(int)Action.SUICIDE];

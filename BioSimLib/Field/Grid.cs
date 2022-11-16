@@ -1,16 +1,10 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿// Log File Viewer - Grid.cs
 // 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+// Copyright © 2021 Greg Eakin.
 // 
-//        http://www.apache.org/licenses/LICENSE-2.0
+// Greg Eakin <greg@gdbtech.info>
 // 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+// All Rights Reserved.
 
 using System.Text;
 using BioSimLib.Genes;
@@ -20,36 +14,73 @@ namespace BioSimLib.Field;
 
 public class Grid
 {
-    private readonly Config _p;
-    private readonly Peeps _peeps;
     private readonly ushort[,] _board;
+    private readonly Config _config;
+    private readonly Peeps _peeps;
     private readonly Random _random = new();
 
-    public Grid(Config p, Peeps peeps)
+    public Grid(Config config, Peeps peeps)
     {
-        _p = p;
+        _config = config;
         _peeps = peeps;
-        _board = new ushort[p.sizeX, p.sizeY];
+        _board = new ushort[config.sizeX, config.sizeY];
     }
+
+    public short SizeX => (short)_board.GetLength(0);
+    public short SizeY => (short)_board.GetLength(1);
+
+    public Critter? this[int x, int y] => _peeps[_board[x, y]];
+    public Critter? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
 
     public void ZeroFill()
     {
         Array.Clear(_board);
     }
 
-    public short SizeX => (short)_board.GetLength(0);
-    public short SizeY => (short)_board.GetLength(1);
+    public bool IsInBounds(Coord loc)
+    {
+        return loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
+    }
 
-    public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
-    public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
-    public bool IsEmptyAt(short x, short y) => _board[x, y] == 0;
-    public bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
-    public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
-    public bool IsOccupiedAt(short x, short y) => _board[x, y] > 1;
+    public bool IsEmptyAt(Coord loc)
+    {
+        return _board[loc.X, loc.Y] == 0;
+    }
 
-    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
-    public ushort At(Coord loc) => _board[loc.X, loc.Y];
-    public ushort At(int x, int y) => _board[x, y];
+    public bool IsEmptyAt(short x, short y)
+    {
+        return _board[x, y] == 0;
+    }
+
+    public bool IsBarrierAt(Coord loc)
+    {
+        return _board[loc.X, loc.Y] == 1;
+    }
+
+    public bool IsOccupiedAt(Coord loc)
+    {
+        return _board[loc.X, loc.Y] > 1;
+    }
+
+    public bool IsOccupiedAt(short x, short y)
+    {
+        return _board[x, y] > 1;
+    }
+
+    public bool IsBorder(Coord loc)
+    {
+        return loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
+    }
+
+    public ushort At(Coord loc)
+    {
+        return _board[loc.X, loc.Y];
+    }
+
+    public ushort At(int x, int y)
+    {
+        return _board[x, y];
+    }
 
     public void Set(Coord loc, Critter player)
     {
@@ -74,20 +105,17 @@ public class Grid
 
     public Coord FindEmptyLocation()
     {
-        var count = 2 * _p.sizeX * _p.sizeY;
+        var count = 2 * _config.sizeX * _config.sizeY;
         for (var i = 0; i < count; i++)
         {
-            var x = (short)_random.Next(0, _p.sizeX);
-            var y = (short)_random.Next(0, _p.sizeY);
+            var x = (short)_random.Next(0, _config.sizeX);
+            var y = (short)_random.Next(0, _config.sizeY);
             if (_board[x, y] == 0)
                 return new Coord { X = x, Y = y };
         }
 
         throw new Exception("Can't find an empty square.");
     }
-
-    public Critter? this[int x, int y] => _peeps[_board[x, y]];
-    public Critter? this[Coord loc] => _peeps[_board[loc.X, loc.Y]];
 
     public Critter CreateCritter(Genome genome, Coord loc)
     {
@@ -235,7 +263,7 @@ public class Grid
     // above midrange if density is greatest in forward direction.
     public float GetPopulationDensityAlongAxis(Coord loc, Dir dir)
     {
-        if (dir == Dir.Compass.CENTER || _p.populationSensorRadius <= 0.0f)
+        if (dir == Dir.Compass.CENTER || _config.populationSensorRadius <= 0.0f)
             return 0.0f;
 
         var sum = 0.0;
@@ -254,8 +282,8 @@ public class Grid
             sum += contrib;
         }
 
-        VisitNeighborhood(loc, _p.populationSensorRadius, F);
-        var maxSumMag = 6.0 * _p.populationSensorRadius;
+        VisitNeighborhood(loc, _config.populationSensorRadius, F);
+        var maxSumMag = 6.0 * _config.populationSensorRadius;
         var sensorVal = (sum / maxSumMag + 1.0) / 2.0;
         return (float)sensorVal;
     }
@@ -278,7 +306,7 @@ public class Grid
             --numLocsToTest;
         }
 
-        if (numLocsToTest > 0u && !IsInBounds(loc)) 
+        if (numLocsToTest > 0u && !IsInBounds(loc))
             countFwd = probeDistance;
 
         // Scan negative direction
@@ -291,7 +319,7 @@ public class Grid
             --numLocsToTest;
         }
 
-        if (numLocsToTest > 0u && !IsInBounds(loc)) 
+        if (numLocsToTest > 0u && !IsInBounds(loc))
             countRev = probeDistance;
 
         var sensorVal = (countFwd - countRev + probeDistance) / 2.0 / probeDistance;

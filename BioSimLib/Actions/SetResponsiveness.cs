@@ -27,7 +27,7 @@ public class SetResponsiveness : IAction
     public override string ToString() => "set inv-responsiveness";
     public string ShortName => "Res";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var level = actionLevels[(int)Action.SET_RESPONSIVENESS];
         level = (float)((Math.Tanh(level) + 1.0) / 2.0);

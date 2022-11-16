@@ -1,16 +1,10 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿// Log File Viewer - Cell.cs
 // 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+// Copyright © 2021 Greg Eakin.
 // 
-//        http://www.apache.org/licenses/LICENSE-2.0
+// Greg Eakin <greg@gdbtech.info>
 // 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+// All Rights Reserved.
 
 using System;
 using System.Windows;
@@ -27,10 +21,7 @@ namespace BioSimApp;
 
 public class Cell
 {
-    public Critter Critter { get; private set; }
     private readonly Path _path;
-
-    public UIElement Element => _path;
 
     public Cell(Critter critter)
     {
@@ -54,25 +45,30 @@ public class Cell
         _path.SetValue(Canvas.LeftProperty, 0.5 + Critter.LocX);
         _path.SetValue(Canvas.TopProperty, 0.5 + Critter.LocY);
     }
-    
-    static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
 
-    public void Update(Board board, SensorFactory sensorFactory, ActionFactory actionFactory, float[] actionLevels, float[] neuronAccumlator, uint simStep)
+    public Critter Critter { get; private set; }
+
+    public UIElement Element => _path;
+
+    private static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
+
+    public void Update(Board board, SensorFactory sensorFactory, ActionFactory actionFactory, float[] actionLevels,
+        float[] neuronAccumulator, uint simStep)
     {
         if (!Critter.Alive)
             return;
 
         Array.Clear(actionLevels);
-        Array.Clear(neuronAccumlator);
+        Array.Clear(neuronAccumulator);
 
-        Critter.FeedForward(sensorFactory, actionLevels, neuronAccumlator, simStep);
+        Critter.FeedForward(sensorFactory, actionLevels, neuronAccumulator, simStep);
         Critter.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
         var newLoc = Critter.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
         if (board.Grid.IsInBounds(newLoc))
             board.Peeps.QueueForMove(Critter, newLoc);
     }
 
-    public void Draw(Canvas myCanvas, double scaleFactor)
+    public void Draw(Canvas canvas, double scaleFactor)
     {
         if (!Critter.Alive)
         {

@@ -14,15 +14,15 @@
 
 namespace BioSimLib.Sensors;
 
-// Maps current X location 0..p.sizeX-1 to sensor range 0.0..1.0
+// Maps current X location 0..config.sizeX-1 to sensor range 0.0..1.0
 [Sensor]
 public class LocationX : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
 
-    public LocationX(Config p)
+    public LocationX(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public Sensor Type => Sensor.LOC_X;
@@ -31,6 +31,6 @@ public class LocationX : ISensor
 
     public float Output(Critter player, uint simStep)
     {
-        return (float)player.LocX / (_p.sizeX - 1u);
+        return (float)player.LocX / (_config.sizeX - 1u);
     }
 }

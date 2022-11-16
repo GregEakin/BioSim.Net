@@ -21,12 +21,12 @@ namespace BioSimLib.Sensors;
 [Sensor]
 public class Population : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
 
-    public Population(Config p, Grid grid)
+    public Population(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
@@ -46,7 +46,7 @@ public class Population : ISensor
                 ++occupied;
         }
 
-        _grid.VisitNeighborhood(player.Loc, _p.populationSensorRadius, F);
+        _grid.VisitNeighborhood(player.Loc, _config.populationSensorRadius, F);
         var sensorVal = (float)occupied / count;
         return sensorVal;
     }

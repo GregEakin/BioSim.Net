@@ -19,18 +19,18 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class Altruism : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     public Challenge Type => Challenge.Altruism;
 
-    public Altruism(Config p)
+    public Altruism(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        var safeCenter = new Coord((short)(_p.sizeX / 4.0), (short)(_p.sizeY / 4.0));
-        var radius = _p.sizeX / 4.0f;
+        var safeCenter = new Coord((short)(_config.sizeX / 4.0), (short)(_config.sizeY / 4.0));
+        var radius = _config.sizeX / 4.0f;
 
         var offset = safeCenter - player.Loc;
         var distance = offset.Length();

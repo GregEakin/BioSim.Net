@@ -29,7 +29,7 @@ public class EmitSignal0 : IAction
     public override string ToString() => "emit signal 0";
     public string ShortName => "SG";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
         var emitThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.EMIT_SIGNAL0];

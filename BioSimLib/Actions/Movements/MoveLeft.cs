@@ -24,7 +24,7 @@ public class MoveLeft : IMovementAction
     public override string ToString() => "move left";
     public string ShortName => "MvL";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

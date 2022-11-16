@@ -24,7 +24,7 @@ public class MoveRandom : IMovementAction
     public override string ToString() => "move random";
     public string ShortName => "Mrn";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

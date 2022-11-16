@@ -24,7 +24,7 @@ public class MoveX : IMovementAction
     public override string ToString() => "move X";
     public string ShortName => "MvX";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

@@ -22,12 +22,12 @@ namespace BioSimLib.Sensors;
 [Sensor]
 public class GeneticSimilarityForward : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
 
-    public GeneticSimilarityForward(Config p, Grid grid)
+    public GeneticSimilarityForward(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
@@ -41,7 +41,7 @@ public class GeneticSimilarityForward : ISensor
         if (!_grid.IsInBounds(forward)) return 0.0f;
         var partner = _grid[forward];
         if (partner is not { Alive: true }) return 0.0f;
-        var method = (GeneBank.ComparisonMethods)_p.genomeComparisonMethod;
+        var method = (GeneBank.ComparisonMethods)_config.genomeComparisonMethod;
         var sensorVal = GeneBank.GenomeSimilarity(method, player.Genome, partner.Genome);
         return sensorVal;
     }

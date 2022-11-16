@@ -24,7 +24,7 @@ public class MoveReverse : IMovementAction
     public override string ToString() => "move reverse";
     public string ShortName => "Mrv";
 
-    public void Execute(Config p, Board board, Critter player, uint simStep, float[] actionLevels)
+    public void Execute(Config config, Board board, Critter player, uint simStep, float[] actionLevels)
     {
     }
 

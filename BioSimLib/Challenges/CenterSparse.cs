@@ -20,20 +20,20 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class CenterSparse : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
     public Challenge Type => Challenge.CenterSparse;
 
-    public CenterSparse(Config p, Grid grid)
+    public CenterSparse(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        var safeCenter = new Coord((short)(_p.sizeX / 2.0), (short)(_p.sizeY / 2.0));
-        var outerRadius = _p.sizeX / 4.0f;
+        var safeCenter = new Coord((short)(_config.sizeX / 2.0), (short)(_config.sizeY / 2.0));
+        var outerRadius = _config.sizeX / 4.0f;
         var innerRadius = 1.5f;
         var minNeighbors = 5u; // includes self
         var maxNeighbors = 8u;

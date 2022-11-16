@@ -21,12 +21,12 @@ namespace BioSimLib.Sensors;
 [Sensor]
 public class BarrierForward : ISensor
 {
-    private readonly Config _p;
+    private readonly Config _config;
     private readonly Grid _grid;
 
-    public BarrierForward(Config p, Grid grid)
+    public BarrierForward(Config config, Grid grid)
     {
-        _p = p;
+        _config = config;
         _grid = grid;
     }
 
@@ -36,7 +36,7 @@ public class BarrierForward : ISensor
 
     public float Output(Critter player, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir, _p.shortProbeBarrierDistance);
+        var sensorVal = _grid.GetShortProbeBarrierDistance(player.Loc, player.LastMoveDir, _config.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

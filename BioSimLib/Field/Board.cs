@@ -1,16 +1,10 @@
-﻿//    Copyright 2021 Gregory Eakin
+﻿// Log File Viewer - Board.cs
 // 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+// Copyright © 2021 Greg Eakin.
 // 
-//        http://www.apache.org/licenses/LICENSE-2.0
+// Greg Eakin <greg@gdbtech.info>
 // 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+// All Rights Reserved.
 
 using BioSimLib.Genes;
 using BioSimLib.Positions;
@@ -19,22 +13,28 @@ namespace BioSimLib.Field;
 
 public readonly struct Board
 {
-    private readonly Config _p;
+    private readonly Config _config;
     public Grid Grid { get; }
     public Peeps Peeps { get; }
     public Signals Signals { get; }
 
-    public Board(Config p)
+    public Board(Config config)
     {
-        _p = p;
-        Peeps = new Peeps(p);
-        Grid = new Grid(p, Peeps);
-        Signals = new Signals(p);
+        _config = config;
+        Peeps = new Peeps(config);
+        Grid = new Grid(config, Peeps);
+        Signals = new Signals(config);
     }
 
-    public Barrier NewBarrier(Coord loc) => Grid.CreateBarrier(loc);
+    public Barrier NewBarrier(Coord loc)
+    {
+        return Grid.CreateBarrier(loc);
+    }
 
-    public Critter NewCritter(Genome genome, Coord loc) => Grid.CreateCritter(genome, loc);
+    public Critter NewCritter(Genome genome, Coord loc)
+    {
+        return Grid.CreateCritter(genome, loc);
+    }
 
     public Critter NewCritter(Genome genome)
     {
@@ -58,7 +58,7 @@ public readonly struct Board
     //     var parents = new List<(Player, float)>();
     //     var parentGenome = new List<Genome>();
     //
-    //     if (_p.challenge == Challenge.Altruism)
+    //     if (_config.challenge == Challenge.Altruism)
     //     {
     //         foreach (var survivor in Peeps.Survivors2())
     //         {

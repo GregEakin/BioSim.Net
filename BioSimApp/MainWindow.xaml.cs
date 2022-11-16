@@ -37,7 +37,7 @@ public partial class MainWindow : Window
 {
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(30) };
 
-    private readonly Config _p = new()
+    private readonly Config _config = new()
     {
         sizeX = 128,
         sizeY = 128,
@@ -75,27 +75,27 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        WorldSize.Text = $"{_p.sizeX}x{_p.sizeY}";
-        Population.Text = _p.population.ToString();
-        StepGen.Text = _p.stepsPerGeneration.ToString();
-        GenomeLen.Text = $"{_p.genomeMaxLength} genes";
-        NeuronLen.Text = _p.maxNumberNeurons.ToString();
+        WorldSize.Text = $"{_config.sizeX}x{_config.sizeY}";
+        Population.Text = _config.population.ToString();
+        StepGen.Text = _config.stepsPerGeneration.ToString();
+        GenomeLen.Text = $"{_config.genomeMaxLength} genes";
+        NeuronLen.Text = _config.maxNumberNeurons.ToString();
 
-        _bank = new GeneBank(_p);
-        _board = new Board(_p);
+        _bank = new GeneBank(_config);
+        _board = new Board(_config);
         _barrierFactory = new BarrierFactory(_board.Grid);
-        _challengeFactory = new ChallengeFactory(_p, _board.Grid);
-        _sensorFactory = new SensorFactory(_p, _board);
+        _challengeFactory = new ChallengeFactory(_config, _board.Grid);
+        _sensorFactory = new SensorFactory(_config, _board);
         _actionFactory = new ActionFactory();
-        _critters = new Cell[_p.population];
-        _neuronAccumulators = new float[_p.maxNumberNeurons];
+        _critters = new Cell[_config.population];
+        _neuronAccumulators = new float[_config.maxNumberNeurons];
 
         _box1 = new Rectangle
         {
             Stroke = Brushes.LavenderBlush,
             Fill = Brushes.LavenderBlush,
-            Height = _p.sizeX * _scaleFactor,
-            Width = (_p.sizeY / 2.0 - 2.0) * _scaleFactor
+            Height = _config.sizeX * _scaleFactor,
+            Width = (_config.sizeY / 2.0 - 2.0) * _scaleFactor
         };
         _box1.SetValue(Canvas.LeftProperty, 0.0);
         MyCanvas.Children.Add(_box1);
@@ -104,10 +104,10 @@ public partial class MainWindow : Window
         {
             Stroke = Brushes.LavenderBlush,
             Fill = Brushes.LavenderBlush,
-            Height = _p.sizeX * _scaleFactor,
+            Height = _config.sizeX * _scaleFactor,
             Width = 2.0 * _scaleFactor
         };
-        _box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2.0) * _scaleFactor);
+        _box2.SetValue(Canvas.LeftProperty, (_config.sizeX - 2.0) * _scaleFactor);
         MyCanvas.Children.Add(_box2);
 
         var i = 0;
@@ -133,7 +133,7 @@ public partial class MainWindow : Window
             _census = census.Count;
         }
 
-        if (_simStep >= _p.stepsPerGeneration)
+        if (_simStep >= _config.stepsPerGeneration)
         {
             _generation++;
             _simStep = 0u;
@@ -269,17 +269,17 @@ public partial class MainWindow : Window
 
     private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        var w1 = MyCanvas.ActualWidth / _p.sizeX;
-        var h1 = MyCanvas.ActualHeight / _p.sizeY;
+        var w1 = MyCanvas.ActualWidth / _config.sizeX;
+        var h1 = MyCanvas.ActualHeight / _config.sizeY;
         _scaleFactor = Math.Min(w1, h1);
 
-        _box1.Height = _p.sizeX * _scaleFactor;
-        _box1.Width = (_p.sizeY / 2.0 - 2.0) * _scaleFactor;
+        _box1.Height = _config.sizeX * _scaleFactor;
+        _box1.Width = (_config.sizeY / 2.0 - 2.0) * _scaleFactor;
         _box1.SetValue(Canvas.LeftProperty, 0.0);
 
-        _box2.Height = _p.sizeX * _scaleFactor;
+        _box2.Height = _config.sizeX * _scaleFactor;
         _box2.Width = 2.0 * _scaleFactor;
-        _box2.SetValue(Canvas.LeftProperty, (_p.sizeX - 2.0) * _scaleFactor);
+        _box2.SetValue(Canvas.LeftProperty, (_config.sizeX - 2.0) * _scaleFactor);
 
         foreach (var critter in _critters)
             critter.SizeChanged(_scaleFactor);

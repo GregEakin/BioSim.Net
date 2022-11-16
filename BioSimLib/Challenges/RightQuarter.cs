@@ -17,17 +17,17 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class RightQuarter : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     public Challenge Type => Challenge.RightQuarter;
 
-    public RightQuarter(Config p)
+    public RightQuarter(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        return player.LocX > _p.sizeX / 2 + _p.sizeX / 4
+        return player.LocX > _config.sizeX / 2 + _config.sizeX / 4
             ? (true, 1.0f)
             : (false, 0.0f);
     }

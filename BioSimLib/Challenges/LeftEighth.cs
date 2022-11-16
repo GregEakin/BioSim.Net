@@ -17,17 +17,17 @@ namespace BioSimLib.Challenges;
 [Challenge]
 public class LeftEighth : IChallenge
 {
-    private readonly Config _p;
+    private readonly Config _config;
     public Challenge Type => Challenge.LeftEighth;
 
-    public LeftEighth(Config p)
+    public LeftEighth(Config config)
     {
-        _p = p;
+        _config = config;
     }
 
     public (bool, float) PassedSurvivalCriterion(Critter player)
     {
-        return player.LocX < _p.sizeX / 8
+        return player.LocX < _config.sizeX / 8
             ? (true, 1.0f)
             : (false, 0.0f);
     }

@@ -23,7 +23,7 @@ public class SensorFactory
 
     public ISensor? this[Sensor sensor] => _sensors[(int)sensor];
 
-    public SensorFactory(Config p, Board board)
+    public SensorFactory(Config config, Board board)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var types = assembly.GetTypes();
@@ -42,7 +42,7 @@ public class SensorFactory
             var i2 = type.GetConstructor(new[] { typeof(Config) });
             if (i2 != null)
             {
-                var sensor = (ISensor)i2.Invoke(new object[] { p });
+                var sensor = (ISensor)i2.Invoke(new object[] { config });
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }
@@ -50,7 +50,7 @@ public class SensorFactory
             var i3 = type.GetConstructor(new[] { typeof(Config), typeof(Grid) });
             if (i3 != null)
             {
-                var sensor = (ISensor)i3.Invoke(new object[] { p, board.Grid });
+                var sensor = (ISensor)i3.Invoke(new object[] { config, board.Grid });
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }
