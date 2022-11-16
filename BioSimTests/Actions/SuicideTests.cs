@@ -59,7 +59,7 @@ public class SuicideTests
         var action = new Suicide();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Empty(board.Peeps.DeathQueue);
+        Assert.Empty(board.Critters.DeathQueue);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class SuicideTests
         var action = new Suicide();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.NotEmpty(board.Peeps.DeathQueue);
+        Assert.NotEmpty(board.Critters.DeathQueue);
     }
 
     [Fact]

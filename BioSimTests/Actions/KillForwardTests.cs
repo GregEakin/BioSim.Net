@@ -71,7 +71,7 @@ public class KillForwardTests
         var action = new KillForward();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Empty(board.Peeps.DeathQueue);
+        Assert.Empty(board.Critters.DeathQueue);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class KillForwardTests
         var action = new KillForward();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Empty(board.Peeps.DeathQueue);
+        Assert.Empty(board.Critters.DeathQueue);
         // Assert.False(victim.Alive);
     }
 
@@ -111,7 +111,7 @@ public class KillForwardTests
         var action = new KillForward();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.Empty(board.Peeps.DeathQueue);
+        Assert.Empty(board.Critters.DeathQueue);
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class KillForwardTests
         var action = new KillForward();
         action.Execute(p, board, player, 0, actionLevels);
 
-        Assert.NotEmpty(board.Peeps.DeathQueue);
+        Assert.NotEmpty(board.Critters.DeathQueue);
     }
 
     [Fact]

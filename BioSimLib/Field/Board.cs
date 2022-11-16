@@ -15,14 +15,14 @@ public readonly struct Board
 {
     private readonly Config _config;
     public Grid Grid { get; }
-    public Peeps Peeps { get; }
+    public Critters Critters { get; }
     public Signals Signals { get; }
 
     public Board(Config config)
     {
         _config = config;
-        Peeps = new Peeps(config);
-        Grid = new Grid(config, Peeps);
+        Critters = new Critters(config);
+        Grid = new Grid(config, Critters);
         Signals = new Signals(config);
     }
 
@@ -45,10 +45,10 @@ public readonly struct Board
 
     public IEnumerable<Genome> NewGeneration()
     {
-        var survivors = Peeps.Survivors();
+        var survivors = Critters.Survivors();
         Grid.ZeroFill();
         Signals.ZeroFill();
-        Peeps.Clear();
+        Critters.Clear();
         return survivors;
     }
 
@@ -60,7 +60,7 @@ public readonly struct Board
     //
     //     if (_config.challenge == Challenge.Altruism)
     //     {
-    //         foreach (var survivor in Peeps.Survivors2())
+    //         foreach (var survivor in Critters.Survivors2())
     //         {
     //             var (alive, value) = PassedSurvivalCriterion(survivor);
     //             if (alive && survivor._nnet.Length > 0)
@@ -71,7 +71,7 @@ public readonly struct Board
     //     {
     //         var considerKinship = true;
     //         var sacrifices = new List<Player>();
-    //         foreach (var survivor in Peeps.Survivors2())
+    //         foreach (var survivor in Critters.Survivors2())
     //         {
     //             var (alive, value) = PassedSurvivalCriterion(survivor);
     //             if (alive && survivor._nnet.Length > 0)

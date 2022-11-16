@@ -20,7 +20,7 @@ using Xunit;
 
 namespace BioSimTests.Positions;
 
-public class PeepsTests
+public class CrittersTests
 {
     [Fact]
     public void IndexTest()
@@ -32,11 +32,11 @@ public class PeepsTests
         for (var i = 0; i < 2; i++)
             players[i] = board.NewCritter(genome, new Coord(1, (short)i));
 
-        Assert.Null(board.Peeps[0]);
-        Assert.Null(board.Peeps[1]);
-        Assert.Equal(players[0], board.Peeps[2]);
-        Assert.Equal(players[1], board.Peeps[3]);
-        Assert.Null(board.Peeps[4]);
+        Assert.Null(board.Critters[0]);
+        Assert.Null(board.Critters[1]);
+        Assert.Equal(players[0], board.Critters[2]);
+        Assert.Equal(players[1], board.Critters[3]);
+        Assert.Null(board.Critters[4]);
     }
 
     [Fact]
@@ -46,10 +46,10 @@ public class PeepsTests
         var board = new Board(p);
         var genome = new GenomeBuilder(p.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
 
-        Assert.Equal(0, board.Peeps.Count);
+        Assert.Equal(0, board.Critters.Count);
         board.NewCritter(genome, new Coord(1, 0));
-        Assert.Equal(1, board.Peeps.Count);
+        Assert.Equal(1, board.Critters.Count);
         board.NewCritter(genome, new Coord(1, 0));
-        Assert.Equal(2, board.Peeps.Count);
+        Assert.Equal(2, board.Critters.Count);
     }
 }

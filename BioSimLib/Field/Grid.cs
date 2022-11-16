@@ -16,10 +16,10 @@ public class Grid
 {
     private readonly ushort[,] _board;
     private readonly Config _config;
-    private readonly Peeps _peeps;
+    private readonly Critters _peeps;
     private readonly Random _random = new();
 
-    public Grid(Config config, Peeps peeps)
+    public Grid(Config config, Critters peeps)
     {
         _config = config;
         _peeps = peeps;

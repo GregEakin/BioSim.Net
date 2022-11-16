@@ -65,7 +65,7 @@ public class Cell
         Critter.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
         var newLoc = Critter.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
         if (board.Grid.IsInBounds(newLoc))
-            board.Peeps.QueueForMove(Critter, newLoc);
+            board.Critters.QueueForMove(Critter, newLoc);
     }
 
     public void Draw(Canvas canvas, double scaleFactor)

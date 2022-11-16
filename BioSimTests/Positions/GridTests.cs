@@ -404,17 +404,17 @@ public class GridTests
         var loc = new Coord { X = 2, Y = 2 };
 
         var squares = 0;
-        var critters = 0;
+        var count = 0;
 
         void F(short x, short y)
         {
             squares++;
             if (board.Grid.IsOccupiedAt(x, y))
-                critters++;
+                count++;
         }
 
         board.Grid.VisitNeighborhood(loc, 2.0f, F);
         Assert.Equal(13, squares);
-        Assert.Equal(3, critters);
+        Assert.Equal(3, count);
     }
 }

@@ -1,4 +1,4 @@
-﻿// Log File Viewer - Peeps.cs
+﻿// Log File Viewer - Critters.cs
 // 
 // Copyright © 2021 Greg Eakin.
 // 
@@ -11,7 +11,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
 
-public class Peeps
+public class Critters
 {
     private readonly Critter?[] _critters;
     private readonly List<Critter> _deathQueue = new();
@@ -19,7 +19,7 @@ public class Peeps
     private readonly Config _config;
     private ushort _count = 1;
 
-    public Peeps(Config config)
+    public Critters(Config config)
     {
         _config = config;
         _critters = new Critter?[config.population];

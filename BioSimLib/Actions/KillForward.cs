@@ -44,7 +44,7 @@ public class KillForward : IAction
             return;
 
         if (player2.Alive)
-            board.Peeps.QueueForDeath(player2);
+            board.Critters.QueueForDeath(player2);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

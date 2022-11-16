@@ -61,7 +61,7 @@ public partial class MainWindow : Window
     private readonly ActionFactory _actionFactory;
     private readonly Rectangle _box1;
     private readonly Rectangle _box2;
-    private readonly Cell[] _critters;
+    private readonly Cell[] _cells;
     private readonly float[] _actionLevels = new float[Enum.GetNames<Action>().Length];
     private readonly float[] _neuronAccumulators;
 
@@ -87,7 +87,7 @@ public partial class MainWindow : Window
         _challengeFactory = new ChallengeFactory(_config, _board.Grid);
         _sensorFactory = new SensorFactory(_config, _board);
         _actionFactory = new ActionFactory();
-        _critters = new Cell[_config.population];
+        _cells = new Cell[_config.population];
         _neuronAccumulators = new float[_config.maxNumberNeurons];
 
         _box1 = new Rectangle
@@ -114,8 +114,8 @@ public partial class MainWindow : Window
         foreach (var genome in _bank.Startup())
         {
             var player = _board.NewCritter(genome);
-            _critters[i] = new Cell(player);
-            MyCanvas.Children.Add(_critters[i].Element);
+            _cells[i] = new Cell(player);
+            MyCanvas.Children.Add(_cells[i].Element);
             i++;
         }
 
@@ -129,7 +129,7 @@ public partial class MainWindow : Window
     {
         if (_simStep == 1u && _generation % 5 == 0)
         {
-            var census = _board.Peeps.Census();
+            var census = _board.Critters.Census();
             _census = census.Count;
         }
 
@@ -142,7 +142,7 @@ public partial class MainWindow : Window
             foreach (var genome in _bank.NewGeneration(survivors))
             {
                 var player = _board.NewCritter(genome);
-                _critters[i].CritterChanged(player);
+                _cells[i].CritterChanged(player);
                 i++;
             }
 
@@ -248,11 +248,11 @@ public partial class MainWindow : Window
             }
         }
 
-        foreach (var critter in _critters)
+        foreach (var critter in _cells)
             critter.Update(_board, _sensorFactory, _actionFactory, _actionLevels, _neuronAccumulators, _simStep);
 
-        _board.Peeps.DrainDeathQueue(_board.Grid);
-        _board.Peeps.DrainMoveQueue(_board.Grid);
+        _board.Critters.DrainDeathQueue(_board.Grid);
+        _board.Critters.DrainMoveQueue(_board.Grid);
 
         _simStep++;
     }
@@ -263,7 +263,7 @@ public partial class MainWindow : Window
         SimStep.Text = _simStep.ToString();
         Census.Text = $"{_census} colors";
 
-        foreach (var critter in _critters)
+        foreach (var critter in _cells)
             critter.Draw(MyCanvas, _scaleFactor);
     }
 
@@ -281,7 +281,7 @@ public partial class MainWindow : Window
         _box2.Width = 2.0 * _scaleFactor;
         _box2.SetValue(Canvas.LeftProperty, (_config.sizeX - 2.0) * _scaleFactor);
 
-        foreach (var critter in _critters)
+        foreach (var critter in _cells)
             critter.SizeChanged(_scaleFactor);
     }
 

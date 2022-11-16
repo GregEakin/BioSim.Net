@@ -33,7 +33,7 @@ public class Suicide : IAction
         if (level <= dieThreshold || !Critter.Prob2Bool(level))
             return;
 
-        board.Peeps.QueueForDeath(player);
+        board.Critters.QueueForDeath(player);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
