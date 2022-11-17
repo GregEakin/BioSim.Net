@@ -42,7 +42,7 @@ public class SetOscillatorPeriod : IAction
                 break;
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }

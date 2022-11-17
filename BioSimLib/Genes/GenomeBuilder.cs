@@ -19,7 +19,7 @@ using Random = System.Random;
 
 namespace BioSimLib.Genes;
 
-public class GenomeBuilder : IEnumerable<GeneBuilder>
+public sealed class GenomeBuilder : IEnumerable<GeneBuilder>
 {
     public class Node
     {
@@ -51,7 +51,7 @@ public class GenomeBuilder : IEnumerable<GeneBuilder>
         }
     }
 
-    public (byte, byte, byte) Color
+    public (byte red, byte green, byte blue) Color
     {
         get
         {

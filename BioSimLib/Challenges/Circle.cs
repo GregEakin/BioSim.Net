@@ -27,7 +27,7 @@ public class Circle : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var safeCenter = new Coord((short)(_config.sizeX / 4.0), (short)(_config.sizeY / 4.0));
         var radius = _config.sizeX / 4.0f;

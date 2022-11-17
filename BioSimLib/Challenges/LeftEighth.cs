@@ -25,7 +25,7 @@ public class LeftEighth : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         return critter.LocX < _config.sizeX / 8
             ? (true, 1.0f)

@@ -1,10 +1,16 @@
-﻿// Log File Viewer - Cell.cs
-// 
-// Copyright © 2021 Greg Eakin.
-// 
-// Greg Eakin <greg@gdbtech.info>
-// 
-// All Rights Reserved.
+﻿// Copyright 2022 Gregory Eakin
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using System;
 using System.Windows;
@@ -19,7 +25,7 @@ using Action = BioSimLib.Actions.Action;
 
 namespace BioSimApp;
 
-public class Cell
+public sealed class Cell
 {
     private readonly Path _path;
 
@@ -50,7 +56,10 @@ public class Cell
 
     public UIElement Element => _path;
 
-    private static bool IsEnabled(IAction action) => (int)action.Type < (int)Action.KILL_FORWARD;
+    private static bool IsEnabled(IAction action)
+    {
+        return (int)action.Type < (int)Action.KILL_FORWARD;
+    }
 
     public void Update(Board board, SensorFactory sensorFactory, ActionFactory actionFactory, float[] actionLevels,
         float[] neuronAccumulator, uint simStep)

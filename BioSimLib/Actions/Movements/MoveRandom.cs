@@ -27,7 +27,7 @@ public class MoveRandom : IMovementAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         var level = actionLevels[(int)Action.MOVE_RANDOM];
         var offset = Dir.Random8().AsNormalizedCoord();

@@ -27,7 +27,7 @@ public class Corner : IChallenge
     private readonly Config _config;
     public Challenge Type => Challenge.Corner;
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 8.0f;
 

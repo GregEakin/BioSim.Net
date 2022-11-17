@@ -51,7 +51,7 @@ public class SetResponsivenessTests
         var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord(3, 4));
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_RESPONSIVENESS] = 0.0f;
@@ -68,7 +68,7 @@ public class SetResponsivenessTests
         var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord(3, 4));
 
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SET_RESPONSIVENESS] = 0.05f;

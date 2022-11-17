@@ -54,7 +54,7 @@ public class KillForward : IAction
             _board.Critters.QueueForDeath(critter2);
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }

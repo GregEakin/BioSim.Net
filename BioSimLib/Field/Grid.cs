@@ -1,10 +1,16 @@
-﻿// Log File Viewer - Grid.cs
+﻿// Copyright 2022 Gregory Eakin
 // 
-// Copyright © 2021 Greg Eakin.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 // 
-// Greg Eakin <greg@gdbtech.info>
+//       http://www.apache.org/licenses/LICENSE-2.0
 // 
-// All Rights Reserved.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using System.Text;
 using BioSimLib.Genes;
@@ -12,11 +18,11 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
 
-public class Grid
+public sealed class Grid
 {
-    private readonly ushort[,] _data;
     private readonly Config _config;
     private readonly Critters _critters;
+    private readonly ushort[,] _data;
     private readonly Random _random = new();
 
     public Grid(Config config, Critters critters)
@@ -37,23 +43,50 @@ public class Grid
         Array.Clear(_data);
     }
 
-    public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
+    public bool IsInBounds(Coord loc)
+    {
+        return loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
+    }
 
-    public bool IsEmptyAt(Coord loc) => _data[loc.X, loc.Y] == 0;
+    public bool IsEmptyAt(Coord loc)
+    {
+        return _data[loc.X, loc.Y] == 0;
+    }
 
-    public bool IsEmptyAt(short x, short y) => _data[x, y] == 0;
+    public bool IsEmptyAt(short x, short y)
+    {
+        return _data[x, y] == 0;
+    }
 
-    public bool IsBarrierAt(Coord loc) => _data[loc.X, loc.Y] == 1;
+    public bool IsBarrierAt(Coord loc)
+    {
+        return _data[loc.X, loc.Y] == 1;
+    }
 
-    public bool IsOccupiedAt(Coord loc) => _data[loc.X, loc.Y] > 1;
+    public bool IsOccupiedAt(Coord loc)
+    {
+        return _data[loc.X, loc.Y] > 1;
+    }
 
-    public bool IsOccupiedAt(short x, short y) => _data[x, y] > 1;
+    public bool IsOccupiedAt(short x, short y)
+    {
+        return _data[x, y] > 1;
+    }
 
-    public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
+    public bool IsBorder(Coord loc)
+    {
+        return loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
+    }
 
-    public ushort At(Coord loc) => _data[loc.X, loc.Y];
+    public ushort At(Coord loc)
+    {
+        return _data[loc.X, loc.Y];
+    }
 
-    public ushort At(int x, int y) => _data[x, y];
+    public ushort At(int x, int y)
+    {
+        return _data[x, y];
+    }
 
     public void Set(Coord loc, Critter critter)
     {
@@ -84,7 +117,7 @@ public class Grid
             var x = (short)_random.Next(0, _config.sizeX);
             var y = (short)_random.Next(0, _config.sizeY);
             if (_data[x, y] == 0)
-                return new Coord { X = x, Y = y };
+                return new Coord(x, y);
         }
 
         throw new Exception("Can't find an empty square.");

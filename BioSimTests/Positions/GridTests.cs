@@ -28,11 +28,11 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         board.NewBarrier(loc1);
         Assert.True(board.Grid.IsBarrierAt(loc1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
@@ -66,19 +66,19 @@ public class GridTests
         var config = new Config { sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.True(board.Grid.IsInBounds(loc1));
 
-        var loc2 = new Coord { X = -1, Y = 1 };
+        var loc2 = new Coord (-1, 1);
         Assert.False(board.Grid.IsInBounds(loc2));
 
-        var loc3 = new Coord { X = 1, Y = -1 };
+        var loc3 = new Coord (1, -1);
         Assert.False(board.Grid.IsInBounds(loc3));
 
-        var loc4 = new Coord { X = 3, Y = 1 };
+        var loc4 = new Coord (3, 1);
         Assert.False(board.Grid.IsInBounds(loc4));
 
-        var loc5 = new Coord { X = 1, Y = 3 };
+        var loc5 = new Coord (1, 3);
         Assert.False(board.Grid.IsInBounds(loc5));
     }
 
@@ -88,7 +88,7 @@ public class GridTests
         var config = new Config { sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.True(board.Grid.IsEmptyAt(loc1));
 
         board.NewBarrier(loc1);
@@ -101,7 +101,7 @@ public class GridTests
         var config = new Config { sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.True(board.Grid.IsEmptyAt(1, 1));
 
         board.NewBarrier(loc1);
@@ -114,7 +114,7 @@ public class GridTests
         var config = new Config { sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.False(board.Grid.IsBarrierAt(loc1));
 
         board.NewBarrier(loc1);
@@ -127,13 +127,13 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.False(board.Grid.IsOccupiedAt(loc1));
 
         board.NewBarrier(loc1);
         Assert.False(board.Grid.IsOccupiedAt(loc1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         Assert.False(board.Grid.IsOccupiedAt(loc2));
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
@@ -147,13 +147,13 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.False(board.Grid.IsOccupiedAt(1, 1));
 
         board.NewBarrier(loc1);
         Assert.False(board.Grid.IsOccupiedAt(1, 1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         Assert.False(board.Grid.IsOccupiedAt(1, 2));
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
@@ -167,19 +167,19 @@ public class GridTests
         var config = new Config { sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.False(board.Grid.IsBorder(loc1));
 
-        var loc2 = new Coord { X = 0, Y = 1 };
+        var loc2 = new Coord (0, 1);
         Assert.True(board.Grid.IsBorder(loc2));
 
-        var loc3 = new Coord { X = 1, Y = 0 };
+        var loc3 = new Coord (1, 0);
         Assert.True(board.Grid.IsBorder(loc3));
 
-        var loc4 = new Coord { X = 2, Y = 1 };
+        var loc4 = new Coord (2, 1);
         Assert.True(board.Grid.IsBorder(loc4));
 
-        var loc5 = new Coord { X = 1, Y = 2 };
+        var loc5 = new Coord (1, 2);
         Assert.True(board.Grid.IsBorder(loc5));
     }
 
@@ -189,13 +189,13 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.Equal(0, board.Grid.At(loc1));
 
         board.NewBarrier(loc1);
         Assert.Equal(1, board.Grid.At(loc1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         Assert.Equal(0, board.Grid.At(loc2));
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
@@ -209,13 +209,13 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         Assert.Equal(0, board.Grid.At(1, 1));
 
         board.NewBarrier(loc1);
         Assert.Equal(1, board.Grid.At(1, 1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         Assert.Equal(0, board.Grid.At(1, 2));
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
@@ -229,7 +229,7 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         var critter = board.NewCritter(genome, loc2);
@@ -246,11 +246,11 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         board.NewBarrier(loc1);
         Assert.True(board.Grid.IsBarrierAt(loc1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
@@ -266,11 +266,11 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         board.NewBarrier(loc1);
         Assert.True(board.Grid.IsBarrierAt(loc1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         var critter = board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
@@ -291,11 +291,11 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         board.NewBarrier(loc1);
         Assert.True(board.Grid.IsBarrierAt(loc1));
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         var critter = board.NewCritter(genome, loc2);
         Assert.True(board.Grid.IsOccupiedAt(loc2));
@@ -316,10 +316,10 @@ public class GridTests
         var config = new Config { maxNumberNeurons = 1, population = 2, sizeX = 3, sizeY = 3 };
         var board = new Board(config);
 
-        var loc1 = new Coord { X = 1, Y = 1 };
+        var loc1 = new Coord (1, 1);
         board.NewBarrier(loc1);
 
-        var loc2 = new Coord { X = 1, Y = 2 };
+        var loc2 = new Coord (1, 2);
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x95821000u }).ToGenome();
         board.NewCritter(genome, loc2);
 
@@ -332,12 +332,12 @@ public class GridTests
         var config = new Config { sizeX = 5, sizeY = 5 };
         var board = new Board(config);
 
-        var loc = new Coord { X = 2, Y = 2 };
+        var loc = new Coord (2, 2);
         var dir1 = new Dir(Dir.Compass.W);
         var locations = board.Grid.LongProbeBarrierFwd(loc, dir1, 5);
 
         Assert.Equal(5.0f, locations);
-        Assert.Equal(new Coord { X = 2, Y = 2 }, loc);
+        Assert.Equal(new Coord (2, 2), loc);
     }
 
     [Fact]
@@ -347,12 +347,12 @@ public class GridTests
         var board = new Board(config);
         board.NewBarrier(new Coord(0, 2));
 
-        var loc = new Coord { X = 2, Y = 2 };
+        var loc = new Coord (2, 2);
         var dir1 = new Dir(Dir.Compass.W);
         var locations = board.Grid.LongProbeBarrierFwd(loc, dir1, 5);
 
         Assert.Equal(1.0f, locations);
-        Assert.Equal(new Coord { X = 2, Y = 2 }, loc);
+        Assert.Equal(new Coord (2, 2), loc);
     }
 
 
@@ -365,7 +365,7 @@ public class GridTests
         for (var i = 0; i < 5; i++)
             board.NewCritter(genome, new Coord(1, (short)i));
 
-        var loc = new Coord { X = 2, Y = 2 };
+        var loc = new Coord (2, 2);
 
         var dir1 = new Dir(Dir.Compass.W);
         var population1 = board.Grid.GetPopulationDensityAlongAxis(loc, dir1);
@@ -385,7 +385,7 @@ public class GridTests
         for (var i = 0; i < 5; i++)
             board.NewCritter(genome, new Coord(1, (short)i));
 
-        var loc = new Coord { X = 2, Y = 2 };
+        var loc = new Coord (2, 2);
 
         var dir1 = new Dir(Dir.Compass.CENTER);
         var population1 = board.Grid.GetPopulationDensityAlongAxis(loc, dir1);
@@ -401,7 +401,7 @@ public class GridTests
         for (var i = 0; i < 5; i++)
             board.NewCritter(genome, new Coord(1, (short)i));
 
-        var loc = new Coord { X = 2, Y = 2 };
+        var loc = new Coord (2, 2);
 
         var squares = 0;
         var count = 0;

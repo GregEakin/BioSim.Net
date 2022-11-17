@@ -45,7 +45,7 @@ public class EmitSignal0 : IAction
             _board.Signals.Increment(0, critter.Loc);
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }

@@ -51,7 +51,7 @@ public class MoveXTests
         var config = new Config { maxNumberNeurons = 1, sizeX = 8, sizeY = 8 };
         var board = new Board(config);
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
+        var critter = board.NewCritter(genome, new Coord (3, 4));
 
         var action = new MoveX();
         action.Execute(critter, 0, Array.Empty<float>());

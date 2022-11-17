@@ -1,23 +1,29 @@
-﻿//    Copyright 2022 Gregory Eakin
+﻿// Copyright 2022 Gregory Eakin
 // 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 // 
-//        http://www.apache.org/licenses/LICENSE-2.0
+//       http://www.apache.org/licenses/LICENSE-2.0
 // 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 namespace BioSimLib.Positions;
 
-public struct Coord
+public readonly struct Coord
 {
-    public short X { get; set; }
-    public short Y { get; set; }
+    private static readonly Dir.Compass[] DirConversion =
+    {
+        Dir.Compass.E, Dir.Compass.NE, Dir.Compass.N, Dir.Compass.NW,
+        Dir.Compass.W, Dir.Compass.SW, Dir.Compass.S, Dir.Compass.SE
+    };
+
+    public short X { get; }
+    public short Y { get; }
 
     public Coord(short x0, short y0)
     {
@@ -25,11 +31,20 @@ public struct Coord
         Y = y0;
     }
 
-    public bool IsNormalized() => X >= -1 && X <= 1 && Y >= -1 && Y <= 1;
+    public bool IsNormalized()
+    {
+        return X >= -1 && X <= 1 && Y >= -1 && Y <= 1;
+    }
 
-    public Coord Normalize() => AsDir().AsNormalizedCoord();
+    public Coord Normalize()
+    {
+        return AsDir().AsNormalizedCoord();
+    }
 
-    public uint Length() => (uint)(Math.Sqrt(X * X + Y * Y));
+    public uint Length()
+    {
+        return (uint)Math.Sqrt(X * X + Y * Y);
+    }
 
     public Dir AsDir()
     {
@@ -60,32 +75,63 @@ public struct Coord
                 3  4  5
                 0  1  2
         */
-        var dirConversion = new[]
-        {
-            Dir.Compass.E, Dir.Compass.NE, Dir.Compass.N, Dir.Compass.NW, Dir.Compass.W, Dir.Compass.SW, Dir.Compass.S,
-            Dir.Compass.SE
-        };
-        return new Dir(dirConversion[slice]);
+        return new Dir(DirConversion[slice]);
     }
 
-    public Polar AsPolar() => new Polar((int)Length(), AsDir());
+    public Polar AsPolar()
+    {
+        return new Polar((int)Length(), AsDir());
+    }
 
-    public bool Equals(Coord coord) => X == coord.X && Y == coord.Y;
-    public override bool Equals(object? obj) => obj is Coord other && Equals(other);
-    public override int GetHashCode() => HashCode.Combine(X, Y);
+    public bool Equals(Coord coord)
+    {
+        return X == coord.X && Y == coord.Y;
+    }
 
-    public static bool operator ==(Coord coord1, Coord coord2) => coord1.X == coord2.X && coord1.Y == coord2.Y;
-    public static bool operator !=(Coord coord1, Coord coord2) => coord1.X != coord2.X && coord1.Y != coord2.Y;
+    public override bool Equals(object? obj)
+    {
+        return obj is Coord other && Equals(other);
+    }
 
-    public static Coord operator +(Coord coord1, Coord coord2) => new()
-        { X = (short)(coord1.X + coord2.X), Y = (short)(coord1.Y + coord2.Y) };
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(X, Y);
+    }
 
-    public static Coord operator -(Coord coord1, Coord coord2) => new()
-        { X = (short)(coord1.X - coord2.X), Y = (short)(coord1.Y - coord2.Y) };
+    public static bool operator ==(Coord coord1, Coord coord2)
+    {
+        return coord1.X == coord2.X && coord1.Y == coord2.Y;
+    }
 
-    public static Coord operator *(Coord coord, int a) => new() { X = (short)(coord.X * a), Y = (short)(coord.Y * a) };
-    public static Coord operator +(Coord coord, Dir dir) => coord + dir.AsNormalizedCoord();
-    public static Coord operator -(Coord coord, Dir dir) => coord - dir.AsNormalizedCoord();
+    public static bool operator !=(Coord coord1, Coord coord2)
+    {
+        return coord1.X != coord2.X && coord1.Y != coord2.Y;
+    }
+
+    public static Coord operator +(Coord coord1, Coord coord2)
+    {
+        return new Coord((short)(coord1.X + coord2.X), (short)(coord1.Y + coord2.Y));
+    }
+
+    public static Coord operator -(Coord coord1, Coord coord2)
+    {
+        return new Coord((short)(coord1.X - coord2.X), (short)(coord1.Y - coord2.Y));
+    }
+
+    public static Coord operator *(Coord coord, int a)
+    {
+        return new Coord((short)(coord.X * a), (short)(coord.Y * a));
+    }
+
+    public static Coord operator +(Coord coord, Dir dir)
+    {
+        return coord + dir.AsNormalizedCoord();
+    }
+
+    public static Coord operator -(Coord coord, Dir dir)
+    {
+        return coord - dir.AsNormalizedCoord();
+    }
 
     public float RaySameness(Coord other)
     {
@@ -100,7 +146,13 @@ public struct Coord
         return normalized;
     }
 
-    public float RaySameness(Dir dir) => RaySameness(dir.AsNormalizedCoord());
+    public float RaySameness(Dir dir)
+    {
+        return RaySameness(dir.AsNormalizedCoord());
+    }
 
-    public override string ToString() => $"({X}, {Y})";
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
 }

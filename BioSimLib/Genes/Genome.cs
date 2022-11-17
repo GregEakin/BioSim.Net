@@ -17,50 +17,49 @@ using System.Text;
 
 namespace BioSimLib.Genes;
 
-public class Genome : IEnumerable<Gene>
+public sealed class Genome : IEnumerable<Gene>
 {
-    private readonly uint[] _dna;
-    private readonly Gene[] _genes;
-
-    public int LiveCount { get; set; }
-
-    public int Neurons { get; }
-    public (byte, byte, byte) Color { get; }
-
-    public Genome(uint[] dna, Gene[] genes, int neurons, (byte, byte, byte) color)
+    public Genome(uint[] dna, Gene[] genes, int neurons, (byte red, byte green, byte blue) color)
     {
-        _dna = dna;
-        _genes = genes;
+        Dna = dna;
+        Genes = genes;
         Neurons = neurons;
         Color = color;
     }
 
-    public int Length => _genes.Length;
+    public int LiveCount { get; set; }
 
-    public Gene this[int index] => _genes[index];
+    public int Neurons { get; }
+    
+    public (byte red, byte green, byte blue) Color { get; }
 
-    public IEnumerator<Gene> GetEnumerator() => _genes.Cast<Gene>().GetEnumerator();
+    public int Length => Genes.Length;
 
-    IEnumerator IEnumerable.GetEnumerator() => _genes.GetEnumerator();
+    public Gene this[int index] => Genes[index];
+
+    public uint[] Dna { get; }
+
+    public Gene[] Genes { get; }
+
+    public IEnumerator<Gene> GetEnumerator() => Genes.Cast<Gene>().GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => Genes.GetEnumerator();
 
     public string ToGraphInfo()
     {
         var builder = new StringBuilder();
-        foreach (var conn in _genes)
+        foreach (var conn in Genes)
             builder.AppendLine(conn.ToEdge());
 
         return builder.ToString();
     }
-
-    public uint[] Dna => _dna;
-    public Gene[] Genes => _genes;
 
     public string ToDna()
     {
         var builder = new StringBuilder();
         const int genesPerLine = 8;
         var count = 0;
-        foreach (var gene in _dna)
+        foreach (var gene in Dna)
         {
             if (count >= genesPerLine)
             {
@@ -68,7 +67,9 @@ public class Genome : IEnumerable<Gene>
                 count = 0;
             }
             else if (count != 0)
+            {
                 builder.Append(' ');
+            }
 
             builder.Append(gene.ToString("X8"));
             ++count;
@@ -80,7 +81,7 @@ public class Genome : IEnumerable<Gene>
     public override string ToString()
     {
         var builder = new StringBuilder();
-        foreach (var gene in _genes)
+        foreach (var gene in Genes)
         {
             if (gene.SourceType == Gene.GeneType.Sensor)
                 builder.Append(gene.SourceSensor);

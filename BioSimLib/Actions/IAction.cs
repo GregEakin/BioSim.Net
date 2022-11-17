@@ -21,5 +21,5 @@ public interface IAction
     public Action Type { get; }
     public string ShortName { get; }
     public void Execute(Critter critter, uint simStep, float[] actionLevels);
-    public (float x, float y) Move(float[] actionLevels, Dir lastMoveDir);
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir);
 }

@@ -89,7 +89,7 @@ public sealed class Critter
 
     public BitVector32 ChallengeBits { get; } = new(0);
 
-    public (byte, byte, byte) Color => Genome.Color;
+    public (byte red, byte green, byte blue) Color => Genome.Color;
 
     public Genome Genome { get; }
 
@@ -179,9 +179,9 @@ public sealed class Critter
             if (action == null || !isEnabled(action))
                 continue;
 
-            var (x, y) = action.Move(actionLevels, LastMoveDir);
-            moveX += x;
-            moveY += y;
+            var (dx, dy) = action.Move(actionLevels, LastMoveDir);
+            moveX += dx;
+            moveY += dy;
         }
 
         moveX = (float)Math.Tanh(moveX) * ResponsivenessAdjusted;
@@ -193,7 +193,7 @@ public sealed class Critter
         var sigNumX = moveX < 0.0f ? -1 : 1;
         var sigNumY = moveY < 0.0f ? -1 : 1;
 
-        var movementOffset = new Coord { X = (short)(probX * sigNumX), Y = (short)(probY * sigNumY) };
+        var movementOffset = new Coord((short)(probX * sigNumX), (short)(probY * sigNumY));
         var newLoc = Loc + movementOffset;
         return newLoc;
     }

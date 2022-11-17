@@ -31,7 +31,7 @@ public class Pairs : IChallenge
         _grid = grid;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var onEdge = critter.LocX == 0
                      || critter.LocX == _config.sizeX - 1

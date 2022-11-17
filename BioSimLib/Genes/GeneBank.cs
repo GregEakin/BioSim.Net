@@ -16,17 +16,26 @@ using System.Runtime.InteropServices;
 
 namespace BioSimLib.Genes;
 
-public class GeneBank
+public sealed class GeneBank
 {
+    public enum ComparisonMethods
+    {
+        JARO_WINKLER_DISTANCE,
+        HAMMING_DISTANCE_BITS,
+        HAMMING_DISTANCE_BYTES,
+    }
+
     private readonly Config _config;
     // private readonly Dictionary<uint[], WeakReference<Genome>> _bank = new();
-    
+
     private int _count;
 
     public GeneBank(Config config)
     {
         _config = config;
     }
+
+    public List<((byte red, byte green, byte blue), int)> Survivors { get; } = new();
 
     public IEnumerable<Genome> Startup()
     {
@@ -44,8 +53,6 @@ public class GeneBank
             yield return genome;
         }
     }
-
-    public List<((byte, byte, byte), int)> Survivors { get; } = new();
 
     public IEnumerable<Genome> NewGeneration(IEnumerable<Genome> survivors)
     {
@@ -85,8 +92,8 @@ public class GeneBank
                 var source = data[index];
                 var builder = new GenomeBuilder(_config.maxNumberNeurons, source);
                 var mutated = builder.Mutate();
-                yield return mutated 
-                    ? builder.ToGenome() 
+                yield return mutated
+                    ? builder.ToGenome()
                     : source;
             }
         }
@@ -115,32 +122,13 @@ public class GeneBank
     //     return builder3;
     // }
 
-    Genome Sex(string mother, string father)
+    private Genome Sex(string mother, string father)
     {
         // Combine the DNA from each parent
         // Perform mutations
         //    Swap genes between the two
         //    Adjust the weights by +- %
         return new GenomeBuilder(_config.maxNumberNeurons, new uint[] { }).ToGenome();
-    }
-
-    // public override string ToString()
-    // {
-    //     var count = 0;
-    //     foreach (var pair in _bank)
-    //     {
-    //         if (pair.Value.TryGetTarget(out var genome))
-    //             count++;
-    //     }
-    //
-    //     return count.ToString();
-    // }
-
-    public enum ComparisonMethods
-    {
-        JARO_WINKLER_DISTANCE,
-        HAMMING_DISTANCE_BITS,
-        HAMMING_DISTANCE_BYTES,
     }
 
     public static float GenomeSimilarity(ComparisonMethods genomeComparisonMethod, Genome g1, Genome g2)
@@ -254,4 +242,16 @@ public class GeneBank
         var byteCount = genome1.Select((gene, i) => gene.Equals(genome2[i]) ? 1.0f : 0.0f).Sum();
         return byteCount / genome1.Length;
     }
+
+    // public override string ToString()
+    // {
+    //     var count = 0;
+    //     foreach (var pair in _bank)
+    //     {
+    //         if (pair.Value.TryGetTarget(out var genome))
+    //             count++;
+    //     }
+    //
+    //     return count.ToString();
+    // }
 }

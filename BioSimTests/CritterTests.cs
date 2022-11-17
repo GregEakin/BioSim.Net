@@ -50,7 +50,7 @@ public class CritterTests
         };
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, dna).ToGenome();
-        var loc = new Coord { X = 4, Y = 4 };
+        var loc = new Coord (4, 4);
         var critter = board.NewCritter(genome, loc);
         critter.NeuralNet[0].Driven = true;
         critter.NeuralNet[0].Output = 0.6f;
@@ -89,7 +89,7 @@ public class CritterTests
         };
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, dna).ToGenome();
-        var loc = new Coord { X = 1, Y = 2 };
+        var loc = new Coord (1, 2);
         var critter = board.NewCritter(genome, loc);
         critter.NeuralNet[0].Driven = true;
         critter.NeuralNet[0].Output = 0.6f;
@@ -120,7 +120,7 @@ public class CritterTests
         // responsivenessCurveKFactor = 1, 2, 3 or 4
         var config = new Config { responsivenessCurveKFactor = 1 };
         var genome = new GenomeBuilder(1, 1).ToGenome();
-        var loc = new Coord { X = 1, Y = 1 };
+        var loc = new Coord (1, 1);
         var critter = new Critter(config, genome, loc, 1);
 
         var factor0 = critter.ResponseCurve(0.0f);

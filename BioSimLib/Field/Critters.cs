@@ -1,22 +1,28 @@
-﻿// Log File Viewer - Critters.cs
+﻿// Copyright 2022 Gregory Eakin
 // 
-// Copyright © 2021 Greg Eakin.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 // 
-// Greg Eakin <greg@gdbtech.info>
+//       http://www.apache.org/licenses/LICENSE-2.0
 // 
-// All Rights Reserved.
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using BioSimLib.Genes;
 using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
 
-public class Critters
+public sealed class Critters
 {
+    private readonly Config _config;
     private readonly Critter?[] _critters;
     private readonly List<Critter> _deathQueue = new();
     private readonly List<Tuple<Critter, Coord>> _moveQueue = new();
-    private readonly Config _config;
     private ushort _count = 1;
 
     public Critters(Config config)
@@ -55,12 +61,16 @@ public class Critters
         foreach (var (critter, newLoc) in _moveQueue)
         {
             if (!critter.Alive) continue;
-            if (!grid.Move(critter, newLoc))
-                continue;
-
-            critter.Loc = newLoc;
-            var moveDir = (newLoc - critter.Loc).AsDir();
-            critter.LastMoveDir = moveDir;
+            var oldDir = critter.Loc;
+            if (grid.Move(critter, newLoc))
+            {
+                critter.Loc = newLoc;
+                critter.LastMoveDir = (newLoc - oldDir).AsDir();
+            }
+            else
+            {
+                critter.LastMoveDir = new Dir(Dir.Compass.CENTER);
+            }
         }
 
         _moveQueue.Clear();
@@ -102,7 +112,7 @@ public class Critters
         var dict = new Dictionary<int, int>();
         foreach (var critter in _critters)
         {
-            if (!critter?.Alive ?? true) continue;
+            if (critter is not { Alive: true }) continue;
 
             var (red, green, blue) = critter.Color;
             var key = (red << 16) | (green << 8) | blue;

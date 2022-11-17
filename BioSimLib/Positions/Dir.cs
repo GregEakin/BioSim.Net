@@ -27,24 +27,21 @@ public readonly struct Dir
 
     public static Dir Random8() => new Dir(Compass.N).Rotate(Random.Next(0, 7));
 
-    public Dir(Compass dir = Compass.CENTER) => _dir9 = dir;
+    public Dir(Compass dir = Compass.CENTER) => _dir = dir;
 
     // public static implicit operator Dir(Compass d) => new Dir(d);
 
-    private readonly Compass _dir9;
+    private readonly Compass _dir;
 
-    public byte AsInt() => (byte)_dir9;
+    public byte AsInt() => (byte)_dir;
 
     public Coord AsNormalizedCoord()
     {
         var d = AsInt();
-        return new Coord { X = (short)(d % 3 - 1), Y = (short)(d / 3 - 1) };
+        return new Coord ((short)(d % 3 - 1), (short)(d / 3 - 1));
     }
 
-    public Polar AsNormalizedPolar()
-    {
-        return new Polar(1, _dir9);
-    }
+    public Polar AsNormalizedPolar() => new Polar(1, _dir);
 
     public Dir Rotate(int n = 0)
     {
@@ -67,9 +64,9 @@ public readonly struct Dir
     public Dir Rotate90DegCcw() => Rotate(-2);
     public Dir Rotate180Deg() => Rotate(4);
 
-    public bool Equals(Dir other) => _dir9 == other._dir9;
+    public bool Equals(Dir other) => _dir == other._dir;
     public override bool Equals(object? obj) => obj is Dir other && Equals(other);
-    public override int GetHashCode() => (int)_dir9;
+    public override int GetHashCode() => (int)_dir;
 
     public static bool operator ==(Dir dir, Compass compass) => dir.AsInt() == (byte)compass;
     public static bool operator !=(Dir dir, Compass compass) => dir.AsInt() != (byte)compass;

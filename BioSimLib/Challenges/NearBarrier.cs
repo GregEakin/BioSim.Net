@@ -30,7 +30,7 @@ public class NearBarrier : IChallenge
         _grid = grid;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 2.0f;
 

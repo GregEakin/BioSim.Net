@@ -19,7 +19,7 @@ public class TouchAnyWall : IChallenge
 {
     public Challenge Type => Challenge.TouchAnyWall;
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         return critter.ChallengeBits.Data != 0
             ? (true, 1.0f)

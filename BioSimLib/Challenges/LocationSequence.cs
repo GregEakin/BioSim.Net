@@ -19,7 +19,7 @@ public class LocationSequence : IChallenge
 {
     public Challenge Type => Challenge.LocationSequence;
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var count = 0u;
         var maxNumberOfBits = 32;

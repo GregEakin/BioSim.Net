@@ -27,7 +27,7 @@ public class MoveLeft : IMovementAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         var level = actionLevels[(int)Action.MOVE_LEFT];
         var offset = lastMoveDir.Rotate90DegCcw().AsNormalizedCoord();

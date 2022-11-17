@@ -27,7 +27,7 @@ public class MoveY : IMovementAction
     {
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, actionLevels[(int)Action.MOVE_Y]);
     }

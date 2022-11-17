@@ -23,6 +23,55 @@ namespace BioSimTests.Positions;
 public class CrittersTests
 {
     [Fact]
+    public void MoveQueueDeadTest()
+    {
+        var config = new Config { population = 5, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var critter = board.NewCritter(genome, new Coord(1, 0));
+        critter.LastMoveDir = new Dir(Dir.Compass.N);
+        critter.Alive = false;
+        
+        board.Critters.QueueForMove(critter, new Coord(0, 0));
+        board.Critters.DrainMoveQueue(board.Grid);
+        
+        Assert.Equal(new Coord(1, 0), critter.Loc);
+        Assert.Equal(new Dir(Dir.Compass.N), critter.LastMoveDir);
+    }
+
+    [Fact]
+    public void MoveQueueOccupiedTest()
+    {
+        var config = new Config { population = 5, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var critter = board.NewCritter(genome, new Coord(1, 0));
+        critter.LastMoveDir = new Dir(Dir.Compass.N);
+        board.NewCritter(genome, new Coord(0, 0));
+        
+        board.Critters.QueueForMove(critter, new Coord(0, 0));
+        board.Critters.DrainMoveQueue(board.Grid);
+
+        Assert.Equal(new Coord(1, 0), critter.Loc);
+        Assert.Equal(new Dir(Dir.Compass.CENTER), critter.LastMoveDir);
+    }
+
+    [Fact]
+    public void MoveQueueTest()
+    {
+        var config = new Config { population = 5, sizeX = 5, sizeY = 5 };
+        var board = new Board(config);
+        var genome = new GenomeBuilder(1, 1).ToGenome();
+        var critter = board.NewCritter(genome, new Coord(1, 0));
+        critter.LastMoveDir = new Dir(Dir.Compass.N);
+
+        board.Critters.QueueForMove(critter, new Coord(0, 0));
+        board.Critters.DrainMoveQueue(board.Grid);
+
+        Assert.Equal(new Coord(0, 0), critter.Loc);
+        Assert.Equal(new Dir(Dir.Compass.W), critter.LastMoveDir);
+    }
+    [Fact]
     public void IndexTest()
     {
         var config = new Config { population = 5, sizeX = 5, sizeY = 5 };

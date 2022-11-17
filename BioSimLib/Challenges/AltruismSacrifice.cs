@@ -27,7 +27,7 @@ public class AltruismSacrifice : IChallenge
         _config = config;
     }
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 4.0f;
         var pos = new Coord((short)(_config.sizeX - _config.sizeX / 4), (short)(_config.sizeY - _config.sizeY / 4));

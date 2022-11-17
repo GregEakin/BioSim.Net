@@ -27,7 +27,7 @@ public class CornerWeighted : IChallenge
     private readonly Config _config;
     public Challenge Type => Challenge.CornerWeighted;
 
-    public (bool, float) PassedSurvivalCriterion(Critter critter)
+    public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var radius = _config.sizeX / 4.0f;
 

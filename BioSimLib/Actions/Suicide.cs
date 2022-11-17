@@ -43,7 +43,7 @@ public class Suicide : IAction
         _board.Critters.QueueForDeath(critter);
     }
 
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir)
+    public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)
     {
         return (0.0f, 0.0f);
     }
