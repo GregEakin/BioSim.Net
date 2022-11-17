@@ -12,7 +12,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using BioSimLib.Field;
 using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
@@ -27,7 +26,7 @@ public class SetLongProbeDist : IAction
     public override string ToString() => "set longprobe dist";
     public string ShortName => "LPD";
 
-    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
+    public void Execute(Critter critter, uint simStep, float[] actionLevels)
     {
         var maxLongProbeDistance = 32u;
         var level = actionLevels[(int)Action.SET_LONGPROBE_DIST];

@@ -100,9 +100,9 @@ public class CritterTests
         actionLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
         actionLevels[(int)Action.MOVE_WEST] = 0.5370496f;
 
-        var factory = new ActionFactory();
-        critter.ExecuteActions(factory, board, IsEnabled, actionLevels, 0);
-        var newLoc = critter.ExecuteMoves(factory, IsEnabled, actionLevels, 0);
+        var factory = new ActionFactory(config, board);
+        critter.ExecuteActions(factory, IsEnabled, actionLevels, 0);
+        var newLoc = critter.ExecuteMoves(factory, IsEnabled, actionLevels);
 
         // Assert.Equal(2, newLoc.X);
         // Assert.Equal(3, newLoc.Y);

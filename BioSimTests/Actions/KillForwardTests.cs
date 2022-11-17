@@ -28,21 +28,27 @@ public class KillForwardTests
     [Fact]
     public void TypeTest()
     {
-        var action = new KillForward();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new KillForward(board);
         Assert.Equal(Action.KILL_FORWARD, action.Type);
     }
 
     [Fact]
     public void ToStringTest()
     {
-        var action = new KillForward();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new KillForward(board);
         Assert.Equal("kill fwd", action.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var action = new KillForward();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new KillForward(board);
         Assert.Equal("KlF", action.ShortName);
     }
 
@@ -68,8 +74,8 @@ public class KillForwardTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 1.0f;
 
-        var action = new KillForward();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new KillForward(board);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
     }
@@ -87,8 +93,8 @@ public class KillForwardTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 0.0f;
 
-        var action = new KillForward();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new KillForward(board);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
         // Assert.False(victim.Alive);
@@ -108,8 +114,8 @@ public class KillForwardTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 0.05f;
 
-        var action = new KillForward();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new KillForward(board);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
     }
@@ -129,8 +135,8 @@ public class KillForwardTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.KILL_FORWARD] = 0.05f;
 
-        var action = new KillForward();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new KillForward(board);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.NotEmpty(board.Critters.DeathQueue);
     }
@@ -138,7 +144,9 @@ public class KillForwardTests
     [Fact]
     public void MovementTest()
     {
-        var action = new KillForward();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new KillForward(board);
         var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
         Assert.Equal(0.0, x);
         Assert.Equal(0.0, y);

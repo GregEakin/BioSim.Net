@@ -54,7 +54,7 @@ public class MoveNorthTests
         var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var action = new MoveNorth();
-        action.Execute(config, board, critter, 0, Array.Empty<float>());
+        action.Execute(critter, 0, Array.Empty<float>());
     }
 
     [Fact]

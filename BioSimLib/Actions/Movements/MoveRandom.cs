@@ -12,7 +12,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using BioSimLib.Field;
 using BioSimLib.Positions;
 
 namespace BioSimLib.Actions.Movements;
@@ -24,7 +23,7 @@ public class MoveRandom : IMovementAction
     public override string ToString() => "move random";
     public string ShortName => "Mrn";
 
-    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
+    public void Execute(Critter critter, uint simStep, float[] actionLevels)
     {
     }
 

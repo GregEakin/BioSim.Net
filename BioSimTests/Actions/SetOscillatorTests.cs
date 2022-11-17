@@ -57,7 +57,7 @@ public class SetOscillatorTests
         actionLevels[(int)Action.SET_OSCILLATOR_PERIOD] = 0.0f;
 
         var action = new SetOscillatorPeriod();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Equal(35u, critter.OscPeriod);
     }
@@ -74,7 +74,7 @@ public class SetOscillatorTests
         actionLevels[(int)Action.SET_OSCILLATOR_PERIOD] = 0.05f;
 
         var action = new SetOscillatorPeriod();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Equal(41u, critter.OscPeriod);
     }

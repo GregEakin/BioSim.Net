@@ -27,21 +27,27 @@ public class SuicideTests
     [Fact]
     public void TypeTest()
     {
-        var action = new Suicide();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new Suicide(board);
         Assert.Equal(Action.SUICIDE, action.Type);
     }
 
     [Fact]
     public void ToStringTest()
     {
-        var action = new Suicide();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new Suicide(board);
         Assert.Equal("suicide", action.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var action = new Suicide();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new Suicide(board);
         Assert.Equal("Die", action.ShortName);
     }
 
@@ -56,8 +62,8 @@ public class SuicideTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SUICIDE] = 0.0f;
 
-        var action = new Suicide();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new Suicide(board);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Empty(board.Critters.DeathQueue);
     }
@@ -74,8 +80,8 @@ public class SuicideTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.SUICIDE] = 0.05f;
 
-        var action = new Suicide();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new Suicide(board);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.NotEmpty(board.Critters.DeathQueue);
     }
@@ -83,7 +89,9 @@ public class SuicideTests
     [Fact]
     public void MovementTest()
     {
-        var action = new Suicide();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new Suicide(board);
         var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
         Assert.Equal(0.0, x);
         Assert.Equal(0.0, y);

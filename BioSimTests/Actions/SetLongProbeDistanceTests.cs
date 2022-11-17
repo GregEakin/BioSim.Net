@@ -57,7 +57,7 @@ public class SetLongProbeDistanceTests
         actionLevels[(int)Action.SET_LONGPROBE_DIST] = 0.05f;
 
         var action = new SetLongProbeDist();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Equal(17u, critter.LongProbeDist);
     }
@@ -74,7 +74,7 @@ public class SetLongProbeDistanceTests
         actionLevels[(int)Action.SET_LONGPROBE_DIST] = 0.1f;
 
         var action = new SetLongProbeDist();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Equal(18u, critter.LongProbeDist);
     }

@@ -57,7 +57,7 @@ public class SetResponsivenessTests
         actionLevels[(int)Action.SET_RESPONSIVENESS] = 0.0f;
 
         var action = new SetResponsiveness();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Equal(0.5f, critter.Responsiveness);
     }
@@ -74,7 +74,7 @@ public class SetResponsivenessTests
         actionLevels[(int)Action.SET_RESPONSIVENESS] = 0.05f;
 
         var action = new SetResponsiveness();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
 
         Assert.Equal(0.5249792f, critter.Responsiveness);
     }

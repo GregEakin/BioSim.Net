@@ -23,11 +23,18 @@ namespace BioSimLib.Actions;
 [Action]
 public class KillForward : IAction
 {
+    private readonly Board _board;
+
+    public KillForward(Board board)
+    {
+        _board = board;
+    }
+
     public Action Type => Action.KILL_FORWARD;
     public override string ToString() => "kill fwd";
     public string ShortName => "KlF";
 
-    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
+    public void Execute(Critter critter, uint simStep, float[] actionLevels)
     {
         var killThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.KILL_FORWARD];
@@ -36,15 +43,15 @@ public class KillForward : IAction
             return;
 
         var otherLoc = critter.Loc + critter.LastMoveDir;
-        if (!board.Grid.IsInBounds(otherLoc) || !board.Grid.IsOccupiedAt(otherLoc))
+        if (!_board.Grid.IsInBounds(otherLoc) || !_board.Grid.IsOccupiedAt(otherLoc))
             return;
 
-        var critter2 = board.Grid[otherLoc];
+        var critter2 = _board.Grid[otherLoc];
         if (critter2 == null)
             return;
 
         if (critter2.Alive)
-            board.Critters.QueueForDeath(critter2);
+            _board.Critters.QueueForDeath(critter2);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

@@ -20,11 +20,18 @@ namespace BioSimLib.Actions;
 [Action]
 public class Suicide : IAction
 {
+    private readonly Board _board;
+
+    public Suicide(Board board)
+    {
+        _board = board;
+    }
+
     public Action Type => Action.SUICIDE;
     public override string ToString() => "suicide";
     public string ShortName => "Die";
 
-    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
+    public void Execute(Critter critter, uint simStep, float[] actionLevels)
     {
         var dieThreshold = 0.5f;
         var level = actionLevels[(int)Action.SUICIDE];
@@ -33,7 +40,7 @@ public class Suicide : IAction
         if (level <= dieThreshold || !critter.Prob2Bool(level))
             return;
 
-        board.Critters.QueueForDeath(critter);
+        _board.Critters.QueueForDeath(critter);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

@@ -25,17 +25,24 @@ namespace BioSimLib.Actions;
 [Action]
 public class EmitSignal0 : IAction
 {
+    private readonly Board _board;
+
+    public EmitSignal0(Board board)
+    {
+        _board = board;
+    }
+
     public Action Type => Action.EMIT_SIGNAL0;
     public override string ToString() => "emit signal 0";
     public string ShortName => "SG";
 
-    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels)
+    public void Execute(Critter critter, uint simStep, float[] actionLevels)
     {
         var emitThreshold = 0.5f;
         var actionLevel = actionLevels[(int)Action.EMIT_SIGNAL0];
         var level = (float)((Math.Tanh(actionLevel) + 1.0) / 2.0 * critter.ResponsivenessAdjusted);
         if (level > emitThreshold && critter.Prob2Bool(level))
-            board.Signals.Increment(0, critter.Loc);
+            _board.Signals.Increment(0, critter.Loc);
     }
 
     public (float, float) Move(float[] actionLevels, Dir lastMoveDir)

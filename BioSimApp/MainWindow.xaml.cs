@@ -86,7 +86,7 @@ public partial class MainWindow : Window
         _barrierFactory = new BarrierFactory(_board.Grid);
         _challengeFactory = new ChallengeFactory(_config, _board.Grid);
         _sensorFactory = new SensorFactory(_config, _board);
-        _actionFactory = new ActionFactory();
+        _actionFactory = new ActionFactory(_config, _board);
         _cells = new Cell[_config.population];
         _neuronAccumulators = new float[_config.maxNumberNeurons];
 

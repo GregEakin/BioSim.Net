@@ -14,7 +14,6 @@
 
 using System.Collections.Specialized;
 using BioSimLib.Actions;
-using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Positions;
 using BioSimLib.Sensors;
@@ -157,8 +156,7 @@ public sealed class Critter
         return (float)value;
     }
 
-    public void ExecuteActions(ActionFactory factory, Board board, Func<IAction, bool> isEnabled, float[] actionLevels,
-        uint simStep)
+    public void ExecuteActions(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
     {
         foreach (var actionEnum in ActionEnums)
         {
@@ -166,11 +164,11 @@ public sealed class Critter
             if (action == null || !isEnabled(action))
                 continue;
 
-            action.Execute(_config, board, this, simStep, actionLevels);
+            action.Execute(this, simStep, actionLevels);
         }
     }
 
-    public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels, uint simStep)
+    public Coord ExecuteMoves(ActionFactory factory, Func<IAction, bool> isEnabled, float[] actionLevels)
     {
         var moveX = 0.0f;
         var moveY = 0.0f;

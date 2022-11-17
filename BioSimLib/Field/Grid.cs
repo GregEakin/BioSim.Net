@@ -14,7 +14,7 @@ namespace BioSimLib.Field;
 
 public class Grid
 {
-    private readonly ushort[,] _board;
+    private readonly ushort[,] _data;
     private readonly Config _config;
     private readonly Critters _critters;
     private readonly Random _random = new();
@@ -23,57 +23,57 @@ public class Grid
     {
         _config = config;
         _critters = critters;
-        _board = new ushort[config.sizeX, config.sizeY];
+        _data = new ushort[config.sizeX, config.sizeY];
     }
 
-    public short SizeX => (short)_board.GetLength(0);
-    public short SizeY => (short)_board.GetLength(1);
+    public short SizeX => (short)_data.GetLength(0);
+    public short SizeY => (short)_data.GetLength(1);
 
-    public Critter? this[int x, int y] => _critters[_board[x, y]];
-    public Critter? this[Coord loc] => _critters[_board[loc.X, loc.Y]];
+    public Critter? this[int x, int y] => _critters[_data[x, y]];
+    public Critter? this[Coord loc] => _critters[_data[loc.X, loc.Y]];
 
     public void ZeroFill()
     {
-        Array.Clear(_board);
+        Array.Clear(_data);
     }
 
     public bool IsInBounds(Coord loc) => loc.X >= 0 && loc.X < SizeX && loc.Y >= 0 && loc.Y < SizeY;
 
-    public bool IsEmptyAt(Coord loc) => _board[loc.X, loc.Y] == 0;
+    public bool IsEmptyAt(Coord loc) => _data[loc.X, loc.Y] == 0;
 
-    public bool IsEmptyAt(short x, short y) => _board[x, y] == 0;
+    public bool IsEmptyAt(short x, short y) => _data[x, y] == 0;
 
-    public bool IsBarrierAt(Coord loc) => _board[loc.X, loc.Y] == 1;
+    public bool IsBarrierAt(Coord loc) => _data[loc.X, loc.Y] == 1;
 
-    public bool IsOccupiedAt(Coord loc) => _board[loc.X, loc.Y] > 1;
+    public bool IsOccupiedAt(Coord loc) => _data[loc.X, loc.Y] > 1;
 
-    public bool IsOccupiedAt(short x, short y) => _board[x, y] > 1;
+    public bool IsOccupiedAt(short x, short y) => _data[x, y] > 1;
 
     public bool IsBorder(Coord loc) => loc.X == 0 || loc.X == SizeX - 1 || loc.Y == 0 || loc.Y == SizeY - 1;
 
-    public ushort At(Coord loc) => _board[loc.X, loc.Y];
+    public ushort At(Coord loc) => _data[loc.X, loc.Y];
 
-    public ushort At(int x, int y) => _board[x, y];
+    public ushort At(int x, int y) => _data[x, y];
 
     public void Set(Coord loc, Critter critter)
     {
-        _board[loc.X, loc.Y] = critter.Index;
+        _data[loc.X, loc.Y] = critter.Index;
         critter.Loc = loc;
     }
 
     public void Set(short x, short y, Critter critter)
     {
-        _board[x, y] = critter.Index;
+        _data[x, y] = critter.Index;
         critter.Loc = new Coord(x, y);
     }
 
     public void Remove(Critter critter)
     {
         var loc = critter.Loc;
-        if (_board[loc.X, loc.Y] < 2)
+        if (_data[loc.X, loc.Y] < 2)
             return;
 
-        _board[loc.X, loc.Y] = 0;
+        _data[loc.X, loc.Y] = 0;
     }
 
     public Coord FindEmptyLocation()
@@ -83,7 +83,7 @@ public class Grid
         {
             var x = (short)_random.Next(0, _config.sizeX);
             var y = (short)_random.Next(0, _config.sizeY);
-            if (_board[x, y] == 0)
+            if (_data[x, y] == 0)
                 return new Coord { X = x, Y = y };
         }
 
@@ -93,7 +93,7 @@ public class Grid
     public Critter CreateCritter(Genome genome, Coord loc)
     {
         var critter = _critters.NewCritter(genome, loc);
-        _board[loc.X, loc.Y] = critter.Index;
+        _data[loc.X, loc.Y] = critter.Index;
         return critter;
     }
 
@@ -110,7 +110,7 @@ public class Grid
     public Barrier CreateBarrier(Coord loc)
     {
         var barrier = new Barrier(loc);
-        _board[loc.X, loc.Y] = 1;
+        _data[loc.X, loc.Y] = 1;
         return barrier;
     }
 
@@ -129,19 +129,19 @@ public class Grid
         if (!IsEmptyAt(newLoc))
             return false;
 
-        _board[critter.LocX, critter.LocY] = 0;
-        _board[newLoc.X, newLoc.Y] = critter.Index;
+        _data[critter.LocX, critter.LocY] = 0;
+        _data[newLoc.X, newLoc.Y] = critter.Index;
         return true;
     }
 
     public override string ToString()
     {
         var builder = new StringBuilder();
-        for (var x = 0; x < _board.GetLength(0); x++)
+        for (var x = 0; x < _data.GetLength(0); x++)
         {
-            for (var y = 0; y < _board.GetLength(1); y++)
+            for (var y = 0; y < _data.GetLength(1); y++)
             {
-                var index = _board[x, y];
+                var index = _data[x, y];
                 if (index == 0)
                 {
                     builder.Append(" .");

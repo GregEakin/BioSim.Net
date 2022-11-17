@@ -27,21 +27,27 @@ public class EmitSignal0Tests
     [Fact]
     public void TypeTest()
     {
-        var action = new EmitSignal0();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new EmitSignal0(board);
         Assert.Equal(Action.EMIT_SIGNAL0, action.Type);
     }
 
     [Fact]
     public void ToStringTest()
     {
-        var action = new EmitSignal0();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new EmitSignal0(board);
         Assert.Equal("emit signal 0", action.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var action = new EmitSignal0();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new EmitSignal0(board);
         Assert.Equal("SG", action.ShortName);
     }
 
@@ -57,14 +63,16 @@ public class EmitSignal0Tests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         actionLevels[(int)Action.EMIT_SIGNAL0] = 0.6f;
 
-        var action = new EmitSignal0();
-        action.Execute(config, board, critter, 0, actionLevels);
+        var action = new EmitSignal0(board);
+        action.Execute(critter, 0, actionLevels);
     }
 
     [Fact]
     public void MovementTest()
     {
-        var action = new EmitSignal0();
+        var config = new Config();
+        var board = new Board(config);
+        var action = new EmitSignal0(board);
         var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
         Assert.Equal(0.0, x);
         Assert.Equal(0.0, y);

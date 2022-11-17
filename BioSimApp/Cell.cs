@@ -62,8 +62,8 @@ public class Cell
         Array.Clear(neuronAccumulator);
 
         Critter.FeedForward(sensorFactory, actionLevels, neuronAccumulator, simStep);
-        Critter.ExecuteActions(actionFactory, board, IsEnabled, actionLevels, simStep);
-        var newLoc = Critter.ExecuteMoves(actionFactory, IsEnabled, actionLevels, simStep);
+        Critter.ExecuteActions(actionFactory, IsEnabled, actionLevels, simStep);
+        var newLoc = Critter.ExecuteMoves(actionFactory, IsEnabled, actionLevels);
         if (board.Grid.IsInBounds(newLoc))
             board.Critters.QueueForMove(Critter, newLoc);
     }

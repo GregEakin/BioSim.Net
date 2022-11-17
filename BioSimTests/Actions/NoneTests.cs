@@ -57,7 +57,7 @@ public class NoneTests
         actionLevels[(int)Action.NONE] = 0.05f;
 
         var action = new None();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
     }
 
     [Fact]

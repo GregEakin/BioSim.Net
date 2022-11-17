@@ -12,7 +12,6 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using BioSimLib.Field;
 using BioSimLib.Positions;
 
 namespace BioSimLib.Actions;
@@ -21,6 +20,6 @@ public interface IAction
 {
     public Action Type { get; }
     public string ShortName { get; }
-    public void Execute(Config config, Board board, Critter critter, uint simStep, float[] actionLevels);
-    public (float, float) Move(float[] actionLevels, Dir lastMoveDir);
+    public void Execute(Critter critter, uint simStep, float[] actionLevels);
+    public (float x, float y) Move(float[] actionLevels, Dir lastMoveDir);
 }

@@ -13,6 +13,7 @@
 //    limitations under the License.
 
 using System.Reflection;
+using BioSimLib.Field;
 
 namespace BioSimLib.Actions;
 
@@ -22,7 +23,7 @@ public class ActionFactory
 
     public IAction? this[Action action] => _actions[(int)action];
 
-    public ActionFactory()
+    public ActionFactory(Config config, Board board)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var types = assembly.GetTypes();
@@ -34,6 +35,30 @@ public class ActionFactory
             if (i1 != null)
             {
                 var action = (IAction)i1.Invoke(Array.Empty<object>());
+                _actions[(int)action.Type] = action;
+                continue;
+            }
+
+            var i2 = type.GetConstructor(new[] { typeof(Config) });
+            if (i2 != null)
+            {
+                var action = (IAction)i2.Invoke(new object[] { config });
+                _actions[(int)action.Type] = action;
+                continue;
+            }
+
+            var i3 = type.GetConstructor(new[] { typeof(Board) });
+            if (i3 != null)
+            {
+                var action = (IAction)i3.Invoke(new object[] { board });
+                _actions[(int)action.Type] = action;
+                continue;
+            }
+
+            var i4 = type.GetConstructor(new[] { typeof(Config), typeof(Board) });
+            if (i4 != null)
+            {
+                var action = (IAction)i4.Invoke(new object[] { config, board });
                 _actions[(int)action.Type] = action;
                 continue;
             }

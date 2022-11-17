@@ -54,7 +54,7 @@ public class MoveRightTests
         var critter = board.NewCritter(genome, new Coord { X = 3, Y = 4 });
 
         var action = new MoveRight();
-        action.Execute(config, board, critter, 0, Array.Empty<float>());
+        action.Execute(critter, 0, Array.Empty<float>());
     }
 
     [Fact]

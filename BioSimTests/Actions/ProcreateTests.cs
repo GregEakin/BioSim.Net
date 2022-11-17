@@ -57,7 +57,7 @@ public class ProcreateTests
         actionLevels[(int)Action.PROCREATE] = 0.05f;
 
         var action = new Procreate();
-        action.Execute(config, board, critter, 0, actionLevels);
+        action.Execute(critter, 0, actionLevels);
     }
 
     [Fact]
