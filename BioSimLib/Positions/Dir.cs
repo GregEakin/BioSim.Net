@@ -21,7 +21,10 @@ public readonly struct Dir
         SW, S, SE, W, CENTER, E, NW, N, NE
     }
 
+    private static readonly byte[] RotateRight = { 3, 0, 1, 6, 4, 2, 7, 8, 5 };
+    private static readonly byte[] RotateLeft = { 1, 2, 5, 0, 4, 8, 3, 6, 7 };
     private static readonly Random Random = new();
+
     public static Dir Random8() => new Dir(Compass.N).Rotate(Random.Next(0, 7));
 
     public Dir(Compass dir = Compass.CENTER) => _dir9 = dir;
@@ -45,17 +48,15 @@ public readonly struct Dir
 
     public Dir Rotate(int n = 0)
     {
-        var rotateRight = new byte[] { 3, 0, 1, 6, 4, 2, 7, 8, 5 };
-        var rotateLeft = new byte[] { 1, 2, 5, 0, 4, 8, 3, 6, 7 };
         var n9 = AsInt();
         switch (n)
         {
             case < 0:
-                while (n++ < 0) n9 = rotateLeft[n9];
+                while (n++ < 0) n9 = RotateLeft[n9];
                 break;
 
             case > 0:
-                while (n-- > 0) n9 = rotateRight[n9];
+                while (n-- > 0) n9 = RotateRight[n9];
                 break;
         }
 
