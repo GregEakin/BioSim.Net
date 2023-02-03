@@ -505,8 +505,8 @@ public class GenomeBuilderTests
 
         var genome = new GenomeBuilder(config.maxNumberNeurons, dna);
         var color = genome.Color;
-        Assert.Equal(0xFF, color.Item1);
-        Assert.Equal(0xFF, color.Item2);
-        Assert.Equal(0xFF, color.Item3);
+        Assert.Equal(0xFF, color.red);
+        Assert.Equal(0xFF, color.green);
+        Assert.Equal(0xFF, color.blue);
     }
 }

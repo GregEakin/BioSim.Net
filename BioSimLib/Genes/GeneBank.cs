@@ -18,11 +18,11 @@ namespace BioSimLib.Genes;
 
 public sealed class GeneBank
 {
-    public enum ComparisonMethods
+    public enum ComparisonMethods : uint
     {
-        JARO_WINKLER_DISTANCE,
-        HAMMING_DISTANCE_BITS,
-        HAMMING_DISTANCE_BYTES,
+        JARO_WINKLER_DISTANCE = 0,
+        HAMMING_DISTANCE_BITS = 1,
+        HAMMING_DISTANCE_BYTES = 2,
     }
 
     private readonly Config _config;
@@ -35,7 +35,7 @@ public sealed class GeneBank
         _config = config;
     }
 
-    public List<((byte red, byte green, byte blue), int)> Survivors { get; } = new();
+    public List<((byte red, byte green, byte blue) color, int population)> Survivors { get; } = new();
 
     public IEnumerable<Genome> Startup()
     {
@@ -128,7 +128,7 @@ public sealed class GeneBank
         // Perform mutations
         //    Swap genes between the two
         //    Adjust the weights by +- %
-        return new GenomeBuilder(_config.maxNumberNeurons, new uint[] { }).ToGenome();
+        return new GenomeBuilder(_config.maxNumberNeurons, Array.Empty<uint>()).ToGenome();
     }
 
     public static float GenomeSimilarity(ComparisonMethods genomeComparisonMethod, Genome g1, Genome g2)
@@ -227,7 +227,7 @@ public sealed class GeneBank
 
     public static uint NumberOfSetBits(uint i)
     {
-        i = i - ((i >> 1) & 0x55555555); // add pairs of bits
+        i -= (i >> 1) & 0x55555555; // add pairs of bits
         i = (i & 0x33333333) + ((i >> 2) & 0x33333333); // quads
         i = (i + (i >> 4)) & 0x0F0F0F0F; // groups of 8
         return (i * 0x01010101) >> 24; // horizontal sum of bytes
