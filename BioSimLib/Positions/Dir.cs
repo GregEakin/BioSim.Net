@@ -23,9 +23,9 @@ public readonly struct Dir
 
     private static readonly byte[] RotateRight = { 3, 0, 1, 6, 4, 2, 7, 8, 5 };
     private static readonly byte[] RotateLeft = { 1, 2, 5, 0, 4, 8, 3, 6, 7 };
-    private static readonly Random Random = new();
+    private static readonly Random RandomNg = new();
 
-    public static Dir Random8() => new Dir(Compass.N).Rotate(Random.Next(0, 7));
+    public static Dir Random8() => new Dir(Compass.N).Rotate(RandomNg.Next(0, 7));
 
     public Dir(Compass dir = Compass.CENTER) => _dir = dir;
 

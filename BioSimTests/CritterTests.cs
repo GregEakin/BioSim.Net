@@ -32,7 +32,7 @@ public class CritterTests
             new ISensor[]
             {
                 new SensorMock(Sensor.LOC_X, "Lx", 0.2f),
-                new SensorMock(Sensor.RANDOM, "Rnd", 0.1f),
+                new SensorMock(Sensor.CHANCE, "Rnd", 0.1f),
             }
         );
 

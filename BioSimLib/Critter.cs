@@ -48,7 +48,7 @@ public sealed class Critter
         Action.MOVE_RANDOM,
     };
 
-    private readonly System.Random _random = new();
+    private readonly Random _random = new();
     private readonly Config _config;
     private bool _alive;
     private Coord _loc;

@@ -16,12 +16,12 @@ namespace BioSimLib.Sensors;
 
 // Returns a random sensor value in the range 0.0..1.0.
 [Sensor]
-public class Random : ISensor
+public class Chance : ISensor
 {
-    private readonly System.Random _random = new();
+    private readonly Random _random = new();
 
-    public Sensor Type => Sensor.RANDOM;
-    public override string ToString() => "random";
+    public Sensor Type => Sensor.CHANCE;
+    public override string ToString() => "chance";
     public string ShortName => "Rnd";
 
     public float Output(Critter critter, uint simStep)

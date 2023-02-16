@@ -4,30 +4,29 @@ using BioSimLib.Genes;
 using BioSimLib.Positions;
 using BioSimLib.Sensors;
 using Xunit;
-using Random = BioSimLib.Sensors.Random;
 
 namespace BioSimTests.Sensors;
 
-public class RandomTests
+public class ChanceTests
 {
     [Fact]
     public void TypeTest()
     {
-        var sensor = new Random();
-        Assert.Equal(Sensor.RANDOM, sensor.Type);
+        var sensor = new Chance();
+        Assert.Equal(Sensor.CHANCE, sensor.Type);
     }
 
     [Fact]
     public void StringTest()
     {
-        var sensor = new Random();
-        Assert.Equal("random", sensor.ToString());
+        var sensor = new Chance();
+        Assert.Equal("chance", sensor.ToString());
     }
 
     [Fact]
     public void ShortNameTest()
     {
-        var sensor = new Random();
+        var sensor = new Chance();
         Assert.Equal("Rnd", sensor.ShortName);
     }
 
@@ -39,7 +38,7 @@ public class RandomTests
         var genome = new GenomeBuilder(config.maxNumberNeurons, new[] { 0x00000000u }).ToGenome();
         var critter = board.NewCritter(genome, new Coord(1, 2));
 
-        var sensor = new Random();
+        var sensor = new Chance();
         // Assert.Equal(1.0f, sensor.Output(critter, 0));
     }
 }

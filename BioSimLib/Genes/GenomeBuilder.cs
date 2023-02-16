@@ -15,7 +15,6 @@
 using System.Collections;
 using BioSimLib.Sensors;
 using Action = BioSimLib.Actions.Action;
-using Random = System.Random;
 
 namespace BioSimLib.Genes;
 
