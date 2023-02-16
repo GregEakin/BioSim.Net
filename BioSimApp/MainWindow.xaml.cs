@@ -153,7 +153,7 @@ public partial class MainWindow : Window
             }
 
             var j = 0;
-            foreach (var ((red, green, blue), population) in _bank.Survivors.OrderByDescending(o => o.population))
+            foreach (var ((red, green, blue), population) in _bank.Survivors.OrderByDescending(o => o.population).Take(5))
             {
                 var color = Color.FromRgb(red, green, blue);
                 var brush = new SolidColorBrush(color);

@@ -129,16 +129,16 @@ public sealed class Critter
 
     public void FeedForward(SensorFactory sensorFactory, float[] actionLevels, float[] neuronAccumulators, uint simStep)
     {
-        foreach (var connection in Genome)
+        foreach (var gene in Genome)
         {
-            var value = connection.SourceType == Gene.GeneType.Sensor
-                ? sensorFactory[connection.SourceSensor]?.Output(this, simStep) ?? 0.0f
-                : NeuralNet[connection.SourceNum].Output;
+            var value = gene.SourceType == Gene.GeneType.Sensor
+                ? sensorFactory[gene.SourceSensor]?.Output(this, simStep) ?? 0.0f
+                : NeuralNet[gene.SourceNum].Output;
 
-            if (connection.SinkType == Gene.GeneType.Action)
-                actionLevels[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
+            if (gene.SinkType == Gene.GeneType.Action)
+                actionLevels[gene.SinkNum] += gene.WeightAsFloat * (float)Math.Tanh(value);
             else
-                neuronAccumulators[connection.SinkNum] += connection.WeightAsFloat * (float)Math.Tanh(value);
+                neuronAccumulators[gene.SinkNum] += gene.WeightAsFloat * (float)Math.Tanh(value);
         }
 
         for (var i = 0; i < NeuralNet.Length; i++)
