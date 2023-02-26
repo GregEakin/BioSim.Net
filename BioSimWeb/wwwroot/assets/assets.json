@@ -1,6 +1,6 @@
 [
   {
-    "path": "assets/sheet.json",
-    "type": "spritesheet"
+    "path": "assets/config.json",
+    "type": "config"
   }
 ]

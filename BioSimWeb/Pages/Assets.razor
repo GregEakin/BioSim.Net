@@ -20,6 +20,14 @@
 
     private readonly Dictionary<Type, Func<IAsset, AssetData, RenderFragment>> _renderers = new()
     {
+        {
+            typeof(Config), (a, _) =>
+            {
+                var config = a as Config;
+                return @<img name="@config.ElementRef.Id" @ref="config.ElementRef" src="@config.ImagePath" hidden />;
+            }
+        }
+
         @* { *@
         @*     typeof(Sprite), (a, d) => { *@
         @*         var sprite = a as Sprite; *@
@@ -30,7 +38,6 @@
         @*     typeof(SpriteSheet), (a, d) => *@
         @*     { *@
         @*         var spriteSheet = a as SpriteSheet; *@
-        @* *@
         @*         return @<img name="@spriteSheet.ElementRef.Id" @ref="spriteSheet.ElementRef" src="@spriteSheet.ImagePath" hidden />; *@
         @*     } *@
         @* } *@
@@ -44,10 +51,12 @@
         foreach (var item in items)
         {
             IAsset? asset = null;
-            // if (item.type == "sprite")
-            //     asset = await this.AssetsResolver.Load<Sprite>(item.path);
+            if (item.Type == "config")
+                asset = await AssetsResolver.Load<Config>(item.Path);
+            // else if (item.type == "sprite")
+            //     asset = await AssetsResolver.Load<Sprite>(item.path);
             // else if (item.type == "spritesheet")
-            //     asset = await this.AssetsResolver.Load<SpriteSheet>(item.path);
+            //     asset = await AssetsResolver.Load<SpriteSheet>(item.path);
 
             if (asset != null)
                 _items.Add(new (asset, item));

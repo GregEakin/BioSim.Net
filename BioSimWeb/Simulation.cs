@@ -16,10 +16,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net.Http.Json;
 using System.Numerics;
 using System.Reflection;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
+using Microsoft.AspNetCore.Components;
 
 namespace BioSimWeb;
 
@@ -448,7 +450,6 @@ public abstract class BaseComponent : IComponent
 
     public virtual async ValueTask OnStart(Simulation simulation)
     {
-
     }
 
     public virtual async ValueTask Update(Simulation simulation)
@@ -534,13 +535,13 @@ public class AssetsResolver : IAssetsResolver
 
     public async ValueTask<TA> Load<TA>(string path) where TA : IAsset
     {
-        var loader = _assetLoaderFactory.Get<TA>();
+        var loader = _assetLoaderFactory.Get<TA>() ??
+                     throw new TypeLoadException($"unable to load asset type '{typeof(TA)}' from path '{path}'");
+
         var asset = await loader.Load(path);
+        if (asset == null) throw new TypeLoadException($"unable to load asset type '{typeof(TA)}' from path '{path}'");
 
-        if (null == asset)
-            throw new TypeLoadException($"unable to load asset type '{typeof(TA)}' from path '{path}'");
-
-        _assets.AddOrUpdate(path, k => asset, (k, v) => asset);
+        _assets.AddOrUpdate(path, _ => asset, (k, v) => asset);
         return asset;
     }
 
@@ -580,5 +581,63 @@ public class AssetLoaderFactory : IAssetLoaderFactory
             throw new ArgumentOutOfRangeException($"invalid asset type: {type.FullName}");
 
         return _loaders[type] as IAssetLoader<TA>;
+    }
+}
+
+public class Config : IAsset
+{
+    public string Name { get; }
+    public string ImagePath { get; }
+    public Data Data { get; }
+    
+    public Config(string name, ElementReference elementRef, Data data, string imagePath)
+    {
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
+        if (string.IsNullOrWhiteSpace(imagePath)) throw new ArgumentNullException(nameof(imagePath));
+
+        Name = name;
+        ImagePath = imagePath;
+        ElementRef = elementRef;
+        Data = data;
+    }
+
+    private ElementReference _elementRef;
+
+    public ElementReference ElementRef
+    {
+        get => _elementRef;
+        set => _elementRef = value;
+    }
+}
+
+public record class Data(
+    short sizeX,
+    short sizeY,
+    int population,
+    uint stepsPerGeneration,
+    int genomeMaxLength,
+    int maxNumberNeurons,
+    float populationSensorRadius,
+    uint signalSensorRadius,
+    uint shortProbeBarrierDistance,
+    uint longProbeDistance,
+    uint signalLayers);
+
+public class ConfigAssetLoader : IAssetLoader<Config>
+{
+    private readonly HttpClient _httpClient;
+
+    public ConfigAssetLoader(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async ValueTask<Config> Load(string path)
+    {
+        var json = await _httpClient.GetFromJsonAsync<Data>(path);
+        if (json == null) throw new Exception("*** Crash!");
+        var elementRef = new ElementReference(Guid.NewGuid().ToString());
+        var config = new Config(path, elementRef, json, path);
+        return config;
     }
 }

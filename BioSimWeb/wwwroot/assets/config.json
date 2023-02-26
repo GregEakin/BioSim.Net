@@ -1,0 +1,13 @@
+{
+  "sizeX": 128,
+  "sizeY": 128,
+  "population": 1000,
+  "stepsPerGeneration": 300,
+  "genomeMaxLength": 24,
+  "maxNumberNeurons": 12,
+  "populationSensorRadius": 10,
+  "signalSensorRadius": 10,
+  "shortProbeBarrierDistance": 4,
+  "longProbeDistance": 10,
+  "signalLayers": 1
+}
