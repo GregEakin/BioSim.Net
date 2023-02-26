@@ -1,12 +1,11 @@
 ﻿@page "/"
-@using Blazor.Extensions
-@using Blazor.Extensions.Canvas
-@using Blazor.Extensions.Canvas.Canvas2D
-@using System.Drawing
 
 @inject IJSRuntime JsRuntime
+@inject IAssetsResolver AssetsResolver
 
 <h1>Hello, world!</h1>
+
+<Assets Source="assets/assets.json" OnLoaded="@OnAssetsLoaded" />
 
 <div id="canvasContainer" style="position: fixed; opacity: 1; background-color: white; width: 100%; height: 100%">
     <BECanvas @ref="_canvas"></BECanvas>
@@ -14,14 +13,25 @@
 
 @code
 {
-    BECanvasComponent? _canvas;
-    Simulation? _simulation;
-    InputService? _inputService;
+    private BECanvasComponent? _canvas;
+    private Simulation? _simulation;
+    private InputService? _inputService;
+    
+    private bool _assetsLoaded;
+    private bool _initialized;
+
+    protected void OnAssetsLoaded()
+    {
+        _assetsLoaded = true;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender) return;
+        // if (!firstRender) return;
+        if (!_assetsLoaded) return;
         if (_canvas == null) return;
+        if (_initialized) return;
+        _initialized = true;
 
         var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
         _canvas.Height = canvasMeta.Height;
@@ -50,7 +60,7 @@
     [JSInvokable]
     public async ValueTask OnKeyDown(int keyCode) =>
         _inputService?.SetKeyState((Keys)keyCode, ButtonState.States.Down);
-
+    
     [JSInvokable]
     public async ValueTask OnKeyUp(int keyCode) =>
         _inputService?.SetKeyState((Keys)keyCode, ButtonState.States.Up);

@@ -509,3 +509,76 @@ public class TransformComponent : BaseComponent
     public Transform Local => _local;
     public Transform World => _world;
 }
+
+public interface IAsset
+{
+    string Name { get; }
+}
+
+public interface IAssetsResolver
+{
+    ValueTask<TA> Load<TA>(string path) where TA : IAsset;
+    TA? Get<TA>(string path) where TA : class, IAsset;
+}
+
+public class AssetsResolver : IAssetsResolver
+{
+    private readonly ConcurrentDictionary<string, IAsset> _assets;
+    private readonly IAssetLoaderFactory _assetLoaderFactory;
+
+    public AssetsResolver(IAssetLoaderFactory assetLoaderFactory)
+    {
+        _assetLoaderFactory = assetLoaderFactory;
+        _assets = new ConcurrentDictionary<string, IAsset>();
+    }
+
+    public async ValueTask<TA> Load<TA>(string path) where TA : IAsset
+    {
+        var loader = _assetLoaderFactory.Get<TA>();
+        var asset = await loader.Load(path);
+
+        if (null == asset)
+            throw new TypeLoadException($"unable to load asset type '{typeof(TA)}' from path '{path}'");
+
+        _assets.AddOrUpdate(path, k => asset, (k, v) => asset);
+        return asset;
+    }
+
+    public TA? Get<TA>(string path) where TA : class, IAsset => _assets[path] as TA;
+}
+
+public interface IAssetLoaderFactory
+{
+    IAssetLoader<TA>? Get<TA>() where TA : IAsset;
+}
+
+public interface IAssetLoader<TA> where TA : IAsset
+{
+    ValueTask<TA> Load(string path);
+}
+
+public class AssetLoaderFactory : IAssetLoaderFactory
+{
+    private readonly IDictionary<Type, object> _loaders;
+
+    public AssetLoaderFactory()
+    {
+        _loaders = new Dictionary<Type, object>();
+    }
+
+    public void Register<TA>(IAssetLoader<TA> loader) where TA : IAsset
+    {
+        var type = typeof(TA);
+        if (!_loaders.ContainsKey(type)) _loaders.Add(type, null);
+        _loaders[type] = loader;
+    }
+
+    public IAssetLoader<TA>? Get<TA>() where TA : IAsset
+    {
+        var type = typeof(TA);
+        if (!_loaders.ContainsKey(type))
+            throw new ArgumentOutOfRangeException($"invalid asset type: {type.FullName}");
+
+        return _loaders[type] as IAssetLoader<TA>;
+    }
+}
