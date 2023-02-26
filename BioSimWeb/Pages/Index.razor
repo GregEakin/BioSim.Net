@@ -1,0 +1,63 @@
+﻿@page "/"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using System.Drawing
+
+@inject IJSRuntime JsRuntime
+
+<h1>Hello, world!</h1>
+
+<div id="canvasContainer" style="position: fixed; opacity: 1; background-color: white; width: 100%; height: 100%">
+    <BECanvas @ref="_canvas"></BECanvas>
+</div>
+
+@code
+{
+    BECanvasComponent? _canvas;
+    Simulation? _simulation;
+    InputService? _inputService;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        if (_canvas == null) return;
+
+        var canvasMeta = await JsRuntime.InvokeAsync<CanvasMeta>("initCanvas", DotNetObjectReference.Create(this));
+        _canvas.Height = canvasMeta.Height;
+        _canvas.Width = canvasMeta.Width;
+
+        _simulation = new BioSimulation(_canvas);
+        _inputService ??= _simulation.GetService<InputService>();
+
+        await JsRuntime.InvokeAsync<object>("simWindowResize", DotNetObjectReference.Create(this));
+    }
+
+    [JSInvokable]
+    public async ValueTask SimLoop()
+    {
+        if (_simulation == null) return;
+        await _simulation.Step();
+    }
+
+    [JSInvokable]
+    public async ValueTask OnResize(int screenWidth, int screenHeight)
+    {
+        if (_simulation == null) return;
+        _simulation.Display.Size = new Size(screenWidth, screenHeight);
+    }
+
+    [JSInvokable]
+    public async ValueTask OnKeyDown(int keyCode) =>
+        _inputService?.SetKeyState((Keys)keyCode, ButtonState.States.Down);
+
+    [JSInvokable]
+    public async ValueTask OnKeyUp(int keyCode) =>
+        _inputService?.SetKeyState((Keys)keyCode, ButtonState.States.Up);
+
+    public class CanvasMeta
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+}

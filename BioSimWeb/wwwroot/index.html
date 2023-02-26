@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BioSimWeb</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+
+    <!-- If you add any scoped CSS files, uncomment the following to load them
+    <link href="BioSimWeb.styles.css" rel="stylesheet" /> -->
+</head>
+
+<body>
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/Blazor.Extensions.Canvas/blazor.extensions.canvas.js"></script>
+    <script>
+        function simLoop(timeStamp) {
+            window.requestAnimationFrame(simLoop);
+            sim.instance.invokeMethodAsync('SimLoop');
+        }
+
+        function onResize() {
+            if (!window.sim.canvas) return;
+
+            sim.canvas.width = window.innerWidth;
+            sim.canvas.height = window.innerHeight;
+            sim.instance.invokeMethodAsync('OnResize', sim.canvas.width, sim.canvas.height);
+        }
+
+        window.simWindowResize = (instance) => {
+            onResize();
+        };
+
+        window.initCanvas = (instance) => {
+            var canvasContainer = document.getElementById('canvasContainer'),
+                canvases = canvasContainer.getElementsByTagName('canvas') || [];
+            window.sim = {
+                instance: instance,
+                canvas: canvases.length ? canvases[0] : null
+            };
+
+            if (window.sim.canvas) {
+                window.sim.canvas.onkeydown = (e) => { sim.instance.invokeMethodAsync('OnKeyDown', e.keyCode); };
+                window.sim.canvas.onkeyup = (e) => { sim.instance.invokeMethodAsync('OnKeyUp', e.keyCode); };
+                window.sim.canvas.onblur = (e) => { window.sim.canvas.focus(); };
+                window.sim.canvas.tabIndex = 0;
+                window.sim.canvas.focus();
+            }
+
+            onResize();
+            window.addEventListener("resize", onResize);
+
+            window.requestAnimationFrame(simLoop);
+
+            return {
+                Width: window.sim.canvas.width,
+                Height: window.sim.canvas.height
+            };
+        };
+    </script>
+</body>
+
+</html>
