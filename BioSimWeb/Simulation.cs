@@ -26,6 +26,7 @@ using BioSimLib.Sensors;
 using BioSimLib;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
+using Blazor.Extensions.Canvas;
 
 namespace BioSimWeb;
 
@@ -492,18 +493,83 @@ public class Main : IComponent, IRenderable
     // private readonly Canvas[] _icons;
     // private readonly TextBlock[] _items;
 
-
-    private ulong _count;
+    private double _scaleFactor = 3.4;
+    private uint _generation;
+    private uint _simStep;
+    private int _census;
+    private int _skipUpdate = 10;
 
     public Main(SimNode owner)
     {
         Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+
+        // WorldSize.Text = $"{_config.sizeX}x{_config.sizeY}";
+        // Population.Text = _config.population.ToString();
+        // StepGen.Text = _config.stepsPerGeneration.ToString();
+        // GenomeLen.Text = $"{_config.genomeMaxLength} genes";
+        // NeuronLen.Text = _config.maxNumberNeurons.ToString();
+
+        _bank = new GeneBank(_config);
+        _board = new Board(_config);
+        _barrierFactory = new BarrierFactory(_board.Grid);
+        _challengeFactory = new ChallengeFactory(_config, _board.Grid);
+        _sensorFactory = new SensorFactory(_config, _board);
+        _actionFactory = new ActionFactory(_config, _board);
+        // _cells = new Cell[_config.population];
+        _neuronAccumulators = new float[_config.maxNumberNeurons];
     }
 
     public ValueTask Update(Simulation simulation)
     {
-        //throw new NotImplementedException();
-        _count++;
+        if (_simStep == 1u && _generation % 5 == 0)
+        {
+            var census = _board.Critters.Census();
+            _census = census.Count;
+        }
+
+        if (_simStep >= _config.stepsPerGeneration)
+        {
+            _generation++;
+            _simStep = 0u;
+            // var i = 0;
+            // var survivors = _board.NewGeneration();
+            // foreach (var genome in _bank.NewGeneration(survivors))
+            // {
+            //     var critter = _board.NewCritter(genome);
+            //     _cells[i].CritterChanged(critter);
+            //     i++;
+            // }
+
+            // var j = 0;
+            // foreach (var ((red, green, blue), population) in _bank.Survivors.OrderByDescending(o => o.population).Take(5))
+            // {
+            //     var color = Color.FromRgb(red, green, blue);
+            //     var brush = new SolidColorBrush(color);
+            //     var path = new Path
+            //     {
+            //         Fill = brush,
+            //         Stroke = brush,
+            //         Data = new EllipseGeometry
+            //         {
+            //             RadiusX = 7.0,
+            //             RadiusY = 7.0
+            //         },
+            //         StrokeThickness = 0.1,
+            //     };
+            //
+            //     _icons[j].Children.Add(path);
+            //     _items[j].Text = population.ToString();
+            //     j++;
+            // }
+        }
+
+        // foreach (var critter in _cells)
+        //     critter.Update(_board, _sensorFactory, _actionFactory, _actionLevels, _neuronAccumulators, _simStep);
+
+        _board.Critters.DrainDeathQueue(_board.Grid);
+        _board.Critters.DrainMoveQueue(_board.Grid);
+
+        _simStep++;
         return ValueTask.CompletedTask;
     }
 
@@ -518,7 +584,15 @@ public class Main : IComponent, IRenderable
         await context.ScaleAsync(1.0, 1.0);
         await context.SetFontAsync("48px serif");
         await context.StrokeTextAsync($"Seconds {simulation.SimTime.TotalMilliseconds / 1000.0}", 10.0, 100.0);
-        await context.StrokeTextAsync($"Count {_count}", 10.0, 220.0);
+        await context.StrokeTextAsync($"World Size {_config.sizeX}x{_config.sizeY}", 10.0, 150.0);
+        await context.StrokeTextAsync($"Population {_config.population}", 10.0, 200.0);
+        await context.StrokeTextAsync($"Steps/Gen {_config.stepsPerGeneration}", 10.0, 250.0);
+        await context.StrokeTextAsync($"Genome Length {_config.genomeMaxLength}", 10.0, 300.0);
+        await context.StrokeTextAsync($"Neuron Length {_config.maxNumberNeurons}", 10.0, 350.0);
+
+        // foreach (var critter in _cells)
+        //     critter.Draw(MyCanvas, _scaleFactor);
+
         await context.RestoreAsync();
     }
 }
