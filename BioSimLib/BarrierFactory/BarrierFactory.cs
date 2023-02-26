@@ -22,6 +22,8 @@ public class BarrierFactory
     private readonly IBarrierFactory?[] _factories = new IBarrierFactory?[7];
     public IBarrierFactory? this[int index] => _factories[index];
 
+    public BarrierFactory(Board board) : this(board.Grid) {}
+
     public BarrierFactory(Grid grid)
     {
         var assembly = Assembly.GetExecutingAssembly();

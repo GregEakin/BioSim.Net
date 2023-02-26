@@ -8,6 +8,8 @@ public class ChallengeFactory
     private readonly IChallenge?[] _challenges = new IChallenge?[41];
     public IChallenge? this[int index] => _challenges[index];
 
+    public ChallengeFactory(Config config, Board board) : this(config, board.Grid) {}
+
     public ChallengeFactory(Config config, Grid grid)
     {
         var assembly = Assembly.GetExecutingAssembly();

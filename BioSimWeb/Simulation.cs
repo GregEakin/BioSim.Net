@@ -16,8 +16,14 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
-using System.Numerics;
 using System.Reflection;
+using BioSimLib.Actions;
+using BioSimLib.BarrierFactory;
+using BioSimLib.Challenges;
+using BioSimLib.Field;
+using BioSimLib.Genes;
+using BioSimLib.Sensors;
+using BioSimLib;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
 
@@ -82,10 +88,18 @@ public class BioSimulation : Simulation
         var context = await _canvas.CreateCanvas2DAsync();
         var renderService = new RenderService(this, context);
         AddService(renderService);
+
+        var sceneGraph = new SceneGraph(this);
+        AddService(sceneGraph);
+
+        var root = new SimNode();
+        sceneGraph.Root.AddChild(root);
+
+        root.Components.Add<Main>();
     }
 }
 
-public class Display
+public record Display
 {
     private Size _size;
 
@@ -173,7 +187,7 @@ public enum Keys
     LeftAlt = 18,
 }
 
-public class SimTime
+public record SimTime
 {
     private readonly Stopwatch _stopwatch = new();
 
@@ -238,20 +252,15 @@ public class RenderService : ISimService
 
     public async ValueTask Step()
     {
-        // var sceneGraph = _simulation.GetService<SceneGraph>();
+        var sceneGraph = _simulation.GetService<SceneGraph>();
+        if (sceneGraph == null) return;
+
         await _context.ClearRectAsync(0, 0, _simulation.Display.Size.Width, _simulation.Display.Size.Height);
 
         await _context.BeginBatchAsync();
-        // await Render(sceneGraph.Root, _simulation);
 
-        await _context.SaveAsync();
-        await _context.TranslateAsync(400, 400);
-        await _context.RotateAsync(_simulation.SimTime.TotalMilliseconds / 1000.0f);
-        await _context.TranslateAsync(-200, -100);
-        await _context.ScaleAsync(1.0, 1.0);
-        await _context.SetFontAsync("48px serif");
-        await _context.StrokeTextAsync($"Seconds {_simulation.SimTime.TotalMilliseconds / 1000.0}", 10.0, 100.0);
-        await _context.RestoreAsync();
+        if (sceneGraph.Root != null)
+            await Render(sceneGraph.Root, _simulation);
 
         await _context.EndBatchAsync();
     }
@@ -269,20 +278,19 @@ public class RenderService : ISimService
 
 internal class ComponentsFactory
 {
-    private readonly ConcurrentDictionary<Type, ConstructorInfo> _cTorsByType;
-
-    private ComponentsFactory()
-    {
-        _cTorsByType = new ConcurrentDictionary<Type, ConstructorInfo>();
-    }
-
     private static readonly Lazy<ComponentsFactory> _instance = new(new ComponentsFactory());
     public static ComponentsFactory Instance => _instance.Value;
 
-    public TC Create<TC>(SimNode owner) where TC : class, IComponent
+    private readonly ConcurrentDictionary<Type, ConstructorInfo> _ctorsByType;
+
+    private ComponentsFactory()
+    {
+        _ctorsByType = new ConcurrentDictionary<Type, ConstructorInfo>();
+    }
+
+    public TC? Create<TC>(SimNode owner) where TC : class, IComponent
     {
         var ctor = GetCtor<TC>();
-
         return ctor.Invoke(new[] { owner }) as TC;
     }
 
@@ -290,14 +298,14 @@ internal class ComponentsFactory
     {
         var type = typeof(TC);
 
-        if (!_cTorsByType.ContainsKey(type))
-        {
-            var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
-                new[] { typeof(SimNode) }, null);
-            _cTorsByType.AddOrUpdate(type, ctor, (t, c) => ctor);
-        }
+        if (_ctorsByType.TryGetValue(type, out var ctor1)) return ctor1;
+        
+        var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
+            new[] { typeof(SimNode) }, null);
+        if (ctor != null)
+            _ctorsByType.AddOrUpdate(type, ctor, (t, c) => ctor);
 
-        return _cTorsByType[type];
+        return _ctorsByType[type];
     }
 }
 
@@ -312,16 +320,6 @@ public class ComponentsCollection : IEnumerable<IComponent>
         _items = new Dictionary<Type, IComponent>();
     }
 
-    //public bool Add(IComponent component)
-    //{
-    //    var type = component.GetType();
-    //    if (_items.ContainsKey(type))
-    //        return false;
-
-    //    _items.Add(type, component);
-    //    return true;
-    //}
-
     public class ComponentNotFoundException<TC> : Exception where TC : IComponent
     {
         public ComponentNotFoundException() : base($"{typeof(TC).Name} not found on owner")
@@ -329,16 +327,14 @@ public class ComponentsCollection : IEnumerable<IComponent>
         }
     }
 
-    public TC Add<TC>() where TC : class, IComponent
+    public TC? Add<TC>() where TC : class, IComponent
     {
         var type = typeof(TC);
-        if (!_items.ContainsKey(type))
-        {
-            var component = ComponentsFactory.Instance.Create<TC>(_owner);
-            _items.Add(type, component);
-        }
-
-        return _items[type] as TC;
+        if (_items.TryGetValue(type, out var item)) return item as TC;
+        
+        var component = ComponentsFactory.Instance.Create<TC>(_owner);
+        _items.Add(type, component);
+        return component;
     }
 
     public T? Get<T>() where T : class, IComponent
@@ -427,8 +423,30 @@ public class SimNode
 
     public override bool Equals(object? obj) => obj is SimNode node && Id.Equals(node.Id);
 
-    public override string ToString() => $"GameObject {Id}";
+    public override string ToString() => $"SimNode {Id}";
 }
+
+public class SceneGraph : ISimService
+{
+    private readonly Simulation _simulation;
+
+    public SimNode Root { get; }
+
+    public SceneGraph(Simulation simulation)
+    {
+        _simulation = simulation;
+        Root = new SimNode();
+    }
+
+    public async ValueTask Step()
+    {
+        // if (Root == null)
+        //     return;
+
+        await Root.Update(_simulation);
+    }
+}
+
 
 public interface IComponent
 {
@@ -437,27 +455,70 @@ public interface IComponent
     SimNode Owner { get; }
 }
 
-public abstract class BaseComponent : IComponent
-{
-    public SimNode Owner { get; }
-
-    protected BaseComponent(SimNode owner)
-    {
-        Owner = owner ?? throw new ArgumentNullException(nameof(owner));
-    }
-
-    public virtual async ValueTask OnStart(Simulation simulation)
-    {
-
-    }
-
-    public virtual async ValueTask Update(Simulation simulation)
-    {
-    }
-}
-
 public interface IRenderable
 {
     ValueTask Render(Simulation simulation, Canvas2DContext context);
 }
 
+public class Main : IComponent, IRenderable
+{
+    private readonly Config _config = new()
+    {
+        sizeX = 128,
+        sizeY = 128,
+        population = 1000,
+        stepsPerGeneration = 300,
+        genomeMaxLength = 24,
+        maxNumberNeurons = 12,
+        populationSensorRadius = 10,
+        signalSensorRadius = 10,
+        shortProbeBarrierDistance = 4,
+        longProbeDistance = 10,
+        signalLayers = 1,
+        challenge = Challenge.CornerWeighted,
+    };
+
+    private readonly Board _board;
+    private readonly GeneBank _bank;
+    private readonly BarrierFactory _barrierFactory;
+    private readonly ChallengeFactory _challengeFactory;
+    private readonly SensorFactory _sensorFactory;
+    private readonly ActionFactory _actionFactory;
+    private readonly Rectangle _box1;
+    private readonly Rectangle _box2;
+    // private readonly Cell[] _cells;
+    private readonly float[] _actionLevels = new float[Enum.GetNames<BioSimLib.Actions.Action>().Length];
+    private readonly float[] _neuronAccumulators;
+    // private readonly Canvas[] _icons;
+    // private readonly TextBlock[] _items;
+
+
+    private ulong _count;
+
+    public Main(SimNode owner)
+    {
+        Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+    }
+
+    public ValueTask Update(Simulation simulation)
+    {
+        //throw new NotImplementedException();
+        _count++;
+        return ValueTask.CompletedTask;
+    }
+
+    public SimNode Owner { get; }
+
+    public async ValueTask Render(Simulation simulation, Canvas2DContext context)
+    {
+        await context.SaveAsync();
+        await context.TranslateAsync(400, 400);
+        await context.RotateAsync(simulation.SimTime.TotalMilliseconds / 1000.0f);
+        await context.TranslateAsync(-200, -100);
+        await context.ScaleAsync(1.0, 1.0);
+        await context.SetFontAsync("48px serif");
+        await context.StrokeTextAsync($"Seconds {simulation.SimTime.TotalMilliseconds / 1000.0}", 10.0, 100.0);
+        await context.StrokeTextAsync($"Count {_count}", 10.0, 220.0);
+        await context.RestoreAsync();
+    }
+}

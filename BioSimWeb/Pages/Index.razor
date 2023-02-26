@@ -41,19 +41,26 @@
     }
 
     [JSInvokable]
-    public async ValueTask OnResize(int screenWidth, int screenHeight)
+    public ValueTask OnResize(int screenWidth, int screenHeight)
     {
-        if (_simulation == null) return;
+        if (_simulation == null) return ValueTask.CompletedTask;
         _simulation.Display.Size = new Size(screenWidth, screenHeight);
+        return ValueTask.CompletedTask;
     }
 
     [JSInvokable]
-    public async ValueTask OnKeyDown(int keyCode) =>
+    public ValueTask OnKeyDown(int keyCode)
+    {
         _inputService?.SetKeyState((Keys)keyCode, ButtonState.States.Down);
-    
+        return ValueTask.CompletedTask;
+    }
+
     [JSInvokable]
-    public async ValueTask OnKeyUp(int keyCode) =>
+    public ValueTask OnKeyUp(int keyCode)
+    {
         _inputService?.SetKeyState((Keys)keyCode, ButtonState.States.Up);
+        return ValueTask.CompletedTask;
+    }
 
     public class CanvasMeta
     {
