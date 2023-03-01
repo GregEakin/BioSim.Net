@@ -17,21 +17,22 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
+using BioSimLib;
 using BioSimLib.Actions;
 using BioSimLib.BarrierFactory;
 using BioSimLib.Challenges;
 using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Sensors;
-using BioSimLib;
 using Blazor.Extensions;
-using Blazor.Extensions.Canvas.Canvas2D;
 using Blazor.Extensions.Canvas;
+using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace BioSimWeb;
 
 public interface ISimService
 {
+    ValueTask Init();
     ValueTask Step();
 }
 
@@ -61,7 +62,12 @@ public abstract class Simulation
         if (!_isInitialized)
         {
             _isInitialized = true;
+
             await Init();
+            
+            foreach (var service in _services.Values)
+                await service.Init();
+
             SimTime.Start();
         }
 
@@ -77,13 +83,64 @@ public class BioSimulation : Simulation
 {
     private readonly BECanvasComponent _canvas;
 
+    public Config _config { get; } = new()
+    {
+        sizeX = 128,
+        sizeY = 128,
+        population = 1000,
+        stepsPerGeneration = 300,
+        genomeMaxLength = 24,
+        maxNumberNeurons = 12,
+        populationSensorRadius = 10,
+        signalSensorRadius = 10,
+        shortProbeBarrierDistance = 4,
+        longProbeDistance = 10,
+        signalLayers = 1,
+        challenge = Challenge.CornerWeighted,
+    };
+
+    public Board _board { get; }
+    public GeneBank _bank { get; }
+    private readonly BarrierFactory _barrierFactory;
+    private readonly ChallengeFactory _challengeFactory;
+    public SensorFactory _sensorFactory { get; }
+
+    public ActionFactory _actionFactory { get; }
+    // private readonly Rectangle _box1;
+
+    // private readonly Rectangle _box2;
+
+    // private readonly Cell[] _cells;
+    public float[] _actionLevels { get; } = new float[Enum.GetNames<BioSimLib.Actions.Action>().Length];
+
+    public float[] _neuronAccumulators { get; }
+    // private readonly Canvas[] _icons;
+    // private readonly TextBlock[] _items;
+
+    private double _scaleFactor = 3.4;
+    public uint _generation { get; set; }
+    public uint _simStep { get; set; }
+    public int _census { get; set; }
+    private int _skipUpdate = 10;
+
     public BioSimulation(BECanvasComponent canvas)
     {
         _canvas = canvas;
+
+        _bank = new GeneBank(_config);
+        _board = new Board(_config);
+        _barrierFactory = new BarrierFactory(_board.Grid);
+        _challengeFactory = new ChallengeFactory(_config, _board.Grid);
+        _sensorFactory = new SensorFactory(_config, _board);
+        _actionFactory = new ActionFactory(_config, _board);
+        // _cells = new Cell[_config.population];
+        _neuronAccumulators = new float[_config.maxNumberNeurons];
     }
 
     protected override async ValueTask Init()
     {
+        //await base.Init();
+
         AddService(new InputService());
 
         var context = await _canvas.CreateCanvas2DAsync();
@@ -96,7 +153,8 @@ public class BioSimulation : Simulation
         var root = new SimNode();
         sceneGraph.Root.AddChild(root);
 
-        root.Components.Add<Main>();
+        root.Components.Add<SimStats>();
+        root.Components.Add<Areana>();
     }
 }
 
@@ -146,6 +204,11 @@ public class InputService : ISimService
     }
 
     public ButtonState GetKeyState(Keys key) => _keyboardStates[key];
+
+    public ValueTask Init()
+    {
+        return ValueTask.CompletedTask;
+    }
 
     public ValueTask Step() => ValueTask.CompletedTask;
 }
@@ -251,18 +314,24 @@ public class RenderService : ISimService
         _context = context;
     }
 
+    public ValueTask Init()
+    {
+        return ValueTask.CompletedTask;
+    }
+
     public async ValueTask Step()
     {
+        var bio = (BioSimulation)_simulation;
+        var step = bio._simStep;
+        if (step % 10 != 0)
+             return;
+
         var sceneGraph = _simulation.GetService<SceneGraph>();
         if (sceneGraph == null) return;
 
         await _context.ClearRectAsync(0, 0, _simulation.Display.Size.Width, _simulation.Display.Size.Height);
-
         await _context.BeginBatchAsync();
-
-        if (sceneGraph.Root != null)
-            await Render(sceneGraph.Root, _simulation);
-
+        await Render(sceneGraph.Root, _simulation);
         await _context.EndBatchAsync();
     }
 
@@ -300,7 +369,7 @@ internal class ComponentsFactory
         var type = typeof(TC);
 
         if (_ctorsByType.TryGetValue(type, out var ctor1)) return ctor1;
-        
+
         var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
             new[] { typeof(SimNode) }, null);
         if (ctor != null)
@@ -332,8 +401,8 @@ public class ComponentsCollection : IEnumerable<IComponent>
     {
         var type = typeof(TC);
         if (_items.TryGetValue(type, out var item)) return item as TC;
-        
-        var component = ComponentsFactory.Instance.Create<TC>(_owner);
+
+        var component = ComponentsFactory.Instance.Create<TC>(_owner) ?? throw new Exception("Component is null.");
         _items.Add(type, component);
         return component;
     }
@@ -341,7 +410,9 @@ public class ComponentsCollection : IEnumerable<IComponent>
     public T? Get<T>() where T : class, IComponent
     {
         var type = typeof(T);
-        return _items.ContainsKey(type) ? _items[type] as T : throw new ComponentNotFoundException<T>();
+        var found = _items.TryGetValue(type, out var item);
+        if (!found) throw new ComponentNotFoundException<T>();
+        return item as T ?? throw new ComponentNotFoundException<T>();
     }
 
     public bool TryGet<T>(out T? result) where T : class, IComponent
@@ -354,10 +425,7 @@ public class ComponentsCollection : IEnumerable<IComponent>
 
     public IEnumerator<IComponent> GetEnumerator() => _items.Values.GetEnumerator();
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
 public class SimNode
@@ -408,6 +476,15 @@ public class SimNode
         _children.Add(child);
     }
 
+    public async ValueTask Init(Simulation simulation)
+    {
+        foreach (var component in Components)
+            await component.Init(simulation);
+
+        foreach (var child in _children)
+            await child.Init(simulation);
+    }
+
     public async ValueTask Update(Simulation simulation)
     {
         if (!Enabled)
@@ -439,6 +516,11 @@ public class SceneGraph : ISimService
         Root = new SimNode();
     }
 
+    public async ValueTask Init()
+    {
+        await Root.Init(_simulation);
+    }
+
     public async ValueTask Step()
     {
         // if (Root == null)
@@ -448,128 +530,32 @@ public class SceneGraph : ISimService
     }
 }
 
-
 public interface IComponent
 {
-    ValueTask Update(Simulation simulation);
-
     SimNode Owner { get; }
+    ValueTask Init(Simulation bioSimulation);
+    ValueTask Update(Simulation bioSimulation);
 }
 
 public interface IRenderable
 {
-    ValueTask Render(Simulation simulation, Canvas2DContext context);
+    ValueTask Render(Simulation bioSimulation, Canvas2DContext context);
 }
 
-public class Main : IComponent, IRenderable
+public class SimStats : IComponent, IRenderable
 {
-    private readonly Config _config = new()
-    {
-        sizeX = 128,
-        sizeY = 128,
-        population = 1000,
-        stepsPerGeneration = 300,
-        genomeMaxLength = 24,
-        maxNumberNeurons = 12,
-        populationSensorRadius = 10,
-        signalSensorRadius = 10,
-        shortProbeBarrierDistance = 4,
-        longProbeDistance = 10,
-        signalLayers = 1,
-        challenge = Challenge.CornerWeighted,
-    };
-
-    private readonly Board _board;
-    private readonly GeneBank _bank;
-    private readonly BarrierFactory _barrierFactory;
-    private readonly ChallengeFactory _challengeFactory;
-    private readonly SensorFactory _sensorFactory;
-    private readonly ActionFactory _actionFactory;
-    private readonly Rectangle _box1;
-    private readonly Rectangle _box2;
-    // private readonly Cell[] _cells;
-    private readonly float[] _actionLevels = new float[Enum.GetNames<BioSimLib.Actions.Action>().Length];
-    private readonly float[] _neuronAccumulators;
-    // private readonly Canvas[] _icons;
-    // private readonly TextBlock[] _items;
-
-    private double _scaleFactor = 3.4;
-    private uint _generation;
-    private uint _simStep;
-    private int _census;
-    private int _skipUpdate = 10;
-
-    public Main(SimNode owner)
+    public SimStats(SimNode owner)
     {
         Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+    }
 
-        // WorldSize.Text = $"{_config.sizeX}x{_config.sizeY}";
-        // Population.Text = _config.population.ToString();
-        // StepGen.Text = _config.stepsPerGeneration.ToString();
-        // GenomeLen.Text = $"{_config.genomeMaxLength} genes";
-        // NeuronLen.Text = _config.maxNumberNeurons.ToString();
-
-        _bank = new GeneBank(_config);
-        _board = new Board(_config);
-        _barrierFactory = new BarrierFactory(_board.Grid);
-        _challengeFactory = new ChallengeFactory(_config, _board.Grid);
-        _sensorFactory = new SensorFactory(_config, _board);
-        _actionFactory = new ActionFactory(_config, _board);
-        // _cells = new Cell[_config.population];
-        _neuronAccumulators = new float[_config.maxNumberNeurons];
+    public ValueTask Init(Simulation bioSimulation)
+    {
+        return ValueTask.CompletedTask;
     }
 
     public ValueTask Update(Simulation simulation)
     {
-        if (_simStep == 1u && _generation % 5 == 0)
-        {
-            var census = _board.Critters.Census();
-            _census = census.Count;
-        }
-
-        if (_simStep >= _config.stepsPerGeneration)
-        {
-            _generation++;
-            _simStep = 0u;
-            // var i = 0;
-            // var survivors = _board.NewGeneration();
-            // foreach (var genome in _bank.NewGeneration(survivors))
-            // {
-            //     var critter = _board.NewCritter(genome);
-            //     _cells[i].CritterChanged(critter);
-            //     i++;
-            // }
-
-            // var j = 0;
-            // foreach (var ((red, green, blue), population) in _bank.Survivors.OrderByDescending(o => o.population).Take(5))
-            // {
-            //     var color = Color.FromRgb(red, green, blue);
-            //     var brush = new SolidColorBrush(color);
-            //     var path = new Path
-            //     {
-            //         Fill = brush,
-            //         Stroke = brush,
-            //         Data = new EllipseGeometry
-            //         {
-            //             RadiusX = 7.0,
-            //             RadiusY = 7.0
-            //         },
-            //         StrokeThickness = 0.1,
-            //     };
-            //
-            //     _icons[j].Children.Add(path);
-            //     _items[j].Text = population.ToString();
-            //     j++;
-            // }
-        }
-
-        // foreach (var critter in _cells)
-        //     critter.Update(_board, _sensorFactory, _actionFactory, _actionLevels, _neuronAccumulators, _simStep);
-
-        _board.Critters.DrainDeathQueue(_board.Grid);
-        _board.Critters.DrainMoveQueue(_board.Grid);
-
-        _simStep++;
         return ValueTask.CompletedTask;
     }
 
@@ -577,22 +563,164 @@ public class Main : IComponent, IRenderable
 
     public async ValueTask Render(Simulation simulation, Canvas2DContext context)
     {
+        var bioSimulation = (BioSimulation)simulation;
+
         await context.SaveAsync();
-        await context.TranslateAsync(400, 400);
-        await context.RotateAsync(simulation.SimTime.TotalMilliseconds / 1000.0f);
-        await context.TranslateAsync(-200, -100);
+        await context.TranslateAsync(800.0, -50.0);
+        // await context.RotateAsync(bioSimulation.SimTime.TotalMilliseconds / 1000.0f);
+        // await context.TranslateAsync(-200, -100);
         await context.ScaleAsync(1.0, 1.0);
         await context.SetFontAsync("48px serif");
-        await context.StrokeTextAsync($"Seconds {simulation.SimTime.TotalMilliseconds / 1000.0}", 10.0, 100.0);
-        await context.StrokeTextAsync($"World Size {_config.sizeX}x{_config.sizeY}", 10.0, 150.0);
-        await context.StrokeTextAsync($"Population {_config.population}", 10.0, 200.0);
-        await context.StrokeTextAsync($"Steps/Gen {_config.stepsPerGeneration}", 10.0, 250.0);
-        await context.StrokeTextAsync($"Genome Length {_config.genomeMaxLength}", 10.0, 300.0);
-        await context.StrokeTextAsync($"Neuron Length {_config.maxNumberNeurons}", 10.0, 350.0);
+        await context.StrokeTextAsync($"Seconds {bioSimulation.SimTime.TotalMilliseconds / 1000.0}", 10.0, 100.0);
+        await context.StrokeTextAsync($"World Size {bioSimulation._config.sizeX}x{bioSimulation._config.sizeY}", 10.0, 150.0);
+        await context.StrokeTextAsync($"Population {bioSimulation._config.population}", 10.0, 200.0);
+        await context.StrokeTextAsync($"Steps/Gen {bioSimulation._config.stepsPerGeneration}", 10.0, 250.0);
+        await context.StrokeTextAsync($"Genome Length {bioSimulation._config.genomeMaxLength}", 10.0, 300.0);
+        await context.StrokeTextAsync($"Neuron Length {bioSimulation._config.maxNumberNeurons}", 10.0, 350.0);
 
-        // foreach (var critter in _cells)
-        //     critter.Draw(MyCanvas, _scaleFactor);
+        await context.StrokeTextAsync($"Generation {bioSimulation._generation}", 10.0, 450.0);
+        await context.StrokeTextAsync($"SimStep {bioSimulation._simStep}", 10.0, 500.0);
 
+        await context.RestoreAsync();
+    }
+}
+
+public class Areana : IComponent, IRenderable
+{
+    private readonly Cell?[] _cells = new Cell[1000];
+
+    public Areana(SimNode owner)
+    {
+        Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+    }
+
+    public ValueTask Init(Simulation simulation)
+    {
+        var bioSimulation = (BioSimulation)simulation;
+
+        var i = 0;
+        foreach (var genome in bioSimulation._bank.Startup())
+        {
+            var critter = bioSimulation._board.NewCritter(genome);
+            _cells[i] = new Cell(critter);
+            // MyCanvas.Children.Add(_cells[i].Element);
+            i++;
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
+    public ValueTask Update(Simulation simulation)
+    {
+        var bioSimulation = (BioSimulation)simulation;
+
+        // if (bioSimulation._simStep == 1u && bioSimulation._generation % 5 == 0)
+        // {
+        //     var census = bioSimulation._board.Critters.Census();
+        //     bioSimulation._census = census.Count;
+        // }
+
+        if (bioSimulation._simStep >= bioSimulation._config.stepsPerGeneration)
+        {
+            bioSimulation._generation++;
+            bioSimulation._simStep = 0u;
+            var i = 0;
+            var survivors = bioSimulation._board.NewGeneration();
+            foreach (var genome in bioSimulation._bank.NewGeneration(survivors))
+            {
+                var critter = bioSimulation._board.NewCritter(genome);
+                _cells[i] = new Cell(critter);
+                i++;
+            }
+
+            var j = 0;
+            foreach (var ((red, green, blue), population) in bioSimulation._bank.Survivors
+                         .OrderByDescending(o => o.population).Take(5))
+            {
+                // var color = Color.FromRgb(red, green, blue);
+                // var brush = new SolidColorBrush(color);
+                // var path = new Path
+                // {
+                //     Fill = brush,
+                //     Stroke = brush,
+                //     Data = new EllipseGeometry
+                //     {
+                //         RadiusX = 7.0,
+                //         RadiusY = 7.0
+                //     },
+                //     StrokeThickness = 0.1,
+                // };
+
+                // _icons[j].Children.Add(path);
+                // _items[j].Text = population.ToString();
+                j++;
+            }
+        }
+
+        foreach (var critter in _cells)
+            critter?.Update(bioSimulation._board, bioSimulation._sensorFactory, bioSimulation._actionFactory,
+                bioSimulation._actionLevels, bioSimulation._neuronAccumulators, bioSimulation._simStep);
+
+        bioSimulation._board.Critters.DrainDeathQueue(bioSimulation._board.Grid);
+        bioSimulation._board.Critters.DrainMoveQueue(bioSimulation._board.Grid);
+
+        bioSimulation._simStep++;
+        return ValueTask.CompletedTask;
+    }
+
+    public SimNode Owner { get; }
+
+    public async ValueTask Render(Simulation simulation, Canvas2DContext context)
+    {
+        foreach (var critter in _cells)
+        {
+            if (critter == null) continue;
+            await critter.Draw(context, 1.0);
+        }
+    }
+}
+
+public sealed class Cell
+{
+    public Critter Critter { get; }
+
+    public Cell(Critter critter)
+    {
+        Critter = critter;
+    }
+
+    private static bool IsEnabled(IAction action)
+    {
+        return (int)action.Type < (int)BioSimLib.Actions.Action.KILL_FORWARD;
+    }
+
+    public void Update(Board board, SensorFactory sensorFactory, ActionFactory actionFactory, float[] actionLevels,
+        float[] neuronAccumulator, uint simStep)
+    {
+        if (!Critter.Alive)
+            return;
+
+        Array.Clear(actionLevels);
+        Array.Clear(neuronAccumulator);
+
+        Critter.FeedForward(sensorFactory, actionLevels, neuronAccumulator, simStep);
+        Critter.ExecuteActions(actionFactory, IsEnabled, actionLevels, simStep);
+        var newLoc = Critter.ExecuteMoves(actionFactory, IsEnabled, actionLevels);
+        if (board.Grid.IsInBounds(newLoc))
+            board.Critters.QueueForMove(Critter, newLoc);
+    }
+
+    public async ValueTask Draw(Canvas2DContext context, double scaleFactor)
+    {
+        if (!Critter.Alive)
+            return;
+
+        await context.SaveAsync();
+        await context.TranslateAsync(2.0, 10.0);
+        await context.ScaleAsync(6.0, 6.0);
+        await context.TranslateAsync(Critter.LocX, Critter.LocY);
+        await context.SetFontAsync("2px serif");
+        await context.StrokeTextAsync(".", 0.0, 0.0);
         await context.RestoreAsync();
     }
 }
