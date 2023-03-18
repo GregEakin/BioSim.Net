@@ -12,46 +12,15 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-using BioSimLib.Challenges;
-using BioSimLib;
-using BioSimLib.BarrierFactory;
-using BioSimLib.Field;
 using BioSimWeb;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using BioSimLib.Actions;
-using BioSimLib.Sensors;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddTransient(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-// var config = new Config
-// {
-//     sizeX = 128,
-//     sizeY = 128,
-//     population = 1000,
-//     stepsPerGeneration = 300,
-//     genomeMaxLength = 24,
-//     maxNumberNeurons = 12,
-//     populationSensorRadius = 10,
-//     signalSensorRadius = 10,
-//     shortProbeBarrierDistance = 4,
-//     longProbeDistance = 10,
-//     signalLayers = 1,
-//     challenge = Challenge.CornerWeighted,
-// };
-//
-// builder.Services.AddSingleton(config);
-// builder.Services.AddSingleton<Board>();
-// builder.Services.AddSingleton<BarrierFactory>();
-// builder.Services.AddSingleton<ChallengeFactory>();
-// builder.Services.AddSingleton<SensorFactory>();
-// builder.Services.AddSingleton<ActionFactory>();
-// _cells = new Cell[_config.population];
-// _neuronAccumulators = new float[_config.maxNumberNeurons];
 
 
 await builder.Build().RunAsync();

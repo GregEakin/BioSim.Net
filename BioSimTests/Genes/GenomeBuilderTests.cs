@@ -203,6 +203,40 @@ public class GenomeBuilderTests
     }
 
     [Fact]
+    public void CompressNeurons_RemapTest()
+    {
+        var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };
+        var gene1 = new GeneBuilder
+        {
+            SourceType = Gene.GeneType.Neuron,
+            SourceNum = 0x05,
+            SinkType = Gene.GeneType.Neuron,
+            SinkNum = 0x02,
+            WeightAsFloat = 1.0f
+        };
+
+        var gene2 = new GeneBuilder
+        {
+            SourceType = Gene.GeneType.Neuron,
+            SourceNum = 0x02,
+            SinkType = Gene.GeneType.Neuron,
+            SinkNum = 0x05,
+            WeightAsFloat = 1.0f
+        };
+
+        var builder = new GenomeBuilder(config.maxNumberNeurons, new[] { gene1.ToUint(), gene2.ToUint() });
+        builder.SetupGenome();
+        builder.CompressNeurons();
+        Assert.Equal(2, builder.Neurons);
+        Assert.Equal(2, builder.Length);
+
+        Assert.Equal(0x00, builder[0].SourceNum);
+        Assert.Equal(0x01, builder[0].SinkNum);
+        Assert.Equal(0x01, builder[1].SourceNum);
+        Assert.Equal(0x00, builder[1].SinkNum);
+    }
+
+    [Fact]
     public void RemoveUnusedNeurons_SensorToActionTest()
     {
         var config = new Config { maxNumberNeurons = 4, sizeX = 8, sizeY = 8 };

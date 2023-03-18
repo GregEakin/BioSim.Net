@@ -186,14 +186,13 @@ public sealed class GenomeBuilder : IEnumerable<GeneBuilder>
 
                 allDone = false;
                 _genes.RemoveAll(gene => gene.SourceType == Gene.GeneType.Neuron && gene.SourceNum == num
-                                          || gene.SinkType == Gene.GeneType.Neuron && gene.SinkNum == num);
+                                         || gene.SinkType == Gene.GeneType.Neuron && gene.SinkNum == num);
             }
         }
     }
 
     public void CombineDuplicateNeurons()
     {
-
     }
 
     public Dictionary<int, Node> MakeNodeList()
@@ -234,9 +233,9 @@ public sealed class GenomeBuilder : IEnumerable<GeneBuilder>
 
     public void CompressNeurons()
     {
+        var neurons = new Dictionary<byte, byte>();
         foreach (var builder in _genes)
         {
-            var neurons = new Dictionary<byte, byte>();
             if (builder.SourceType == Gene.GeneType.Neuron)
             {
                 var num = builder.SourceNum;
