@@ -166,9 +166,9 @@ public sealed class GenomeBuilder : IEnumerable<GeneBuilder>
         }
     }
 
-    private bool UnusedSensorsAndActions(GeneBuilder gene) =>
-        gene.SourceType == Gene.GeneType.Sensor && gene.SourceSensor is Sensor.FALSE
-        || gene.SinkType == Gene.GeneType.Action && gene.SinkAction is Action.NONE or Action.KILL_FORWARD or Action.PROCREATE or Action.SUICIDE
+    private static bool UnusedSensorsAndActions(GeneBuilder gene) =>
+        gene is { SourceType: Gene.GeneType.Sensor, SourceSensor: Sensor.FALSE }
+        || gene is { SinkType: Gene.GeneType.Action, SinkAction: Action.NONE or Action.KILL_FORWARD or Action.PROCREATE or Action.SUICIDE }
         || gene.Weight == 0;
 
     public void RemoveUnusedNeurons()

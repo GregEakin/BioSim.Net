@@ -88,6 +88,32 @@ public class GeneTests
     }
 
     [Fact]
+    public void WeightAsFloatTest()
+    {
+        Assert.Equal(-4.0f, new Gene(0x00008000u).WeightAsFloat);
+        Assert.Equal(-3.99987793f, new Gene(0x00008001u).WeightAsFloat);
+        Assert.Equal(-1.0f, new Gene(0x0000E000u).WeightAsFloat);
+        Assert.Equal(-0.00012207031f, new Gene(0x0000FFFFu).WeightAsFloat);
+        Assert.Equal(0.0f, new Gene(0x00000000).WeightAsFloat);
+        Assert.Equal(0.00012207031f, new Gene(0x00000001u).WeightAsFloat);
+        Assert.Equal(1.0f, new Gene(0x00002000u).WeightAsFloat);
+        Assert.Equal(3.999878f, new Gene(0x00007FFFu).WeightAsFloat);
+    }
+
+    [Fact]
+    public void WeightAsOneTest()
+    {
+        Assert.Equal(-1.0f, new Gene(0x00008000u).WeightAsOne);
+        Assert.Equal(-0.999969482f, new Gene(0x00008001u).WeightAsOne);
+        Assert.Equal(-0.25f, new Gene(0x0000E000u).WeightAsOne);
+        Assert.Equal(-3.05175781E-05f, new Gene(0x0000FFFFu).WeightAsOne);
+        Assert.Equal(0.0f, new Gene(0x00000000).WeightAsOne);
+        Assert.Equal(3.05175781E-05f, new Gene(0x00000001u).WeightAsOne);
+        Assert.Equal(0.25f, new Gene(0x00002000u).WeightAsOne);
+        Assert.Equal(0.999969482f, new Gene(0x00007FFFu).WeightAsOne);
+    }
+
+    [Fact]
     public void Test1()
     {
         var builder = new GeneBuilder

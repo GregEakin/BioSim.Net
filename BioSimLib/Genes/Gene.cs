@@ -63,6 +63,7 @@ public readonly struct Gene
     public byte SinkNum => (byte)(_sink & 0x7F);
 
     public float WeightAsFloat => WeightAsShort / 8192.0f;
+    public float WeightAsOne => WeightAsShort / 32768.0f;
 
     public uint ToUint => ((uint)_source << 24) | ((uint)_sink << 16) | (ushort)WeightAsShort;
 

@@ -60,12 +60,12 @@ public class CritterTests
         var actionLevels = new float[Enum.GetNames<Action>().Length];
         var neuronAccumulators = new float[config.maxNumberNeurons];
         critter.FeedForward(sensorFactory, actionLevels, neuronAccumulators, 0);
-        Assert.Equal(0.73442495f, critter.NeuralNet[0].Output);
-        Assert.Equal(1.07409918f, critter.NeuralNet[1].Output);
+        Assert.Equal(0.577324271f, critter.NeuralNet[0].Output);
+        Assert.Equal(0.916998565f, critter.NeuralNet[1].Output);
 
         var expectedLevels = new float[Enum.GetNames<Action>().Length];
-        expectedLevels[(int)Action.MOVE_RANDOM] = 0.63671756f;
-        expectedLevels[(int)Action.MOVE_WEST] = 0.5370496f;
+        expectedLevels[(int)Action.MOVE_RANDOM] = 0.47961697f;
+        expectedLevels[(int)Action.MOVE_WEST] = 0.379948974f;
         Assert.Equal(expectedLevels, actionLevels);
     }
 

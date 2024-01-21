@@ -25,7 +25,6 @@ using BioSimLib.Field;
 using BioSimLib.Genes;
 using BioSimLib.Sensors;
 using Blazor.Extensions;
-using Blazor.Extensions.Canvas;
 using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace BioSimWeb;

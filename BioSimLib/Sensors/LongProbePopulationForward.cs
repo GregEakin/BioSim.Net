@@ -17,7 +17,7 @@ using BioSimLib.Field;
 namespace BioSimLib.Sensors;
 
 // Measures the distance to the nearest other individual in the
-// forward direction. If non found, returns the maximum sensor value.
+// forward direction. If none found, returns the maximum sensor value.
 // Maps the result to the sensor range 0.0..1.0.
 [Sensor]
 public class LongProbePopulationForward : ISensor
