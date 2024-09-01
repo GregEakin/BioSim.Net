@@ -83,7 +83,7 @@ public class SetOscillatorTests
     public void MovementTest()
     {
         var action = new SetOscillatorPeriod();
-        var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
+        var (x, y) = action.Move([], new Dir(Dir.Compass.CENTER));
         Assert.Equal(0.0, x);
         Assert.Equal(0.0, y);
     }

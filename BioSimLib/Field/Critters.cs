@@ -17,19 +17,12 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
 
-public sealed class Critters
+public sealed class Critters(Config config)
 {
-    private readonly Config _config;
-    private readonly Critter?[] _critters;
-    private readonly List<Critter> _deathQueue = new();
-    private readonly List<Tuple<Critter, Coord>> _moveQueue = new();
+    private readonly Critter?[] _critters = new Critter?[config.population];
+    private readonly List<Critter> _deathQueue = [];
+    private readonly List<Tuple<Critter, Coord>> _moveQueue = [];
     private ushort _count = 1;
-
-    public Critters(Config config)
-    {
-        _config = config;
-        _critters = new Critter?[config.population];
-    }
 
     public int Count => _count - 1;
 
@@ -39,7 +32,7 @@ public sealed class Critters
 
     public Critter NewCritter(Genome genome, Coord loc)
     {
-        var critter = new Critter(_config, genome, loc, ++_count);
+        var critter = new Critter(config, genome, loc, ++_count);
         _critters[critter.Index - 2u] = critter;
         return critter;
     }
@@ -96,14 +89,14 @@ public sealed class Critters
     public IEnumerable<Genome> Survivors()
     {
         return from critter in _critters
-            where critter.Alive && critter.LocX > _config.sizeX / 2 && critter.LocX < _config.sizeX - 2
+            where critter.Alive && critter.LocX > config.sizeX / 2 && critter.LocX < config.sizeX - 2
             select critter.Genome;
     }
 
     public IEnumerable<Critter> Survivors2()
     {
         return from critter in _critters
-            where critter.Alive && critter.LocX > _config.sizeX / 2 && critter.LocX < _config.sizeX - 2
+            where critter.Alive && critter.LocX > config.sizeX / 2 && critter.LocX < config.sizeX - 2
             select critter;
     }
 

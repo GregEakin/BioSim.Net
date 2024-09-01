@@ -31,42 +31,42 @@ public class SensorFactory
         {
             if (!type.GetCustomAttributes(false).OfType<SensorAttribute>().Any()) continue;
 
-            var i1 = type.GetConstructor(Array.Empty<Type>());
+            var i1 = type.GetConstructor([]);
             if (i1 != null)
             {
-                var sensor = (ISensor)i1.Invoke(Array.Empty<object>());
+                var sensor = (ISensor)i1.Invoke([]);
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }
 
-            var i2 = type.GetConstructor(new[] { typeof(Config) });
+            var i2 = type.GetConstructor([typeof(Config)]);
             if (i2 != null)
             {
-                var sensor = (ISensor)i2.Invoke(new object[] { config });
+                var sensor = (ISensor)i2.Invoke([config]);
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }
 
-            var i3 = type.GetConstructor(new[] { typeof(Config), typeof(Grid) });
+            var i3 = type.GetConstructor([typeof(Config), typeof(Grid)]);
             if (i3 != null)
             {
-                var sensor = (ISensor)i3.Invoke(new object[] { config, board.Grid });
+                var sensor = (ISensor)i3.Invoke([config, board.Grid]);
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }
 
-            var i4 = type.GetConstructor(new[] { typeof(Grid) });
+            var i4 = type.GetConstructor([typeof(Grid)]);
             if (i4 != null)
             {
-                var sensor = (ISensor)i4.Invoke(new object[] { board.Grid });
+                var sensor = (ISensor)i4.Invoke([board.Grid]);
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }
 
-            var i5 = type.GetConstructor(new[] { typeof(Signals) });
+            var i5 = type.GetConstructor([typeof(Signals)]);
             if (i5 != null)
             {
-                var sensor = (ISensor)i5.Invoke(new object[] { board.Signals });
+                var sensor = (ISensor)i5.Invoke([board.Signals]);
                 _sensors[(int)sensor.Type] = sensor;
                 continue;
             }

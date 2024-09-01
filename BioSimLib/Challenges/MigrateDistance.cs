@@ -15,20 +15,14 @@
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class MigrateDistance : IChallenge
+public class MigrateDistance(Config config) : IChallenge
 {
-    private readonly Config _config;
     public Challenge Type => Challenge.MigrateDistance;
-
-    public MigrateDistance(Config config)
-    {
-        _config = config;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var distance = (critter.Loc - critter.BirthLocation).Length()
-                       / (float)Math.Max(_config.sizeX, _config.sizeY);
+                       / (float)Math.Max(config.sizeX, config.sizeY);
         return (true, distance);
     }
 }

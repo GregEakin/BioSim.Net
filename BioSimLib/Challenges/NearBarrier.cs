@@ -17,24 +17,15 @@ using BioSimLib.Field;
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class NearBarrier : IChallenge
+public class NearBarrier(Config config, Grid grid) : IChallenge
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
-
     public Challenge Type => Challenge.NearBarrier;
-
-    public NearBarrier(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        var radius = _config.sizeX / 2.0f;
+        var radius = config.sizeX / 2.0f;
 
-        var barrierCenters = _grid.GetBarrierCenters();
+        var barrierCenters = grid.GetBarrierCenters();
         var minDistance = 1e8f;
         foreach (var center in barrierCenters)
         {

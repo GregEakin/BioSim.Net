@@ -54,7 +54,7 @@ public class MoveRLTests
         var critter = board.NewCritter(genome, new Coord (3, 4));
 
         var action = new MoveRL();
-        action.Execute(critter, 0, Array.Empty<float>());
+        action.Execute(critter, 0, []);
     }
 
     [Fact]

@@ -18,15 +18,8 @@ using BioSimLib.Positions;
 namespace BioSimLib.BarrierFactory;
 
 [Barrier]
-public class Spots : IBarrierFactory
+public class Spots(Grid grid) : IBarrierFactory
 {
-    private readonly Grid _grid;
-
-    public Spots(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public int Type => 6;
 
     public void CreateBarrier()
@@ -34,10 +27,10 @@ public class Spots : IBarrierFactory
         var numberOfLocations = 5u;
         var radius = 5.0f;
 
-        var f = (short x, short y) => { _grid.SetBarrier(new Coord(x,y)); };
+        var f = (short x, short y) => { grid.SetBarrier(new Coord(x,y)); };
 
-        var verticalSliceSize = _grid.SizeY / (numberOfLocations + 1);
+        var verticalSliceSize = grid.SizeY / (numberOfLocations + 1);
         for (var n = 1u; n <= numberOfLocations; ++n)
-            _grid.VisitNeighborhood((short)(_grid.SizeX / 2), (short)(n * verticalSliceSize), radius, f);
+            grid.VisitNeighborhood((short)(grid.SizeX / 2), (short)(n * verticalSliceSize), radius, f);
     }
 }

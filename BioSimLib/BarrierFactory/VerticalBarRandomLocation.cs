@@ -17,27 +17,21 @@ using BioSimLib.Field;
 namespace BioSimLib.BarrierFactory;
 
 [Barrier]
-public class VerticalBarRandomLocation : IBarrierFactory
+public class VerticalBarRandomLocation(Grid grid) : IBarrierFactory
 {
     private readonly Random _random = new();
-    private readonly Grid _grid;
-
-    public VerticalBarRandomLocation(Grid grid)
-    {
-        _grid = grid;
-    }
 
     public int Type => 2;
 
     public void CreateBarrier()
     {
-        var minX = (short)(_random.Next(20, _grid.SizeX - 20));
+        var minX = (short)(_random.Next(20, grid.SizeX - 20));
         var maxX = (short)(minX + 1);
-        var minY = (short)(_random.Next(20, _grid.SizeY / 2 - 20));
-        var maxY = (short)(minY + _grid.SizeY / 2);
+        var minY = (short)(_random.Next(20, grid.SizeY / 2 - 20));
+        var maxY = (short)(minY + grid.SizeY / 2);
 
         for (var x = minX; x <= maxX; ++x)
         for (var y = minY; y <= maxY; ++y)
-            _grid.SetBarrier(x, y);
+            grid.SetBarrier(x, y);
     }
 }

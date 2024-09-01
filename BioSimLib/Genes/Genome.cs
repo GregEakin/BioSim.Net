@@ -17,29 +17,22 @@ using System.Text;
 
 namespace BioSimLib.Genes;
 
-public sealed class Genome : IEnumerable<Gene>
+public sealed class Genome(uint[] dna, Gene[] genes, int neurons, (byte red, byte green, byte blue) color)
+    : IEnumerable<Gene>
 {
-    public Genome(uint[] dna, Gene[] genes, int neurons, (byte red, byte green, byte blue) color)
-    {
-        Dna = dna;
-        Genes = genes;
-        Neurons = neurons;
-        Color = color;
-    }
-
     public int LiveCount { get; set; }
 
-    public int Neurons { get; }
-    
-    public (byte red, byte green, byte blue) Color { get; }
+    public int Neurons { get; } = neurons;
+
+    public (byte red, byte green, byte blue) Color { get; } = color;
 
     public int Length => Genes.Length;
 
     public Gene this[int index] => Genes[index];
 
-    public uint[] Dna { get; }
+    public uint[] Dna { get; } = dna;
 
-    public Gene[] Genes { get; }
+    public Gene[] Genes { get; } = genes;
 
     public IEnumerator<Gene> GetEnumerator() => Genes.Cast<Gene>().GetEnumerator();
 

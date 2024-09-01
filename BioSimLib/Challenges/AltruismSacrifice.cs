@@ -17,20 +17,14 @@ using BioSimLib.Positions;
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class AltruismSacrifice : IChallenge
+public class AltruismSacrifice(Config config) : IChallenge
 {
-    private readonly Config _config;
     public Challenge Type => Challenge.AltruismSacrifice;
-
-    public AltruismSacrifice(Config config)
-    {
-        _config = config;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        var radius = _config.sizeX / 4.0f;
-        var pos = new Coord((short)(_config.sizeX - _config.sizeX / 4), (short)(_config.sizeY - _config.sizeY / 4));
+        var radius = config.sizeX / 4.0f;
+        var pos = new Coord((short)(config.sizeX - config.sizeX / 4), (short)(config.sizeY - config.sizeY / 4));
         var distance = (pos - critter.Loc).Length();
         return distance <= radius
             ? (true, (radius - distance) / radius)

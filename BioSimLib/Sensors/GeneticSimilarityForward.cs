@@ -20,17 +20,8 @@ namespace BioSimLib.Sensors;
 // Return minimum sensor value if nobody is alive in the forward adjacent location,
 // else returns a similarity match in the sensor range 0.0..1.0
 [Sensor]
-public class GeneticSimilarityForward : ISensor
+public class GeneticSimilarityForward(Config config, Grid grid) : ISensor
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
-
-    public GeneticSimilarityForward(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.GENETIC_SIM_FWD;
     public override string ToString() => "genetic similarity forward";
     public string ShortName => "Gen";
@@ -38,10 +29,10 @@ public class GeneticSimilarityForward : ISensor
     public float Output(Critter critter, uint simStep)
     {
         var forward = critter.Loc + critter.LastMoveDir;
-        if (!_grid.IsInBounds(forward)) return 0.0f;
-        var partner = _grid[forward];
+        if (!grid.IsInBounds(forward)) return 0.0f;
+        var partner = grid[forward];
         if (partner is not { Alive: true }) return 0.0f;
-        var method = (GeneBank.ComparisonMethods)_config.genomeComparisonMethod;
+        var method = (GeneBank.ComparisonMethods)config.genomeComparisonMethod;
         var sensorVal = GeneBank.GenomeSimilarity(method, critter.Genome, partner.Genome);
         return sensorVal;
     }

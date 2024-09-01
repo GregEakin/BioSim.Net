@@ -15,22 +15,16 @@
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class AgainstAnyWall : IChallenge
+public class AgainstAnyWall(Config config) : IChallenge
 {
-    private readonly Config _config;
     public Challenge Type => Challenge.AgainstAnyWall;
-
-    public AgainstAnyWall(Config config)
-    {
-        _config = config;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var onEdge = critter.LocX == 0
-                     || critter.LocX == _config.sizeX - 1
+                     || critter.LocX == config.sizeX - 1
                      || critter.LocY == 0
-                     || critter.LocY == _config.sizeY - 1;
+                     || critter.LocY == config.sizeY - 1;
 
         return onEdge
             ? (true, 1.0f)

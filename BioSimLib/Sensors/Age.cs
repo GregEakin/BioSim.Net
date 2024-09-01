@@ -17,22 +17,15 @@ namespace BioSimLib.Sensors;
 // Converts age (units of simSteps compared to life expectancy)
 // linearly to normalized sensor range 0.0..1.0
 [Sensor]
-public class Age : ISensor
+public class Age(Config config) : ISensor
 {
-    private readonly Config _config;
-
-    public Age(Config config)
-    {
-        _config = config;
-    }
-
     public Sensor Type => Sensor.AGE;
     public override string ToString() => "age";
     public string ShortName => "Age";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = (float)(simStep - critter.BirthDate) / _config.stepsPerGeneration;
+        var sensorVal = (float)(simStep - critter.BirthDate) / config.stepsPerGeneration;
         return sensorVal;
     }
 }

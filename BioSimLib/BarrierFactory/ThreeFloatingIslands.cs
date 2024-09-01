@@ -18,15 +18,9 @@ using BioSimLib.Positions;
 namespace BioSimLib.BarrierFactory;
 
 [Barrier]
-public class ThreeFloatingIslands : IBarrierFactory
+public class ThreeFloatingIslands(Grid grid) : IBarrierFactory
 {
     private readonly Random _random = new();
-    private readonly Grid _grid;
-
-    public ThreeFloatingIslands(Grid grid)
-    {
-        _grid = grid;
-    }
 
     public int Type => 5;
 
@@ -37,8 +31,8 @@ public class ThreeFloatingIslands : IBarrierFactory
 
         Coord RandomLoc()
         {
-            return new Coord((short)_random.Next(margin, _grid.SizeX - margin),
-                (short)_random.Next(margin, _grid.SizeY - margin));
+            return new Coord((short)_random.Next(margin, grid.SizeX - margin),
+                (short)_random.Next(margin, grid.SizeY - margin));
         }
 
         Coord center0 = RandomLoc();
@@ -55,9 +49,9 @@ public class ThreeFloatingIslands : IBarrierFactory
         //     center2 = RandomLoc();
         // } while ((center0 - center2).Length() < margin || (center1 - center2).Length() < margin);
 
-        var f = (short x, short y) => { _grid.SetBarrier(new Coord(x, y)); };
+        var f = (short x, short y) => { grid.SetBarrier(new Coord(x, y)); };
 
-        _grid.VisitNeighborhood(center0, radius, f);
+        grid.VisitNeighborhood(center0, radius, f);
         //visitNeighborhood(center1, radius, f);
         //visitNeighborhood(center2, radius, f);
     }

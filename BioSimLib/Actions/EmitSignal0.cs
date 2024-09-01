@@ -23,15 +23,8 @@ namespace BioSimLib.Actions;
 // Pheromones may be emitted immediately (see signals.cpp). If this action neuron
 // is enabled but not driven, nothing will be emitted.
 [Action]
-public class EmitSignal0 : IAction
+public class EmitSignal0(Board board) : IAction
 {
-    private readonly Board _board;
-
-    public EmitSignal0(Board board)
-    {
-        _board = board;
-    }
-
     public Action Type => Action.EMIT_SIGNAL0;
     public override string ToString() => "emit signal 0";
     public string ShortName => "SG";
@@ -42,7 +35,7 @@ public class EmitSignal0 : IAction
         var actionLevel = actionLevels[(int)Action.EMIT_SIGNAL0];
         var level = (float)((Math.Tanh(actionLevel) + 1.0) / 2.0 * critter.ResponsivenessAdjusted);
         if (level > emitThreshold && critter.Prob2Bool(level))
-            _board.Signals.Increment(0, critter.Loc);
+            board.Signals.Increment(0, critter.Loc);
     }
 
     public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)

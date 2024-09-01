@@ -24,16 +24,16 @@ namespace BioSimLib;
 public sealed class Critter
 {
     private static readonly Action[] ActionEnums =
-    {
+    [
         Action.SET_RESPONSIVENESS,
         Action.SET_OSCILLATOR_PERIOD,
         Action.SET_LONGPROBE_DIST,
         Action.EMIT_SIGNAL0,
-        Action.KILL_FORWARD,
-    };
+        Action.KILL_FORWARD
+    ];
 
     private static readonly Action[] MoveEnums =
-    {
+    [
         Action.MOVE_X,
         Action.MOVE_Y,
         Action.MOVE_EAST,
@@ -45,8 +45,8 @@ public sealed class Critter
         Action.MOVE_LEFT,
         Action.MOVE_RIGHT,
         Action.MOVE_RL,
-        Action.MOVE_RANDOM,
-    };
+        Action.MOVE_RANDOM
+    ];
 
     private readonly Random _random = new();
     private readonly Config _config;

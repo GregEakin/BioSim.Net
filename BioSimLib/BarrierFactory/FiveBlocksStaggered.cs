@@ -17,40 +17,33 @@ using BioSimLib.Field;
 namespace BioSimLib.BarrierFactory;
 
 [Barrier]
-public class FiveBlocksStaggered : IBarrierFactory
+public class FiveBlocksStaggered(Grid grid) : IBarrierFactory
 {
-    private readonly Grid _grid;
-
-    public FiveBlocksStaggered(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public int Type => 3;
 
     public void CreateBarrier()
     {
         var blockSizeX = 2;
-        var blockSizeY = _grid.SizeX / 3;
+        var blockSizeY = grid.SizeX / 3;
 
-        var x0 = (short)(_grid.SizeX / 4 - blockSizeX / 2);
-        var y0 = (short)(_grid.SizeY / 4 - blockSizeY / 2);
+        var x0 = (short)(grid.SizeX / 4 - blockSizeX / 2);
+        var y0 = (short)(grid.SizeY / 4 - blockSizeY / 2);
         var x1 = (short)(x0 + blockSizeX);
         var y1 = (short)(y0 + blockSizeY);
 
         DrawBox(x0, y0, x1, y1);
-        x0 += (short)(_grid.SizeX / 2);
+        x0 += (short)(grid.SizeX / 2);
         x1 = (short)(x0 + blockSizeX);
         DrawBox(x0, y0, x1, y1);
-        y0 += (short)(_grid.SizeY / 2);
+        y0 += (short)(grid.SizeY / 2);
         y1 = (short)(y0 + blockSizeY);
         DrawBox(x0, y0, x1, y1);
-        x0 -= (short)(_grid.SizeX / 2);
+        x0 -= (short)(grid.SizeX / 2);
         x1 = (short)(x0 + blockSizeX);
         DrawBox(x0, y0, x1, y1);
-        x0 = (short)(_grid.SizeX / 2 - blockSizeX / 2);
+        x0 = (short)(grid.SizeX / 2 - blockSizeX / 2);
         x1 = (short)(x0 + blockSizeX);
-        y0 = (short)(_grid.SizeY / 2 - blockSizeY / 2);
+        y0 = (short)(grid.SizeY / 2 - blockSizeY / 2);
         y1 = (short)(y0 + blockSizeY);
         DrawBox(x0, y0, x1, y1);
     }
@@ -59,6 +52,6 @@ public class FiveBlocksStaggered : IBarrierFactory
     {
         for (var x = minX; x <= maxX; ++x)
         for (var y = minY; y <= maxY; ++y)
-            _grid.SetBarrier(x, y);
+            grid.SetBarrier(x, y);
     }
 }

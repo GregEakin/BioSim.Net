@@ -18,22 +18,15 @@ namespace BioSimLib.Sensors;
 
 // Sense population density along an axis 90 degrees from last movement direction
 [Sensor]
-public class PopulationLeftRight : ISensor
+public class PopulationLeftRight(Grid grid) : ISensor
 {
-    private readonly Grid _grid;
-
-    public PopulationLeftRight(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.POPULATION_LR;
     public override string ToString() => "population LR";
     public string ShortName => "Plr";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(critter.Loc, critter.LastMoveDir.Rotate90DegCw());
+        var sensorVal = grid.GetPopulationDensityAlongAxis(critter.Loc, critter.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

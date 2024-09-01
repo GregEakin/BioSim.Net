@@ -41,7 +41,7 @@ public abstract class Simulation
 
     public SimTime SimTime { get; } = new();
 
-    private readonly Dictionary<Type, ISimService> _services = new();
+    private readonly Dictionary<Type, ISimService> _services = [];
     private bool _isInitialized;
 
     public T? GetService<T>() where T : class, ISimService
@@ -52,7 +52,7 @@ public abstract class Simulation
 
     protected void AddService(ISimService? service)
     {
-        if (service == null) throw new ArgumentNullException(nameof(service));
+        ArgumentNullException.ThrowIfNull(service, nameof(service));
         _services[service.GetType()] = service;
     }
 
@@ -153,7 +153,7 @@ public class BioSimulation : Simulation
         sceneGraph.Root.AddChild(root);
 
         root.Components.Add<SimStats>();
-        root.Components.Add<Areana>();
+        root.Components.Add<Arena>();
     }
 }
 
@@ -219,16 +219,10 @@ public enum MouseButtons
     Right = 2
 }
 
-public struct ButtonState
+public readonly struct ButtonState(ButtonState.States state, bool wasPressed)
 {
-    public ButtonState(States state, bool wasPressed)
-    {
-        State = state;
-        WasPressed = wasPressed;
-    }
-
-    public bool WasPressed { get; }
-    public States State { get; }
+    public bool WasPressed { get; } = wasPressed;
+    public States State { get; } = state;
 
     public enum States
     {
@@ -236,7 +230,7 @@ public struct ButtonState
         Down = 1
     }
 
-    public static readonly ButtonState None = new ButtonState(States.Up, false);
+    public static readonly ButtonState None = new(States.Up, false);
 }
 
 public enum Keys
@@ -302,17 +296,8 @@ public static class EnumUtils
     }
 }
 
-public class RenderService : ISimService
+public class RenderService(Simulation simulation, Canvas2DContext context) : ISimService
 {
-    private readonly Simulation _simulation;
-    private readonly Canvas2DContext _context;
-
-    public RenderService(Simulation simulation, Canvas2DContext context)
-    {
-        _simulation = simulation;
-        _context = context;
-    }
-
     public ValueTask Init()
     {
         return ValueTask.CompletedTask;
@@ -320,28 +305,28 @@ public class RenderService : ISimService
 
     public async ValueTask Step()
     {
-        var bio = (BioSimulation)_simulation;
+        var bio = (BioSimulation)simulation;
         var step = bio._simStep;
         if (step % 10 != 0)
              return;
 
-        var sceneGraph = _simulation.GetService<SceneGraph>();
+        var sceneGraph = simulation.GetService<SceneGraph>();
         if (sceneGraph == null) return;
 
-        await _context.ClearRectAsync(0, 0, _simulation.Display.Size.Width, _simulation.Display.Size.Height);
-        await _context.BeginBatchAsync();
-        await Render(sceneGraph.Root, _simulation);
-        await _context.EndBatchAsync();
+        await context.ClearRectAsync(0, 0, simulation.Display.Size.Width, simulation.Display.Size.Height);
+        await context.BeginBatchAsync();
+        await Render(sceneGraph.Root, simulation);
+        await context.EndBatchAsync();
     }
 
-    private async ValueTask Render(SimNode simNode, Simulation simulation)
+    private async ValueTask Render(SimNode simNode, Simulation sim)
     {
         foreach (var component in simNode.Components)
             if (component is IRenderable renderable)
-                await renderable.Render(simulation, _context);
+                await renderable.Render(simulation, context);
 
         foreach (var child in simNode.Children)
-            await Render(child, simulation);
+            await Render(child, sim);
     }
 }
 
@@ -350,17 +335,12 @@ internal class ComponentsFactory
     private static readonly Lazy<ComponentsFactory> _instance = new(new ComponentsFactory());
     public static ComponentsFactory Instance => _instance.Value;
 
-    private readonly ConcurrentDictionary<Type, ConstructorInfo> _ctorsByType;
-
-    private ComponentsFactory()
-    {
-        _ctorsByType = new ConcurrentDictionary<Type, ConstructorInfo>();
-    }
+    private readonly ConcurrentDictionary<Type, ConstructorInfo> _ctorsByType = new();
 
     public TC? Create<TC>(SimNode owner) where TC : class, IComponent
     {
         var ctor = GetCtor<TC>();
-        return ctor.Invoke(new[] { owner }) as TC;
+        return ctor.Invoke([owner]) as TC;
     }
 
     private ConstructorInfo GetCtor<TC>() where TC : class, IComponent
@@ -370,7 +350,7 @@ internal class ComponentsFactory
         if (_ctorsByType.TryGetValue(type, out var ctor1)) return ctor1;
 
         var ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null,
-            new[] { typeof(SimNode) }, null);
+            [typeof(SimNode)], null);
         if (ctor != null)
             _ctorsByType.AddOrUpdate(type, ctor, (t, c) => ctor);
 
@@ -378,30 +358,19 @@ internal class ComponentsFactory
     }
 }
 
-public class ComponentsCollection : IEnumerable<IComponent>
+public class ComponentsCollection(SimNode owner) : IEnumerable<IComponent>
 {
-    private readonly SimNode _owner;
-    private readonly IDictionary<Type, IComponent> _items;
+    private readonly Dictionary<Type, IComponent> _items = [];
 
-    public ComponentsCollection(SimNode owner)
-    {
-        _owner = owner;
-        _items = new Dictionary<Type, IComponent>();
-    }
-
-    public class ComponentNotFoundException<TC> : Exception where TC : IComponent
-    {
-        public ComponentNotFoundException() : base($"{typeof(TC).Name} not found on owner")
-        {
-        }
-    }
+    public class ComponentNotFoundException<TC>() : Exception($"{typeof(TC).Name} not found on owner")
+        where TC : IComponent;
 
     public TC? Add<TC>() where TC : class, IComponent
     {
         var type = typeof(TC);
         if (_items.TryGetValue(type, out var item)) return item as TC;
 
-        var component = ComponentsFactory.Instance.Create<TC>(_owner) ?? throw new Exception("Component is null.");
+        var component = ComponentsFactory.Instance.Create<TC>(owner) ?? throw new Exception("Component is null.");
         _items.Add(type, component);
         return component;
     }
@@ -431,7 +400,7 @@ public class SimNode
 {
     private static int _lastId;
 
-    private readonly IList<SimNode> _children = new List<SimNode>();
+    private readonly List<SimNode> _children = [];
 
     public SimNode()
     {
@@ -458,9 +427,9 @@ public class SimNode
         get => _enabled;
         set
         {
-            var oldValue = _enabled;
+            var wasEnabled = _enabled;
             _enabled = value;
-            if (!_enabled && oldValue)
+            if (!_enabled && wasEnabled)
                 OnDisabled?.Invoke(this);
         }
     }
@@ -503,21 +472,13 @@ public class SimNode
     public override string ToString() => $"SimNode {Id}";
 }
 
-public class SceneGraph : ISimService
+public class SceneGraph(Simulation simulation) : ISimService
 {
-    private readonly Simulation _simulation;
-
-    public SimNode Root { get; }
-
-    public SceneGraph(Simulation simulation)
-    {
-        _simulation = simulation;
-        Root = new SimNode();
-    }
+    public SimNode Root { get; } = new();
 
     public async ValueTask Init()
     {
-        await Root.Init(_simulation);
+        await Root.Init(simulation);
     }
 
     public async ValueTask Step()
@@ -525,7 +486,7 @@ public class SceneGraph : ISimService
         // if (Root == null)
         //     return;
 
-        await Root.Update(_simulation);
+        await Root.Update(simulation);
     }
 }
 
@@ -541,13 +502,8 @@ public interface IRenderable
     ValueTask Render(Simulation bioSimulation, Canvas2DContext context);
 }
 
-public class SimStats : IComponent, IRenderable
+public class SimStats(SimNode owner) : IComponent, IRenderable
 {
-    public SimStats(SimNode owner)
-    {
-        Owner = owner ?? throw new ArgumentNullException(nameof(owner));
-    }
-
     public ValueTask Init(Simulation bioSimulation)
     {
         return ValueTask.CompletedTask;
@@ -558,7 +514,7 @@ public class SimStats : IComponent, IRenderable
         return ValueTask.CompletedTask;
     }
 
-    public SimNode Owner { get; }
+    public SimNode Owner { get; } = owner ?? throw new ArgumentNullException(nameof(owner));
 
     public async ValueTask Render(Simulation simulation, Canvas2DContext context)
     {
@@ -584,14 +540,9 @@ public class SimStats : IComponent, IRenderable
     }
 }
 
-public class Areana : IComponent, IRenderable
+public class Arena(SimNode owner) : IComponent, IRenderable
 {
     private readonly Cell?[] _cells = new Cell[1000];
-
-    public Areana(SimNode owner)
-    {
-        Owner = owner ?? throw new ArgumentNullException(nameof(owner));
-    }
 
     public ValueTask Init(Simulation simulation)
     {
@@ -667,7 +618,7 @@ public class Areana : IComponent, IRenderable
         return ValueTask.CompletedTask;
     }
 
-    public SimNode Owner { get; }
+    public SimNode Owner { get; } = owner ?? throw new ArgumentNullException(nameof(owner));
 
     public async ValueTask Render(Simulation simulation, Canvas2DContext context)
     {
@@ -679,14 +630,9 @@ public class Areana : IComponent, IRenderable
     }
 }
 
-public sealed class Cell
+public sealed class Cell(Critter critter)
 {
-    public Critter Critter { get; }
-
-    public Cell(Critter critter)
-    {
-        Critter = critter;
-    }
+    public Critter Critter { get; } = critter;
 
     private static bool IsEnabled(IAction action)
     {

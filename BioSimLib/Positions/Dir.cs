@@ -14,24 +14,22 @@
 
 namespace BioSimLib.Positions;
 
-public readonly struct Dir
+public readonly struct Dir(Dir.Compass dir = Dir.Compass.CENTER)
 {
     public enum Compass : byte
     {
         SW, S, SE, W, CENTER, E, NW, N, NE
     }
 
-    private static readonly byte[] RotateRight = { 3, 0, 1, 6, 4, 2, 7, 8, 5 };
-    private static readonly byte[] RotateLeft = { 1, 2, 5, 0, 4, 8, 3, 6, 7 };
+    private static readonly byte[] RotateRight = [3, 0, 1, 6, 4, 2, 7, 8, 5];
+    private static readonly byte[] RotateLeft = [1, 2, 5, 0, 4, 8, 3, 6, 7];
     private static readonly Random RandomNg = new();
 
     public static Dir Random8() => new Dir(Compass.N).Rotate(RandomNg.Next(0, 7));
 
-    public Dir(Compass dir = Compass.CENTER) => _dir = dir;
-
     // public static implicit operator Dir(Compass d) => new Dir(d);
 
-    private readonly Compass _dir;
+    private readonly Compass _dir = dir;
 
     public byte AsInt() => (byte)_dir;
 
@@ -41,7 +39,7 @@ public readonly struct Dir
         return new Coord ((short)(d % 3 - 1), (short)(d / 3 - 1));
     }
 
-    public Polar AsNormalizedPolar() => new Polar(1, _dir);
+    public Polar AsNormalizedPolar() => new(1, _dir);
 
     public Dir Rotate(int n = 0)
     {

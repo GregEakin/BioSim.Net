@@ -18,15 +18,8 @@ using BioSimLib.Positions;
 namespace BioSimLib.Actions;
 
 [Action]
-public class Suicide : IAction
+public class Suicide(Board board) : IAction
 {
-    private readonly Board _board;
-
-    public Suicide(Board board)
-    {
-        _board = board;
-    }
-
     public Action Type => Action.SUICIDE;
     public override string ToString() => "suicide";
     public string ShortName => "Die";
@@ -40,7 +33,7 @@ public class Suicide : IAction
         if (level <= dieThreshold || !critter.Prob2Bool(level))
             return;
 
-        _board.Critters.QueueForDeath(critter);
+        board.Critters.QueueForDeath(critter);
     }
 
     public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)

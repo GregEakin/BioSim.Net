@@ -113,8 +113,8 @@ public partial class MainWindow : Window
         _box2.SetValue(Canvas.LeftProperty, (_config.sizeX - 2.0) * _scaleFactor);
         MyCanvas.Children.Add(_box2);
 
-        _icons = new[]{ Icon0, Icon1, Icon2, Icon3, Icon4 };
-        _items = new[]{ Item0, Item1, Item2, Item3, Item4 };
+        _icons = [Icon0, Icon1, Icon2, Icon3, Icon4];
+        _items = [Item0, Item1, Item2, Item3, Item4];
 
         var i = 0;
         foreach (var genome in _bank.Startup())
@@ -148,7 +148,7 @@ public partial class MainWindow : Window
             foreach (var genome in _bank.NewGeneration(survivors))
             {
                 var critter = _board.NewCritter(genome);
-                _cells[i].CritterChanged(critter);
+                _cells[i].ReplaceCritter(critter);
                 i++;
             }
 

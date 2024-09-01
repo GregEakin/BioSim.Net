@@ -92,7 +92,7 @@ public class SuicideTests
         var config = new Config();
         var board = new Board(config);
         var action = new Suicide(board);
-        var (x, y) = action.Move(Array.Empty<float>(), new Dir(Dir.Compass.CENTER));
+        var (x, y) = action.Move([], new Dir(Dir.Compass.CENTER));
         Assert.Equal(0.0, x);
         Assert.Equal(0.0, y);
     }

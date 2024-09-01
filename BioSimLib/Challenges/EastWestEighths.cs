@@ -15,19 +15,13 @@
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class EastWestEighths : IChallenge
+public class EastWestEighths(Config config) : IChallenge
 {
-    private readonly Config _config;
     public Challenge Type => Challenge.EastWestEighths;
-
-    public EastWestEighths(Config config)
-    {
-        _config = config;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        return critter.LocX < _config.sizeX / 8 || critter.LocX >= _config.sizeX - _config.sizeX / 8
+        return critter.LocX < config.sizeX / 8 || critter.LocX >= config.sizeX - config.sizeX / 8
             ? (true, 1.0f)
             : (false, 0.0f);
     }

@@ -19,22 +19,15 @@ namespace BioSimLib.Sensors;
 // Sense population density along axis of last movement direction, mapped
 // to sensor range 0.0..1.0
 [Sensor]
-public class PopulationForward : ISensor
+public class PopulationForward(Grid grid) : ISensor
 {
-    private readonly Grid _grid;
-
-    public PopulationForward(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.POPULATION_FWD;
     public override string ToString() => "population forward";
     public string ShortName => "Pfd";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.GetPopulationDensityAlongAxis(critter.Loc, critter.LastMoveDir);
+        var sensorVal = grid.GetPopulationDensityAlongAxis(critter.Loc, critter.LastMoveDir);
         return sensorVal;
     }
 }

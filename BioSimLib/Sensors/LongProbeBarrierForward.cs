@@ -20,22 +20,15 @@ namespace BioSimLib.Sensors;
 // direction. If non found, returns the maximum sensor value.
 // Maps the result to the sensor range 0.0..1.0.
 [Sensor]
-public class LongProbeBarrierForward : ISensor
+public class LongProbeBarrierForward(Grid grid) : ISensor
 {
-    private readonly Grid _grid;
-
-    public LongProbeBarrierForward(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.LONGPROBE_BAR_FWD;
     public override string ToString() => "long probe barrier fwd";
     public string ShortName => "LPb";
 
     public float Output(Critter critter, uint simStep)
     {
-        var longProbeBarrierFwd = _grid.LongProbeBarrierFwd(critter.Loc, critter.LastMoveDir, critter.LongProbeDist);
+        var longProbeBarrierFwd = grid.LongProbeBarrierFwd(critter.Loc, critter.LastMoveDir, critter.LongProbeDist);
         var sensorVal = longProbeBarrierFwd / critter.LongProbeDist;
         return sensorVal;
     }

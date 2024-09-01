@@ -20,22 +20,15 @@ namespace BioSimLib.Sensors;
 // forward direction. If none found, returns the maximum sensor value.
 // Maps the result to the sensor range 0.0..1.0.
 [Sensor]
-public class LongProbePopulationForward : ISensor
+public class LongProbePopulationForward(Grid grid) : ISensor
 {
-    private readonly Grid _grid;
-
-    public LongProbePopulationForward(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.LONGPROBE_POP_FWD;
     public override string ToString() => "long probe population fwd";
     public string ShortName => "LPf";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.LongProbePopulationFwd(critter.Loc, critter.LastMoveDir, critter.LongProbeDist) / critter.LongProbeDist;
+        var sensorVal = grid.LongProbePopulationFwd(critter.Loc, critter.LastMoveDir, critter.LongProbeDist) / critter.LongProbeDist;
         return sensorVal;
     }
 }

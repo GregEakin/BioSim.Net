@@ -16,21 +16,14 @@ namespace BioSimLib.Sensors;
 
 // Maps current Y location 0..config.sizeY-1 to sensor range 0.0..1.0
 [Sensor]
-public class LocationY : ISensor
+public class LocationY(Config config) : ISensor
 {
-    private readonly Config _config;
-
-    public LocationY(Config config)
-    {
-        _config = config;
-    }
-
     public Sensor Type => Sensor.LOC_Y;
     public override string ToString() => "location y";
     public string ShortName => "Ly";
 
     public float Output(Critter critter, uint simStep)
     {
-        return (float)critter.LocY / (_config.sizeX - 1u);
+        return (float)critter.LocY / (config.sizeX - 1u);
     }
 }

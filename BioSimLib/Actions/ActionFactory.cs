@@ -31,34 +31,34 @@ public class ActionFactory
         {
             if (!type.GetCustomAttributes(false).OfType<ActionAttribute>().Any()) continue;
 
-            var i1 = type.GetConstructor(Array.Empty<Type>());
+            var i1 = type.GetConstructor([]);
             if (i1 != null)
             {
-                var action = (IAction)i1.Invoke(Array.Empty<object>());
+                var action = (IAction)i1.Invoke([]);
                 _actions[(int)action.Type] = action;
                 continue;
             }
 
-            var i2 = type.GetConstructor(new[] { typeof(Config) });
+            var i2 = type.GetConstructor([typeof(Config)]);
             if (i2 != null)
             {
-                var action = (IAction)i2.Invoke(new object[] { config });
+                var action = (IAction)i2.Invoke([config]);
                 _actions[(int)action.Type] = action;
                 continue;
             }
 
-            var i3 = type.GetConstructor(new[] { typeof(Board) });
+            var i3 = type.GetConstructor([typeof(Board)]);
             if (i3 != null)
             {
-                var action = (IAction)i3.Invoke(new object[] { board });
+                var action = (IAction)i3.Invoke([board]);
                 _actions[(int)action.Type] = action;
                 continue;
             }
 
-            var i4 = type.GetConstructor(new[] { typeof(Config), typeof(Board) });
+            var i4 = type.GetConstructor([typeof(Config), typeof(Board)]);
             if (i4 != null)
             {
-                var action = (IAction)i4.Invoke(new object[] { config, board });
+                var action = (IAction)i4.Invoke([config, board]);
                 _actions[(int)action.Type] = action;
                 continue;
             }

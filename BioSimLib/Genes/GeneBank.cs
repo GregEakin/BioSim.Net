@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 
 namespace BioSimLib.Genes;
 
-public sealed class GeneBank
+public sealed class GeneBank(Config config)
 {
     public enum ComparisonMethods : uint
     {
@@ -25,26 +25,20 @@ public sealed class GeneBank
         HAMMING_DISTANCE_BYTES = 2,
     }
 
-    private readonly Config _config;
-    // private readonly Dictionary<uint[], WeakReference<Genome>> _bank = new();
+    // private readonly Dictionary<uint[], WeakReference<Genome>> _bank = [];
 
     private int _count;
 
-    public GeneBank(Config config)
-    {
-        _config = config;
-    }
-
-    public List<((byte red, byte green, byte blue) color, int population)> Survivors { get; } = new();
+    public List<((byte red, byte green, byte blue) color, int population)> Survivors { get; } = [];
 
     public IEnumerable<Genome> Startup()
     {
-        for (var i = 0u; i < _config.population; i++)
+        for (var i = 0u; i < config.population; i++)
         {
             Genome genome;
             do
             {
-                var builder = new GenomeBuilder(_config.genomeMaxLength, _config.maxNumberNeurons);
+                var builder = new GenomeBuilder(config.genomeMaxLength, config.maxNumberNeurons);
                 genome = builder.ToGenome();
             } while (genome.Length == 0);
 
@@ -60,14 +54,14 @@ public sealed class GeneBank
         var data = survivors.ToArray();
         if (data.Length <= 0)
         {
-            _count = _config.population;
+            _count = config.population;
 
-            for (var i = 0u; i < _config.population; i++)
+            for (var i = 0u; i < config.population; i++)
             {
                 Genome genome;
                 do
                 {
-                    var builder = new GenomeBuilder(_config.genomeMaxLength, _config.maxNumberNeurons);
+                    var builder = new GenomeBuilder(config.genomeMaxLength, config.maxNumberNeurons);
                     genome = builder.ToGenome();
                 } while (genome.Length == 0);
 
@@ -86,11 +80,11 @@ public sealed class GeneBank
 
             _count = data.Length;
 
-            for (var i = 0u; i < _config.population; i++)
+            for (var i = 0u; i < config.population; i++)
             {
                 var index = i % data.Length;
                 var source = data[index];
-                var builder = new GenomeBuilder(_config.maxNumberNeurons, source);
+                var builder = new GenomeBuilder(config.maxNumberNeurons, source);
                 var mutated = builder.Mutate();
                 yield return mutated
                     ? builder.ToGenome()
@@ -128,7 +122,7 @@ public sealed class GeneBank
         // Perform mutations
         //    Swap genes between the two
         //    Adjust the weights by +- %
-        return new GenomeBuilder(_config.maxNumberNeurons, Array.Empty<uint>()).ToGenome();
+        return new GenomeBuilder(config.maxNumberNeurons, Array.Empty<uint>()).ToGenome();
     }
 
     public static float GenomeSimilarity(ComparisonMethods genomeComparisonMethod, Genome g1, Genome g2)

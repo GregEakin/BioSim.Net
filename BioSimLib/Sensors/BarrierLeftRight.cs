@@ -19,24 +19,15 @@ namespace BioSimLib.Sensors;
 // Sense the nearest barrier along axis perpendicular to last movement direction, mapped
 // to sensor range 0.0..1.0
 [Sensor]
-public class BarrierLeftRight : ISensor
+public class BarrierLeftRight(Config config, Grid grid) : ISensor
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
-
-    public BarrierLeftRight(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.BARRIER_LR;
     public override string ToString() => "short probe barrier left-right";
     public string ShortName => "Blr";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(critter.Loc, critter.LastMoveDir.Rotate90DegCw(), _config.shortProbeBarrierDistance);
+        var sensorVal = grid.GetShortProbeBarrierDistance(critter.Loc, critter.LastMoveDir.Rotate90DegCw(), config.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

@@ -17,33 +17,27 @@ using BioSimLib.Positions;
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class CornerWeighted : IChallenge
+public class CornerWeighted(Config config) : IChallenge
 {
-    public CornerWeighted(Config config)
-    {
-        _config = config;
-    }
-
-    private readonly Config _config;
     public Challenge Type => Challenge.CornerWeighted;
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        var radius = _config.sizeX / 4.0f;
+        var radius = config.sizeX / 4.0f;
 
         var distance = (new Coord(0, 0) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 
-        distance = (new Coord(0, (short)(_config.sizeY - 1)) - critter.Loc).Length();
+        distance = (new Coord(0, (short)(config.sizeY - 1)) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 
-        distance = (new Coord((short)(_config.sizeX - 1), 0) - critter.Loc).Length();
+        distance = (new Coord((short)(config.sizeX - 1), 0) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 
-        distance = (new Coord((short)(_config.sizeX - 1), (short)(_config.sizeY - 1)) - critter.Loc).Length();
+        distance = (new Coord((short)(config.sizeX - 1), (short)(config.sizeY - 1)) - critter.Loc).Length();
         if (distance <= radius)
             return (true, (radius - distance) / radius);
 

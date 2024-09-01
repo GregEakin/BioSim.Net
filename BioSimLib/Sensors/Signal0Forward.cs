@@ -18,22 +18,15 @@ namespace BioSimLib.Sensors;
 
 // Sense signal0 density along axis of last movement direction
 [Sensor]
-public class Signal0Forward : ISensor
+public class Signal0Forward(Signals signals) : ISensor
 {
-    private readonly Signals _signals;
-
-    public Signal0Forward(Signals signals)
-    {
-        _signals = signals;
-    }
-
     public Sensor Type => Sensor.SIGNAL0_FWD;
     public override string ToString() => "signal 0";
     public string ShortName => "Sfd";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, critter.Loc, critter.LastMoveDir);
+        var sensorVal = signals.GetSignalDensityAlongAxis(0u, critter.Loc, critter.LastMoveDir);
         return sensorVal;
     }
 }

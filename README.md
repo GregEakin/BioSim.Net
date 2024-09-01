@@ -7,7 +7,7 @@ This is inspired from [BioSim4](https://github.com/davidrmiller/biosim4) simulat
 ## Links:
  * [Visual Studio](https://visualstudio.microsoft.com/vs/)
  * [Windows WPF](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/windows/)
- * [Git Extensions (Free)](http://gitextensions.github.io/)
+ * [Git Extensions](http://gitextensions.github.io/)
  * [ReSharper, Extensions for .NET Developers](https://www.jetbrains.com/resharper/)
 
  ## Author

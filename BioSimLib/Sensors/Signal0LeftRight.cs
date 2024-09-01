@@ -18,22 +18,15 @@ namespace BioSimLib.Sensors;
 
 // Sense signal0 density along an axis perpendicular to last movement direction
 [Sensor]
-public class Signal0LeftRight : ISensor
+public class Signal0LeftRight(Signals signals) : ISensor
 {
-    private readonly Signals _signals;
-
-    public Signal0LeftRight(Signals signals)
-    {
-        _signals = signals;
-    }
-
     public Sensor Type => Sensor.SIGNAL0_LR;
     public override string ToString() => "signal 0 LR";
     public string ShortName => "Slr";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensityAlongAxis(0u, critter.Loc, critter.LastMoveDir.Rotate90DegCw());
+        var sensorVal = signals.GetSignalDensityAlongAxis(0u, critter.Loc, critter.LastMoveDir.Rotate90DegCw());
         return sensorVal;
     }
 }

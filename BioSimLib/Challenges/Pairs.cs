@@ -18,25 +18,16 @@ using BioSimLib.Positions;
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class Pairs : IChallenge
+public class Pairs(Config config, Grid grid) : IChallenge
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
-
     public Challenge Type => Challenge.Pairs;
-
-    public Pairs(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
         var onEdge = critter.LocX == 0
-                     || critter.LocX == _config.sizeX - 1
+                     || critter.LocX == config.sizeX - 1
                      || critter.LocY == 0
-                     || critter.LocY == _config.sizeY - 1;
+                     || critter.LocY == config.sizeY - 1;
 
         if (onEdge)
             return (false, 0.0f);
@@ -46,7 +37,7 @@ public class Pairs : IChallenge
         for (var y = (short)(critter.LocY - 1); y <= critter.LocY + 1; ++y)
         {
             var tloc = new Coord(x, y);
-            if (tloc == critter.Loc || !_grid.IsInBounds(tloc) || !_grid.IsOccupiedAt(tloc)) continue;
+            if (tloc == critter.Loc || !grid.IsInBounds(tloc) || !grid.IsOccupiedAt(tloc)) continue;
 
             ++count;
             if (count != 1)
@@ -58,8 +49,8 @@ public class Pairs : IChallenge
                 var tloc1 = new Coord(x1, y1);
                 if (tloc1 != tloc
                     && tloc1 != critter.Loc
-                    && _grid.IsInBounds(tloc1)
-                    && _grid.IsOccupiedAt(tloc1))
+                    && grid.IsInBounds(tloc1)
+                    && grid.IsOccupiedAt(tloc1))
                     return (false, 0.0f);
             }
         }

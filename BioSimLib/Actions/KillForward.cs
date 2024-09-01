@@ -21,15 +21,8 @@ namespace BioSimLib.Actions;
 // of an attempted murder. Probabilities under the threshold are considered 0.0.
 // If this action neuron is enabled but not driven, the neighbors are safe.
 [Action]
-public class KillForward : IAction
+public class KillForward(Board board) : IAction
 {
-    private readonly Board _board;
-
-    public KillForward(Board board)
-    {
-        _board = board;
-    }
-
     public Action Type => Action.KILL_FORWARD;
     public override string ToString() => "kill fwd";
     public string ShortName => "KlF";
@@ -43,15 +36,15 @@ public class KillForward : IAction
             return;
 
         var otherLoc = critter.Loc + critter.LastMoveDir;
-        if (!_board.Grid.IsInBounds(otherLoc) || !_board.Grid.IsOccupiedAt(otherLoc))
+        if (!board.Grid.IsInBounds(otherLoc) || !board.Grid.IsOccupiedAt(otherLoc))
             return;
 
-        var critter2 = _board.Grid[otherLoc];
+        var critter2 = board.Grid[otherLoc];
         if (critter2 == null)
             return;
 
         if (critter2.Alive)
-            _board.Critters.QueueForDeath(critter2);
+            board.Critters.QueueForDeath(critter2);
     }
 
     public (float dx, float dy) Move(float[] actionLevels, Dir lastMoveDir)

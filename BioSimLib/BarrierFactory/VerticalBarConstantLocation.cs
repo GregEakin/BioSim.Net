@@ -17,26 +17,19 @@ using BioSimLib.Field;
 namespace BioSimLib.BarrierFactory;
 
 [Barrier]
-public class VerticalBarConstantLocation : IBarrierFactory
+public class VerticalBarConstantLocation(Grid grid) : IBarrierFactory
 {
-    private readonly Grid _grid;
-
-    public VerticalBarConstantLocation(Grid grid)
-    {
-        _grid = grid;
-    }
-
     public int Type => 1;
 
     public void CreateBarrier()
     {
-        var minX = (short)(_grid.SizeX / 2);
+        var minX = (short)(grid.SizeX / 2);
         var maxX = (short)(minX + 1);
-        var minY = (short)(_grid.SizeY / 4);
-        var maxY = (short)(minY + _grid.SizeY / 2);
+        var minY = (short)(grid.SizeY / 4);
+        var maxY = (short)(minY + grid.SizeY / 2);
 
         for (var x = minX; x <= maxX; ++x)
         for (var y = minY; y <= maxY; ++y)
-            _grid.SetBarrier(x, y);
+            grid.SetBarrier(x, y);
     }
 }

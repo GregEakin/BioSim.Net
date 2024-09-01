@@ -18,25 +18,18 @@ namespace BioSimLib.Sensors;
 // to a boundary from the center, and converts that linearly to the
 // sensor range 0.0..1.0
 [Sensor]
-public class BoundaryDist : ISensor
+public class BoundaryDist(Config config) : ISensor
 {
-    private readonly Config _config;
-
-    public BoundaryDist(Config config)
-    {
-        _config = config;
-    }
-
     public Sensor Type => Sensor.BOUNDARY_DIST;
     public override string ToString() => "boundary dist";
     public string ShortName => "ED";
 
     public float Output(Critter critter, uint simStep)
     {
-        var distX = Math.Min(critter.LocX, (_config.sizeX - critter.LocX) - 1);
-        var distY = Math.Min(critter.LocY, (_config.sizeY - critter.LocY) - 1);
+        var distX = Math.Min(critter.LocX, (config.sizeX - critter.LocX) - 1);
+        var distY = Math.Min(critter.LocY, (config.sizeY - critter.LocY) - 1);
         var closest = Math.Min(distX, distY);
-        var maxPossible = Math.Max(_config.sizeX / 2 - 1, _config.sizeY / 2 - 1);
+        var maxPossible = Math.Max(config.sizeX / 2 - 1, config.sizeY / 2 - 1);
         var sensorVal = (float)closest / maxPossible;
         return sensorVal;
     }

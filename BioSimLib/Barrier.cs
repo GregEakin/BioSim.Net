@@ -16,12 +16,7 @@ using BioSimLib.Positions;
 
 namespace BioSimLib;
 
-public readonly struct Barrier
+public readonly struct Barrier(Coord loc)
 {
-    public Coord Loc { get; }
-
-    public Barrier(Coord loc)
-    {
-        Loc = loc;
-    }
+    public Coord Loc { get; } = loc;
 }

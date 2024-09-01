@@ -15,19 +15,13 @@
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class RightQuarter : IChallenge
+public class RightQuarter(Config config) : IChallenge
 {
-    private readonly Config _config;
     public Challenge Type => Challenge.RightQuarter;
-
-    public RightQuarter(Config config)
-    {
-        _config = config;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        return critter.LocX > _config.sizeX / 2 + _config.sizeX / 4
+        return critter.LocX > config.sizeX / 2 + config.sizeX / 4
             ? (true, 1.0f)
             : (false, 0.0f);
     }

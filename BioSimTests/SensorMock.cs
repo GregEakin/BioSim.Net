@@ -17,23 +17,14 @@ using BioSimLib.Sensors;
 
 namespace BioSimTests;
 
-public class SensorMock : ISensor
+public class SensorMock(Sensor sensor, string name, float output) : ISensor
 {
-    public Sensor Type { get; }
+    public Sensor Type { get; } = sensor;
 
-    public string ShortName { get; }
-
-    private readonly float _output;
-
-    public SensorMock(Sensor sensor, string name, float output)
-    {
-        Type = sensor;
-        ShortName = name;
-        _output = output;
-    }
+    public string ShortName { get; } = name;
 
     public float Output(Critter critter, uint simStep)
     {
-        return _output;
+        return output;
     }
 }

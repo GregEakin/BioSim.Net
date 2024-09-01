@@ -17,23 +17,16 @@ namespace BioSimLib.Sensors;
 // Measures the distance to nearest boundary in the south-north axis,
 // max distance is half the grid height; scaled to sensor range 0.0..1.0.
 [Sensor]
-public class BoundaryDistY : ISensor
+public class BoundaryDistY(Config config) : ISensor
 {
-    private readonly Config _config;
-
-    public BoundaryDistY(Config config)
-    {
-        _config = config;
-    }
-
     public Sensor Type => Sensor.BOUNDARY_DIST_Y;
     public override string ToString() => "boundary dist Y";
     public string ShortName => "EDy";
 
     public float Output(Critter critter, uint simStep)
     {
-        var minDistY = Math.Min(critter.LocY, _config.sizeY - critter.LocY - 1);
-        var sensorVal = minDistY / (_config.sizeY / 2.0f);
+        var minDistY = Math.Min(critter.LocY, config.sizeY - critter.LocY - 1);
+        var sensorVal = minDistY / (config.sizeY / 2.0f);
         return sensorVal;
     }
 }

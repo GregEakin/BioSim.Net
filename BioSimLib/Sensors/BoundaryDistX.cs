@@ -17,23 +17,16 @@ namespace BioSimLib.Sensors;
 // Measures the distance to nearest boundary in the east-west axis,
 // max distance is half the grid width; scaled to sensor range 0.0..1.0.
 [Sensor]
-public class BoundaryDistX : ISensor
+public class BoundaryDistX(Config config) : ISensor
 {
-    private readonly Config _config;
-
-    public BoundaryDistX(Config config)
-    {
-        _config = config;
-    }
-
     public Sensor Type => Sensor.BOUNDARY_DIST_X;
     public override string ToString() => "boundary dist X";
     public string ShortName => "EDx";
 
     public float Output(Critter critter, uint simStep)
     {
-        var minDistX = Math.Min(critter.LocX, _config.sizeX - critter.LocX - 1);
-        var sensorVal = minDistX / (_config.sizeX / 2.0f);
+        var minDistX = Math.Min(critter.LocX, config.sizeX - critter.LocX - 1);
+        var sensorVal = minDistX / (config.sizeX / 2.0f);
         return sensorVal;
     }
 }

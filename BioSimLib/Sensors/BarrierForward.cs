@@ -19,24 +19,15 @@ namespace BioSimLib.Sensors;
 // Sense the nearest barrier along axis of last movement direction, mapped
 // to sensor range 0.0..1.0
 [Sensor]
-public class BarrierForward : ISensor
+public class BarrierForward(Config config, Grid grid) : ISensor
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
-
-    public BarrierForward(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.BARRIER_FWD;
     public override string ToString() => "short probe barrier fwd-rev";
     public string ShortName => "Bfd";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _grid.GetShortProbeBarrierDistance(critter.Loc, critter.LastMoveDir, _config.shortProbeBarrierDistance);
+        var sensorVal = grid.GetShortProbeBarrierDistance(critter.Loc, critter.LastMoveDir, config.shortProbeBarrierDistance);
         return sensorVal;
     }
 }

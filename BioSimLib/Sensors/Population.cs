@@ -19,17 +19,8 @@ namespace BioSimLib.Sensors;
 // Returns population density in neighborhood converted linearly from
 // 0..100% to sensor range
 [Sensor]
-public class Population : ISensor
+public class Population(Config config, Grid grid) : ISensor
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
-
-    public Population(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
-
     public Sensor Type => Sensor.POPULATION;
     public override string ToString() => "population";
     public string ShortName => "Pop";
@@ -42,11 +33,11 @@ public class Population : ISensor
         void F(short x, short y)
         {
             ++count;
-            if (!_grid.IsEmptyAt(x, y))
+            if (!grid.IsEmptyAt(x, y))
                 ++occupied;
         }
 
-        _grid.VisitNeighborhood(critter.Loc, _config.populationSensorRadius, F);
+        grid.VisitNeighborhood(critter.Loc, config.populationSensorRadius, F);
         var sensorVal = (float)occupied / count;
         return sensorVal;
     }

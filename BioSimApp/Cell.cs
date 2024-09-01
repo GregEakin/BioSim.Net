@@ -29,6 +29,10 @@ public sealed class Cell
 {
     private readonly Path _path;
 
+    public Critter Critter { get; private set; }
+
+    public UIElement Element => _path;
+
     public Cell(Critter critter)
     {
         Critter = critter;
@@ -51,10 +55,6 @@ public sealed class Cell
         _path.SetValue(Canvas.LeftProperty, 0.5 + Critter.LocX);
         _path.SetValue(Canvas.TopProperty, 0.5 + Critter.LocY);
     }
-
-    public Critter Critter { get; private set; }
-
-    public UIElement Element => _path;
 
     private static bool IsEnabled(IAction action)
     {
@@ -90,7 +90,7 @@ public sealed class Cell
         _path.SetValue(Canvas.TopProperty, (0.5 + Critter.LocY) * scaleFactor);
     }
 
-    public void CritterChanged(Critter critter)
+    public void ReplaceCritter(Critter critter)
     {
         Critter = critter;
 

@@ -18,25 +18,16 @@ using BioSimLib.Positions;
 
 namespace BioSimLib.Field;
 
-public sealed class Grid
+public sealed class Grid(Config config, Critters critters)
 {
-    private readonly Config _config;
-    private readonly Critters _critters;
-    private readonly ushort[,] _data;
+    private readonly ushort[,] _data = new ushort[config.sizeX, config.sizeY];
     private readonly Random _random = new();
-
-    public Grid(Config config, Critters critters)
-    {
-        _config = config;
-        _critters = critters;
-        _data = new ushort[config.sizeX, config.sizeY];
-    }
 
     public short SizeX => (short)_data.GetLength(0);
     public short SizeY => (short)_data.GetLength(1);
 
-    public Critter? this[int x, int y] => _critters[_data[x, y]];
-    public Critter? this[Coord loc] => _critters[_data[loc.X, loc.Y]];
+    public Critter? this[int x, int y] => critters[_data[x, y]];
+    public Critter? this[Coord loc] => critters[_data[loc.X, loc.Y]];
 
     public void ZeroFill()
     {
@@ -111,11 +102,11 @@ public sealed class Grid
 
     public Coord FindEmptyLocation()
     {
-        var count = 2 * _config.sizeX * _config.sizeY;
+        var count = 2 * config.sizeX * config.sizeY;
         for (var i = 0; i < count; i++)
         {
-            var x = (short)_random.Next(0, _config.sizeX);
-            var y = (short)_random.Next(0, _config.sizeY);
+            var x = (short)_random.Next(0, config.sizeX);
+            var y = (short)_random.Next(0, config.sizeY);
             if (_data[x, y] == 0)
                 return new Coord(x, y);
         }
@@ -125,7 +116,7 @@ public sealed class Grid
 
     public Critter CreateCritter(Genome genome, Coord loc)
     {
-        var critter = _critters.NewCritter(genome, loc);
+        var critter = critters.NewCritter(genome, loc);
         _data[loc.X, loc.Y] = critter.Index;
         return critter;
     }
@@ -181,7 +172,7 @@ public sealed class Grid
                     continue;
                 }
 
-                var critter = _critters[index];
+                var critter = critters[index];
                 builder.Append($" {(critter != null ? critter.Index : "*")}");
             }
 
@@ -269,7 +260,7 @@ public sealed class Grid
     // above midrange if density is greatest in forward direction.
     public float GetPopulationDensityAlongAxis(Coord loc, Dir dir)
     {
-        if (dir == Dir.Compass.CENTER || _config.populationSensorRadius <= 0.0f)
+        if (dir == Dir.Compass.CENTER || config.populationSensorRadius <= 0.0f)
             return 0.0f;
 
         var sum = 0.0;
@@ -288,8 +279,8 @@ public sealed class Grid
             sum += contrib;
         }
 
-        VisitNeighborhood(loc, _config.populationSensorRadius, F);
-        var maxSumMag = 6.0 * _config.populationSensorRadius;
+        VisitNeighborhood(loc, config.populationSensorRadius, F);
+        var maxSumMag = 6.0 * config.populationSensorRadius;
         var sensorVal = (sum / maxSumMag + 1.0) / 2.0;
         return (float)sensorVal;
     }

@@ -31,7 +31,7 @@ public sealed class GenomeBuilder : IEnumerable<GeneBuilder>
     private static readonly Random Rng = new();
     private readonly int _maxNumberNeurons;
     private readonly uint[] _dna;
-    private readonly List<GeneBuilder> _genes = new();
+    private readonly List<GeneBuilder> _genes = [];
 
     public int Neurons
     {

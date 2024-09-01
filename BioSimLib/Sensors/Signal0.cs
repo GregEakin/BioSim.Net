@@ -19,22 +19,15 @@ namespace BioSimLib.Sensors;
 // Returns magnitude of signal0 in the local neighborhood, with
 // 0.0..maxSignalSum converted to sensorRange 0.0..1.0
 [Sensor]
-public class Signal0 : ISensor
+public class Signal0(Signals signals) : ISensor
 {
-    private readonly Signals _signals;
-
-    public Signal0(Signals signals)
-    {
-        _signals = signals;
-    }
-
     public Sensor Type => Sensor.SIGNAL0;
     public override string ToString() => "signal 0";
     public string ShortName => "Sg";
 
     public float Output(Critter critter, uint simStep)
     {
-        var sensorVal = _signals.GetSignalDensity(0u, critter.Loc);
+        var sensorVal = signals.GetSignalDensity(0u, critter.Loc);
         return sensorVal;
     }
 }

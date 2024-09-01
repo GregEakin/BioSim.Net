@@ -18,22 +18,14 @@ using BioSimLib.Positions;
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class CenterSparse : IChallenge
+public class CenterSparse(Config config, Grid grid) : IChallenge
 {
-    private readonly Config _config;
-    private readonly Grid _grid;
     public Challenge Type => Challenge.CenterSparse;
-
-    public CenterSparse(Config config, Grid grid)
-    {
-        _config = config;
-        _grid = grid;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        var safeCenter = new Coord((short)(_config.sizeX / 2.0), (short)(_config.sizeY / 2.0));
-        var outerRadius = _config.sizeX / 4.0f;
+        var safeCenter = new Coord((short)(config.sizeX / 2.0), (short)(config.sizeY / 2.0));
+        var outerRadius = config.sizeX / 4.0f;
         var innerRadius = 1.5f;
         var minNeighbors = 5u; // includes self
         var maxNeighbors = 8u;
@@ -44,10 +36,10 @@ public class CenterSparse : IChallenge
         var count = 0f;
         var f = (short x, short y) =>
         {
-            if (_grid.IsOccupiedAt(x, y)) ++count;
+            if (grid.IsOccupiedAt(x, y)) ++count;
         };
 
-        _grid.VisitNeighborhood(critter.Loc, innerRadius, f);
+        grid.VisitNeighborhood(critter.Loc, innerRadius, f);
         if (count >= minNeighbors && count <= maxNeighbors)
             return (true, 1.0f);
         return (false, 0.0f);

@@ -14,26 +14,20 @@
 
 namespace BioSimLib.Positions;
 
-public readonly struct Coord
+public readonly struct Coord(short x0, short y0)
 {
     private static readonly Dir.Compass[] DirConversion =
-    {
+    [
         Dir.Compass.E, Dir.Compass.NE, Dir.Compass.N, Dir.Compass.NW,
         Dir.Compass.W, Dir.Compass.SW, Dir.Compass.S, Dir.Compass.SE
-    };
+    ];
 
-    public short X { get; }
-    public short Y { get; }
-
-    public Coord(short x0, short y0)
-    {
-        X = x0;
-        Y = y0;
-    }
+    public short X { get; } = x0;
+    public short Y { get; } = y0;
 
     public bool IsNormalized()
     {
-        return X >= -1 && X <= 1 && Y >= -1 && Y <= 1;
+        return X is >= -1 and <= 1 && Y is >= -1 and <= 1;
     }
 
     public Coord Normalize()

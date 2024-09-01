@@ -17,29 +17,23 @@ using BioSimLib.Field;
 namespace BioSimLib.Challenges;
 
 [Challenge]
-public class Text : IChallenge
+public class Text(Grid grid) : IChallenge
 {
-    private readonly Grid _grid;
     public Challenge Type => Challenge.Text;
-
-    public Text(Grid grid)
-    {
-        _grid = grid;
-    }
 
     public (bool passed, float score) PassedSurvivalCriterion(Critter critter)
     {
-        var minNeighbors = 22u;
-        var maxNeighbors = 2u;
+        var minNeighbors = 2u;
+        var maxNeighbors = 22u;
         var radius = 1.5f;
 
-        if (_grid.IsBorder(critter.Loc))
+        if (grid.IsBorder(critter.Loc))
             return (false, 0.0f);
 
         var count = 0u;
-        var f = (short x, short y) => { if (_grid.IsOccupiedAt(x, y)) ++count; };
+        var f = (short x, short y) => { if (grid.IsOccupiedAt(x, y)) ++count; };
 
-        _grid.VisitNeighborhood(critter.Loc, radius, f);
+        grid.VisitNeighborhood(critter.Loc, radius, f);
         return count >= minNeighbors && count <= maxNeighbors
             ? (true, 1.0f)
             : (false, 0.0f);

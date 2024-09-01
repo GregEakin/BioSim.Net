@@ -22,7 +22,9 @@ public class BarrierFactory
     private readonly IBarrierFactory?[] _factories = new IBarrierFactory?[7];
     public IBarrierFactory? this[int index] => _factories[index];
 
-    public BarrierFactory(Board board) : this(board.Grid) {}
+    public BarrierFactory(Board board) : this(board.Grid)
+    {
+    }
 
     public BarrierFactory(Grid grid)
     {
@@ -32,10 +34,18 @@ public class BarrierFactory
         {
             if (!type.GetCustomAttributes(false).OfType<BarrierAttribute>().Any()) continue;
 
-            var i2 = type.GetConstructor(new[] { typeof(Grid) });
+            var i1 = type.GetConstructor([]);
+            if (i1 != null)
+            {
+                var factory = (IBarrierFactory)i1.Invoke([]);
+                _factories[factory.Type] = factory;
+                continue;
+            }
+
+            var i2 = type.GetConstructor([typeof(Grid)]);
             if (i2 != null)
             {
-                var factory = (IBarrierFactory)i2.Invoke(new object[] { grid });
+                var factory = (IBarrierFactory)i2.Invoke([grid]);
                 _factories[factory.Type] = factory;
                 continue;
             }
